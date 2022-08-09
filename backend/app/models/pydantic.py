@@ -181,9 +181,14 @@ class MachineCreateSchema(pydantic.BaseModel):
     work_number : Optional[str] 
     work_name : Optional[str] 
     category : Optional[str] 
+    group : Optional[str]
     brand_name : Optional[str] 
     type_name : Optional[str] 
     licence_number : Optional[str] 
+    chassis_number : Optional[str] 
+    construction_year : Optional[str] 
+    ascription_code : Optional[str] 
+
 
 MachineResponseSchema = pydantic_model_creator(Machines)
 

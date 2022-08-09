@@ -112,10 +112,16 @@ class Machines(models.Model):
     work_number = fields.CharField(null=True, max_length=255)
     work_name = fields.CharField(null=True, max_length=255)
     category = fields.CharField(null=True, max_length=255)
+    group = fields.CharField(null=True, max_length=255)
     brand_name = fields.CharField(null=True, max_length=255)
     type_name = fields.CharField(null=True, max_length=255)
     licence_number = fields.CharField(null=True, max_length=255)
+    chassis_number = fields.CharField(null=True, max_length=255)
+    construction_year  = fields.IntField(null=True)
+    ascription_code = fields.CharField(null=True, max_length=255)
 
+    class PydanticMeta:
+        exclude = ("created_at",'created_by','last_modified_at','last_modified_by', 'maintenance_issues')
 
 class MaintenanceMachines(models.Model):
     id = fields.IntField(pk=True)
@@ -124,9 +130,10 @@ class MaintenanceMachines(models.Model):
     last_modified_at = fields.DatetimeField(auto_now=True)
     last_modified_by = fields.CharField(null=True, max_length=255)
     issue_description = fields.CharField(null=True, max_length=255)
-    status = fields.IntField(null=True)
+    status = fields.CharField(null=True, max_length=255)
+    priority = fields.CharField(null=True, max_length=255)
     # Relations
     machine = fields.ForeignKeyField('models.Machines', related_name='maintenance_issues')
     
     class Meta:
-        table = "maintenance_machines"
+        table = "machine_maintenance"

@@ -14,7 +14,7 @@ from starlette.responses import JSONResponse
 router = APIRouter()
 
 
-@router.put(
+@router.post(
     "/",
     dependencies=[Depends(RoleChecker(["admin"]))],
     status_code=201,
@@ -39,28 +39,56 @@ async def post_machine(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
             )
-        await machine.fetch_related('maintenance_issues')
         return machine
     else:
-        # Update existing machine
+        raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Machine met werknummer {incoming_machine.work_number} bestaat al",
+            )
+
+
+@router.put(
+    "/",
+    dependencies=[Depends(RoleChecker(["admin"]))],
+    status_code=200,
+    response_model=MachineResponseSchema,
+)
+async def update_machine(
+    incoming_machine: MachineCreateSchema,
+    current_active_user=Depends(get_current_active_user),
+):
+    # Check if work number already exists
+    machine = await Machines.get_or_none(work_number=incoming_machine.work_number)
+    if machine is None:
+        raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Machine met werknummer {incoming_machine.work_number} niet gevonden al",
+            )
+    else:
         await machine.update_from_dict(incoming_machine.dict()).save()
         machine = await Machines.get(work_number=incoming_machine.work_number)
-        await machine.fetch_related('maintenance_issues')
         return machine
+
 
 
 @router.get("/", status_code=200, response_model=List[MachineResponseSchema])
 async def get_machines(
     current_active_user=Depends(get_current_active_user),
 ) -> List[MachineResponseSchema]:
-    return await Machines.all().prefetch_related('maintenance_issues')
+    return await Machines.all()
 
 
 @router.get("/{id}", status_code=200, response_model=MachineResponseSchema)
 async def get_single_machines(
     id: int, current_active_user=Depends(get_current_active_user)
 ) -> MachineResponseSchema:
-    return await Machines.get_or_none(id=id).prefetch_related('maintenance_issues')
+    machine = await Machines.get_or_none(id=id)
+    if machine is None:
+        raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Machine met ID {id} niet gevonden al",
+            )
+    return machine
 
 
 @router.delete("/{id}", status_code=200, dependencies=[Depends(RoleChecker(["admin"]))])
