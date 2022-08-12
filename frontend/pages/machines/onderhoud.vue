@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        <!-- {{maintenance_issues}} -->
         <!-- Machine maintenance issue dialog -->
         <EditMachineMaintenanceIssueDlg ref="editMachineMaintenanceIssue" @save="save($event)"
             @saveEdit="saveEdit($event)" />
@@ -7,15 +8,21 @@
         <!-- Tabel met de machines en opties om er 1 toe te voegen -->
         <section>
             <v-data-table :search="search" :headers="userIsAdmin ? headersAdmin : headers" :sort-by="['created_at']"
-                :sort-desc="[true]" :items="filteredMaintenanceIssues" class="elevation-1">
+                show-expand :sort-desc="[true]" :items="filteredMaintenanceIssues" class="elevation-1">
                 <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
                 <template v-slot:top>
                     <v-toolbar flat>
                         <v-toolbar-title>Storingen / onderhoud</v-toolbar-title>
-                        <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
                         <!-- Toevoegen en wijzigen dialoog: Only if user is admin -->
-                        <v-btn color="primary" dark class="mb-2" @click="newMaintenanceIssue">Storing / Onderhoud melden</v-btn>
+                        <v-btn color="primary" dark class="mb-2 hidden-xs-only" @click="newMaintenanceIssue">Storing /
+                            Onderhoud melden
+                        </v-btn>
+                        <v-btn @click="newMaintenanceIssue" color="primary" outlined class="mb-2 hidden-sm-and-up"
+                            v-bind="attrs" v-on="on">
+                            <v-icon class="mr-2">mdi-plus-circle-outline</v-icon>
+                            <v-icon>mdi-wrench-outline</v-icon>
+                        </v-btn>
                     </v-toolbar>
                     <!-- Toolbar voor snel zoeken -->
                     <v-toolbar flat>
@@ -36,9 +43,14 @@
                             </v-btn>
                         </template>
                         <div style="background-color: white; width: 280px">
-                            <v-text-field v-model="werkNaamMachine" class="pa-4" label="Zoekterm...">
+                            <v-text-field v-model="werkNaamMachine" class="px-4 " label="Zoekterm...">
                             </v-text-field>
-                            <v-btn @click="werkNaamMachine = ''" text color="primary" class="ml-2 mb-2">Schonen</v-btn>
+                            <div class="d-flex justify-end">
+                                <v-btn class="mr-3 mb-3" icon color="error" @click="werkNaamMachine = ''">
+                                    <v-icon>mdi-trash-can-outline</v-icon>
+                                </v-btn>
+                            </div>
+
                         </div>
                     </v-menu>
                 </template>
@@ -55,12 +67,15 @@
                         <div style="background-color: white; width: 280px">
                             <v-text-field v-model="statusFilterWaarde" class="pa-4" label="Zoekterm...">
                             </v-text-field>
-                            <v-btn @click="statusFilterWaarde = ''" text color="primary" class="ml-2 mb-2">Schonen
-                            </v-btn>
+                            <div class="d-flex justify-end">
+                                <v-btn class="mr-3 mb-3" icon color="error" @click="statusFilterWaarde = ''">
+                                    <v-icon>mdi-trash-can-outline</v-icon>
+                                </v-btn>
+                            </div>
                         </div>
                     </v-menu>
                 </template>
-                <template v-slot:header.issue_description="{ header }">
+                <template v-slot:header.priority="{ header }">
                     {{ header.text }}
                     <v-menu offset-y :close-on-content-click="false">
                         <template v-slot:activator="{ on, attrs }">
@@ -71,10 +86,14 @@
                             </v-btn>
                         </template>
                         <div style="background-color: white; width: 280px">
-                            <v-text-field v-model="descriptionFilter" class="pa-4" label="Zoekterm...">
+                            <v-text-field v-model="priorityFilter" class="px-4 " label="Zoekterm...">
                             </v-text-field>
-                            <v-btn @click="descriptionFilter = ''" text color="primary" class="ml-2 mb-2">Schonen
-                            </v-btn>
+                            <div class="d-flex justify-end">
+                                <v-btn class="mr-3 mb-3" icon color="error" @click="priorityFilter = ''">
+                                    <v-icon>mdi-trash-can-outline</v-icon>
+                                </v-btn>
+                            </div>
+
                         </div>
                     </v-menu>
                 </template>
@@ -83,11 +102,15 @@
                 <template v-slot:item.created_at="{ item }">
                     <span>{{ new Date(item.created_at).toLocaleDateString() }}</span>
                 </template>
-                <!-- Status translation -->
-                <template v-slot:item.status="{ item }">
-                    <span v-if="item.status == 0">Nieuw</span>
-                    <span v-if="item.status == 1">In behandeling</span>
-                    <span v-if="item.status == 2">Gesloten</span>
+                <!-- Item template om de naam van de machine weer te geven met werknummer en werknaam -->
+                <template v-slot:item.machine.work_name="{ item }">
+                    <span>{{ item.machine.work_number }} - {{ item.machine.work_name }}</span>
+                </template>
+                <!-- Expansion panel voor de omschrijving van het issue -->
+                <template v-slot:expanded-item="{ headers, item }">
+                    <td :colspan="headers.length">
+                        {{ item.issue_description }}
+                    </td>
                 </template>
                 <!-- Actions column only if user is admin -->
                 <template v-if="userIsAdmin" v-slot:[`item.actions`]="{ item }">
@@ -111,6 +134,7 @@ export default {
         werkNaamMachine: '',
         statusFilterWaarde: '',
         descriptionFilter: '',
+        priorityFilter: '',
         dialog: false,
         dialogDelete: false,
         machine_edited: false,
@@ -140,18 +164,23 @@ export default {
                 sortable: true
             },
             {
-                text: "Werknaam",
+                text: "Machine",
                 value: "machine.work_name",
                 sortable: true
             },
-            {
-                text: "Omschrijving",
-                value: "issue_description",
-                sortable: true,
-            },
+            // {
+            //     text: "Omschrijving",
+            //     value: "issue_description",
+            //     sortable: true,
+            // },
             {
                 text: "Status",
                 value: "status",
+                sortable: true,
+            },
+            {
+                text: "Prioriteit",
+                value: "priority",
                 sortable: true,
             },
             { text: 'Acties', value: 'actions', sortable: false },
@@ -189,7 +218,7 @@ export default {
                 value: "issue_description",
                 sortable: true,
             },
-                        {
+            {
                 text: "Status",
                 value: "status",
                 sortable: true,
@@ -199,20 +228,27 @@ export default {
     methods: {
         // Filter methodes
         filterWerkNaamMachine(item) {
-            return item.machine.work_name.toLowerCase().includes(this.werkNaamMachine.toLowerCase());
+            if (
+                item.machine.work_name !== null) {
+                return item.machine.work_name.toLowerCase().includes(this.werkNaamMachine.toLowerCase())
+            };
         },
         // Filter methodes
         filterStatus(item) {
-            this.status_text = ''
-            if (item.status == 0) { this.status_text = 'Nieuw' }
-            else if (item.status == 1) { this.status_text = 'In Behandeling' }
-            else if (item.status == 2) { this.status_text = 'Gesloten' }
-            return this.status_text.toLowerCase().includes(this.statusFilterWaarde.toLowerCase());
+            if (
+                item.status !== null) {
+                return item.status.toLowerCase().includes(this.statusFilterWaarde.toLowerCase())
+            };
+        },
+        filterPriority(item) {
+            if (
+                item.priority !== null) {
+                return item.priority.toLowerCase().includes(this.priorityFilter.toLowerCase())
+            };
         },
         filterDescription(item) {
-            if (
-                item.issue_description !== null) {
-                return item.issue_description.toLowerCase().includes(this.descriptionFilter.toLowerCase());
+            {
+                return item.priority.toLowerCase().includes(this.descriptionFilter.toLowerCase());
             }
 
         },
@@ -260,6 +296,9 @@ export default {
             }
             if (this.descriptionFilter) {
                 this.conditions.push(this.filterDescription);
+            }
+            if (this.priorityFilter) {
+                this.conditions.push(this.filterPriority);
             }
 
             if (this.conditions.length > 0) {

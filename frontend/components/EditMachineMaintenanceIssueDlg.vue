@@ -10,9 +10,13 @@
             </v-toolbar>
             <v-card-text class="pa-4 black--text">
                 <v-form ref="issue" v-model="valid">
+                    <v-select v-if="!this.edit" v-model="selectedGroup" :items="groups" label="Groep"></v-select>
+                    <v-select v-if="!this.edit" v-model="selectedCategory" v-bind:items="getCategories(selectedGroup)"
+                        label="Soort">
+                    </v-select>
                     <!-- Select machine if you create a new maintenance issue -->
-                    <v-select v-if="!this.edit" :items="machines" v-model="maintenance_issue.machine_id" label="Machine"
-                        item-value="id">
+                    <v-select v-if="!this.edit" v-bind:items="filteredMachines(selectedCategory)"
+                        v-model="maintenance_issue.machine_id" label="Machine" item-value="id">
                         <template slot="selection" slot-scope="data">
                             <!-- HTML that describe how select should render selected items -->
                             {{ data.item.work_number }} - {{ data.item.work_name }}
@@ -23,24 +27,24 @@
                         </template>
                     </v-select>
                     <!-- Show the machine if you edit a maintenance issue -->
-                    <v-text-field readonly
+                    <v-text-field readonly label="Machine"
                         :value="`${maintenance_issue.machine.work_number} - ${maintenance_issue.machine.work_name}`"
                         v-else></v-text-field>
                     <!-- Maintenance issue description , can be edited all the time -->
-                    <v-text-field v-model="maintenance_issue.issue_description" label="Omschrijving"></v-text-field>
+                    <v-textarea v-model="maintenance_issue.issue_description" label="Omschrijving"></v-textarea>
                     <!-- Change status option if you want to edit a maintenance issue -->
-                    <v-select v-if="this.edit" :items="status_items" item-text="description" item-value="value"
-                        label="Status" v-model="maintenance_issue.status">
-                    </v-select>
+                    <v-select v-if="this.edit" :items="status_items" label="Status" v-model="maintenance_issue.status"></v-select>
+                    <!-- Change priority option if you want to edit a maintenance issue -->
+                    <v-select v-if="this.edit" :items="priority_items" label="Prioriteit" v-model="maintenance_issue.priority"></v-select>
+                    
                 </v-form>
             </v-card-text>
             <v-card-actions class="pt-3">
                 <v-spacer></v-spacer>
-                <v-btn color="warning" outlined class="body-2 font-weight-bold" @click.native="cancel">Annuleer</v-btn>
-                <v-btn v-if="!this.edit" color="primary" class="body-2 font-weight-bold" outlined @click.native="agree">
-                    OK</v-btn>
-                <v-btn v-if="this.edit" color="primary" class="body-2 font-weight-bold" outlined
-                    @click.native="agreeEdit">OK</v-btn>
+                <v-btn color="error" outlined @click.native="cancel">Annuleer</v-btn>
+                <v-btn v-if="!this.edit" color="primary" outlined @click.native="agree">
+                    OPSLAAN</v-btn>
+                <v-btn v-if="this.edit" color="primary" outlined @click.native="agreeEdit">OPSLAAN</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -60,24 +64,47 @@ export default {
             title: "",
             options: {
                 color: "grey lighten-3",
-                width: 400,
+                width: 800,
                 zIndex: 200,
             },
-            status_items: [
-                { value: 0, description: 'Nieuw' },
-                { value: 1, description: 'In Behandeling' },
-                { value: 2, description: 'Gesloten' },
-            ]
+            status_items: ['Nieuw',
+                'In Behandeling',
+                'Gesloten'
+            ],
+                        priority_items: ['Hoog',
+                'Laag',
+            ],
+            selectedGroup: '',
+            selectedCategory: '',
+            groups: ["Gemotoriseerd", "Getrokken machine", "Overig"],
+            categories_motorised: ["Hakselaar", "Auto", "Graafmachine", "Trekker", "Vrachtwagen", "Overig"],
+            categories_pulled_machines: ["Container", "Dieplader", "Dumper", "Hark", "Kilverbak", "Kipper", "Meststrooier", "Mesttank", "Pers", "Silagekar", "Veewagen", "Veldspuit", "Voerkar", "Overig"],
         };
     },
     methods: {
+        getCategories(group) {
+            if (group == 'Gemotoriseerd') {
+                return this.categories_motorised
+            }
+            else if (group == 'Getrokken machine') {
+                return this.categories_pulled_machines
+            }
+        },
+        filteredMachines(category) {
+            return this.machines.filter((machine) => {
+                console.log(machine.category);
+                return machine.category === category
+            })
+        },
         open(title, maintenance_issue, options) {
             this.title = title;
             this.options = Object.assign(this.options, options);
             this.maintenance_issue = Object.assign(this.maintenance_issue, maintenance_issue)
+            this.maintenance_issue.status = "Nieuw"
             this.dialog = true;
         },
         openEdit(title, maintenance_issue, options) {
+
             this.title = title;
             this.options = Object.assign(this.options, options);
             this.maintenance_issue = Object.assign(this.maintenance_issue, maintenance_issue)
@@ -85,30 +112,30 @@ export default {
             this.dialog = true;
         },
         agree() {
-            // Emit een event met als data editItem om zo de uren op te slaan
-            if (!this.maintenance_issue.hasOwnProperty('status')) {
-                this.maintenance_issue.status = 0;
-            }
             this.$emit("save", this.maintenance_issue);
             this.dialog = false;
-            this.$nuxt.$options.router.push('/machines/onderhoud/');
+            this.maintenance_issue = {};
+            this.selectedGroup = '',
+                this.selectedCategory = '',
+                this.$nuxt.$options.router.push('/machines/onderhoud/');
         },
         agreeEdit() {
-            // Emit een event met als data editItem om zo de uren op te slaan
-            if (!this.maintenance_issue.hasOwnProperty('status')) {
-                this.maintenance_issue.status = 0;
-            }
             this.maintenance_issue.machine_id = this.maintenance_issue.machine.id
             this.$emit("saveEdit", this.maintenance_issue);
             this.edit = !this.edit
             this.dialog = false;
+            this.maintenance_issue = {};
+            this.selectedGroup = '',
+                this.selectedCategory = ''
         },
         cancel() {
             this.maintenance_issue = {};
-            if(this.edit) {
+            if (this.edit) {
                 this.edit = false
             }
             this.dialog = false;
+            this.selectedGroup = '',
+                this.selectedCategory = ''
         },
         validate() {
             this.$refs.issue.validate();
@@ -127,6 +154,7 @@ export default {
         ...mapGetters({
             machines: "machines/get_all_machines",
         }),
+
     },
     mounted() {
         this.getAllMachines();

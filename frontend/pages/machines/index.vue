@@ -84,7 +84,6 @@ export default {
     machine: {},
     search: "",
     groups: ["Gemotoriseerd", "Getrokken machine", "Overig"],
-    categories : [],
     categories_motorised: ["Hakselaar", "Auto", "Graafmachine", "Trekker", "Vrachtwagen", "Overig"],
     categories_pulled_machines: ["Container", "Dieplader", "Dumper", "Hark", "Kilverbak", "Kipper", "Meststrooier", "Mesttank", "Pers", "Silagekar", "Veewagen", "Veldspuit", "Voerkar", "Overig"],
     headersAdmin: [
@@ -234,7 +233,6 @@ export default {
       else if (group == 'Getrokken machine') {
         return this.categories_pulled_machines
       }
-      console.log(group)
     },
     ...mapActions({
       getAllMachines: "machines/getAllMachines",

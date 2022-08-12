@@ -31,7 +31,7 @@ async def post_machine_maintenance_issue(
     # Check if work number already exists
     machine = await Machines.get_or_none(id=incoming_issue.machine_id)
     if machine is not None:
-        # create new machine
+        # create new machine maintenance issue
         try:
             maintenace_issue = await MaintenanceMachines.create(
                 **incoming_issue.dict(),
