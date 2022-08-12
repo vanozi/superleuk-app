@@ -12,12 +12,29 @@ export default {
       }
     }
   },
-  async addOrUpdateMachine({ commit }, payload) {
+  async addMachine({ commit }, payload) {
+    try {
+      let response = await this.$axios.post("/machines/", payload);
+      commit("ADDORUPDATEMACHINE", response.data)
+      this.$notifier.showMessage({
+        content: "Machine succesvol toegevoegd!",
+        color: "success",
+      });
+    } catch (err) {
+      if (err.response) {
+        this.$notifier.showMessage({
+          content: err.response.data.detail,
+          color: "error",
+        });
+      }
+    }
+  },
+  async updateMachine({ commit }, payload) {
     try {
       let response = await this.$axios.put("/machines/", payload);
       commit("ADDORUPDATEMACHINE", response.data)
       this.$notifier.showMessage({
-        content: "Machine succesvol toegevoegd/gewijzigd!",
+        content: "Machine succesvol aangepast!",
         color: "success",
       });
     } catch (err) {

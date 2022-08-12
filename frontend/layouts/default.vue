@@ -201,11 +201,7 @@ export default {
 <style>
 @use "sass:math";
 
-.link {
-  color: black;
-  text-decoration: none;
-  font-size: 1.2em;
-  font-weight: bold;
-  font-family: "Roboto", "Courier New", monospace;
-}
+/* .v-simple-table { 
+  overflow-x: auto;
+} */
 </style>

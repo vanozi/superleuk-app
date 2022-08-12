@@ -22,8 +22,8 @@
         <v-spacer></v-spacer>
         <v-btn
           v-if="!options.noconfirm"
-          color="grey"
-          text
+          color="error"
+          outlined
           class="body-2 font-weight-bold"
           @click.native="cancel"
           >Annuleer</v-btn
