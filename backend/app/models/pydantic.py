@@ -192,21 +192,18 @@ class MachineCreateSchema(pydantic.BaseModel):
 
 MachineResponseSchema = pydantic_model_creator(Machines)
 
+# Machine maintenance
 class MachineMaintenanceCreate(pydantic.BaseModel):
     issue_description : Optional[str]
-    status : MaintenanceIssueStatus
+    status : Optional[str]
     machine_id : Optional[int]
-    
-    class Config:  
-        use_enum_values = True 
 
 class MachineMaintenanceUpdate(pydantic.BaseModel):
     id : int
     issue_description : Optional[str]
-    status : MaintenanceIssueStatus
+    status : Optional[str]
     machine_id : Optional[int]
+    priority : Optional[str]
     
-    class Config:  
-        use_enum_values = True 
 
 MachineMaintenanceResponseSchema = pydantic_model_creator(MaintenanceMachines)

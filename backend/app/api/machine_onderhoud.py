@@ -96,7 +96,14 @@ async def get_maintenance_issues(
 async def get_single_maintenance_issues(
     id: int, current_active_user=Depends(get_current_active_user)
 ) -> MachineMaintenanceResponseSchema:
-    return await MaintenanceMachines.get_or_none(id=id)
+    maintenance_issue = await MaintenanceMachines.get_or_none(id=id)
+    if maintenance_issue is None:
+        raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Onderhouds issue niet gevonden",
+            )
+    await maintenance_issue.fetch_related('machine')
+    return maintenance_issue
 
 
 @router.delete("/{id}", status_code=200)
