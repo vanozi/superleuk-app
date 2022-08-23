@@ -1,26 +1,26 @@
 <template>
     <v-container>
-<v-data-table :search="search"  :headers="headers" :items="all_tank_transactions">
-                <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
-                <template v-slot:top>
-                    <v-toolbar flat>
-                        <v-toolbar-title>Tank transacties</v-toolbar-title>
-                    </v-toolbar>
-                    <!-- Toolbar voor snel zoeken -->
-                    <v-toolbar flat>
-                        <v-text-field v-model="search" append-icon="mdi-magnify" label="Zoeken" single-line
-                            hide-details>
-                        </v-text-field>
-                    </v-toolbar>
-                </template>
-                <!-- Item template om de created_at datum te formatteren -->
-                <template v-slot:item.start_date_time="{ item }">
-                    <span>{{ formatDateTimeforTemplate(item.start_date_time) }}</span>
-                </template>
-                <template v-slot:item.meter="{ item }">
-                    <span>{{ item.meter + ' ' + item.meter_type }}</span>
-                </template>
-</v-data-table>
+        <v-data-table :search="search" :headers="headers" :items="all_tank_transactions">
+            <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
+            <template v-slot:top>
+                <v-toolbar flat>
+                    <v-toolbar-title>Tank transacties</v-toolbar-title>
+                </v-toolbar>
+                <!-- Toolbar voor snel zoeken -->
+                <v-toolbar flat>
+                    <v-text-field v-model="search" append-icon="mdi-magnify" label="Zoeken" single-line hide-details>
+                    </v-text-field>
+                </v-toolbar>
+            </template>
+            <!-- Item template om de created_at datum te formatteren -->
+            <template v-slot:item.start_date_time="{ item }">
+                <span>{{ formatDateTimeforTemplate(item.start_date_time) }}</span>
+            </template>
+            <template v-slot:item.meter="{ item }">
+                <span v-if="item.meter == null">n.v.t.</span>
+                <span v-else>{{ item.meter + ' ' + item.meter_type }}</span>
+            </template>
+        </v-data-table>
     </v-container>
 </template>
 
@@ -29,8 +29,8 @@ import { mapGetters, mapActions, store } from "vuex";
 import moment from "moment";
 export default {
     data: () => ({
-                search: "",
-                headers: [
+        search: "",
+        headers: [
             //   text: string,
             //   value: string,
             //   align?: 'start' | 'center' | 'end',
@@ -43,7 +43,7 @@ export default {
             //   width?: string | number,
             //   filter?: (value: any, search: string, item: any) => boolean,
             //   sort?: (a: any, b: any) => number
-                        {
+            {
                 text: "Getankt op",
                 value: "start_date_time",
                 sortable: true
@@ -71,14 +71,14 @@ export default {
         ],
     }),
     methods: {
-            formatDateTimeforTemplate(value) {
-      return moment(value).locale("nl").format("DD/MM/YYYY HH:mm:ss");
-    },
+        formatDateTimeforTemplate(value) {
+            return moment(value).locale("nl").format("DD/MM/YYYY HH:mm:ss");
+        },
         ...mapActions({
             getAllTankTransactions: "tank_transactions/getAllTankTransactions"
         }),
     },
-    computed : {
+    computed: {
         ...mapGetters({
             all_tank_transactions: "tank_transactions/get_all_tank_transactions",
             get_transaction_by_id: "tank_transactions/get_transaction_by_id",
