@@ -146,12 +146,12 @@ class TankTransactions(models.Model):
     transaction_type = fields.CharField(null=True, max_length=255)
     acquisition_mode= fields.CharField(null=True, max_length=255)
     transaction_status  = fields.CharField(null=True, max_length=255)
-    start_date_time = fields.DatetimeField()
-    transaction_number = fields.IntField()
+    start_date_time = fields.DatetimeField(null=True)
+    transaction_number = fields.IntField(null=True)
     product = fields.CharField(null=True, max_length=255)
-    quantity = fields.FloatField()
+    quantity = fields.FloatField(null=True)
     transaction_duration = fields.CharField(null=True, max_length=255)
-    meter = fields.IntField()
+    meter = fields.IntField(null=True)
     meter_type = fields.CharField(null=True, max_length=255)
 
 
