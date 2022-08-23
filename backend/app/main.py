@@ -15,6 +15,7 @@ from app.api import (
     bouwplan,
     machines,
     machine_onderhoud,
+    tank_transactions
 )
 from app.db import init_db
 
@@ -43,6 +44,11 @@ def create_application() -> FastAPI:
         machine_onderhoud.router,
         prefix="/api/machine_maintenance_issues",
         tags=["machine_maintenance_issues"],
+    )
+    application.include_router(
+        tank_transactions.router,
+        prefix="/api/tank_transactions",
+        tags=["tank_transactions"],
     )
     # application.include_router(
     #     general_maintenance.router,

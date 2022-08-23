@@ -144,7 +144,7 @@ export default {
         {
           title: "Machines (Test)",
           action: "mdi-tractor-variant",
-          items: [{ title: "Machinepark", route: "/machines" }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud" },],
+          items: [{ title: "Machinepark", route: "/machines" }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud" },{ title: "Tankbeurten", route: "/machines/tank_transactions" }],
         }
       ],
       adminItems: [
@@ -175,7 +175,7 @@ export default {
         {
           title: "Machines (Test)",
           action: "mdi-tractor-variant",
-          items: [{ title: "Machinepark", route: "/machines" }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud" },],
+          items: [{ title: "Machinepark", route: "/machines" }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud" },{ title: "Tankbeurten", route: "/machines/tank_transactions" },],
         }
       ],
     };

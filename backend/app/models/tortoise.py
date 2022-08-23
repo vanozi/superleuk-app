@@ -137,3 +137,23 @@ class MaintenanceMachines(models.Model):
     
     class Meta:
         table = "machine_maintenance"
+
+
+class TankTransactions(models.Model):
+    id = fields.IntField(pk=True)
+    vehicle = fields.CharField(null=True, max_length=255)
+    driver = fields.CharField(null=True, max_length=255)
+    transaction_type = fields.CharField(null=True, max_length=255)
+    acquisition_mode= fields.CharField(null=True, max_length=255)
+    transaction_status  = fields.CharField(null=True, max_length=255)
+    start_date_time = fields.DatetimeField()
+    transaction_number = fields.IntField()
+    product = fields.CharField(null=True, max_length=255)
+    quantity = fields.FloatField()
+    transaction_duration = fields.CharField(null=True, max_length=255)
+    meter = fields.IntField()
+    meter_type = fields.CharField(null=True, max_length=255)
+
+
+    class Meta:
+        table = "tank_transactions"

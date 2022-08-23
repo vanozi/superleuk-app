@@ -7,12 +7,14 @@ from app.models.tortoise import (
     Users,
     WorkingHours,
     Machines,
-    MaintenanceMachines
+    MaintenanceMachines,
+    TankTransactions,
 )
 
 from app.models.enums import MaintenanceIssueStatus
 
 import pydantic
+from pydantic import validator
 import datetime
 from pydantic import EmailStr, constr
 from tortoise import Tortoise
@@ -148,6 +150,7 @@ class WeeksNotSubmittedSingleUsersResponseSchema(pydantic.BaseModel):
     week_data: List[WeekData]
     werknemer: User_Pydantic
 
+
 # Bouwplan
 class BouwPlanDataModelIn(pydantic.BaseModel):
     ha: float
@@ -155,9 +158,10 @@ class BouwPlanDataModelIn(pydantic.BaseModel):
     gewas: str
     opmerking: str
     perceel_nummer: str
-    ingetekend_door:str
+    ingetekend_door: str
     werknaam: str
     mest: Optional[str]
+
 
 class BouwPlanDataModelOut(pydantic.BaseModel):
     ha: float
@@ -166,10 +170,10 @@ class BouwPlanDataModelOut(pydantic.BaseModel):
     opmerking: str
     perceel_nummer: str
     werknaam: str
-    ingetekend_door : str
-    mest: Optional[str]    
-    year : int
-    created_at : datetime.date  
+    ingetekend_door: str
+    mest: Optional[str]
+    year: int
+    created_at: datetime.date
 
     class Config:
         orm_mode = True
@@ -178,32 +182,57 @@ class BouwPlanDataModelOut(pydantic.BaseModel):
 # Machines
 #  Add a machine
 class MachineCreateSchema(pydantic.BaseModel):
-    work_number : Optional[str] 
-    work_name : Optional[str] 
-    category : Optional[str] 
-    group : Optional[str]
-    brand_name : Optional[str] 
-    type_name : Optional[str] 
-    licence_number : Optional[str] 
-    chassis_number : Optional[str] 
-    construction_year : Optional[str] 
-    ascription_code : Optional[str] 
+    work_number: Optional[str]
+    work_name: Optional[str]
+    category: Optional[str]
+    group: Optional[str]
+    brand_name: Optional[str]
+    type_name: Optional[str]
+    licence_number: Optional[str]
+    chassis_number: Optional[str]
+    construction_year: Optional[str]
+    ascription_code: Optional[str]
 
 
 MachineResponseSchema = pydantic_model_creator(Machines)
 
 # Machine maintenance
 class MachineMaintenanceCreate(pydantic.BaseModel):
-    issue_description : Optional[str]
-    status : Optional[str]
-    machine_id : Optional[int]
+    issue_description: Optional[str]
+    status: Optional[str]
+    machine_id: Optional[int]
+
 
 class MachineMaintenanceUpdate(pydantic.BaseModel):
-    id : int
-    issue_description : Optional[str]
-    status : Optional[str]
-    machine_id : Optional[int]
-    priority : Optional[str]
-    
+    id: int
+    issue_description: Optional[str]
+    status: Optional[str]
+    machine_id: Optional[int]
+    priority: Optional[str]
+
 
 MachineMaintenanceResponseSchema = pydantic_model_creator(MaintenanceMachines)
+
+def datetime_converter(v:str) -> datetime.datetime:
+    print(v)
+    return datetime.datetime.strptime(v,'%d/%m/%Y %H:%M:%S')
+class TankTransactionCreate(pydantic.BaseModel):
+    vehicle: Optional[str]
+    driver: Optional[str]
+    transaction_type: Optional[str]
+    acquisition_mode: Optional[str]
+    transaction_status: Optional[str]
+    start_date_time: Optional[datetime.datetime]
+    transaction_number: Optional[int]
+    product: Optional[str]
+    quantity: Optional[float]
+    transaction_duration: Optional[str]
+    meter: Optional[str]
+    meter_type: Optional[str]
+    _transform_start_date_Time = validator('start_date_time', pre=True, allow_reuse=True)(datetime_converter)
+
+
+
+TankTransactionResponseSchema = pydantic_model_creator(TankTransactions)
+
+
