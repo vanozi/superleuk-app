@@ -30,6 +30,7 @@ import moment from "moment";
 export default {
     data: () => ({
         search: "",
+        title : "Tank transacties",
         headers: [
             //   text: string,
             //   value: string,
@@ -72,7 +73,7 @@ export default {
     }),
     methods: {
         formatDateTimeforTemplate(value) {
-            return moment(value).locale("nl").format("DD/MM/YYYY HH:mm:ss");
+            return moment(value).utcOffset(-120).locale("nl").format("DD/MM/YYYY HH:mm:ss");
         },
         ...mapActions({
             getAllTankTransactions: "tank_transactions/getAllTankTransactions"
@@ -84,6 +85,11 @@ export default {
             get_transaction_by_id: "tank_transactions/get_transaction_by_id",
             get_transactions_by_vehicle: "tank_transactions/get_transactions_by_vehicle"
         }),
+    },
+    head() {
+        return {
+            title: this.title,
+        };
     },
     mounted() {
         console.log('Hoi')

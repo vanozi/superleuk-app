@@ -130,6 +130,7 @@
 import { mapGetters, mapActions, store } from "vuex";
 export default {
     data: () => ({
+        title:"Machine onderhoud",
         // Filterdata
         werkNaamMachine: '',
         statusFilterWaarde: '',
@@ -323,7 +324,11 @@ export default {
             }
         },
     },
-
+  head() {
+    return {
+      title: this.title,
+    };
+  },
     mounted() {
         this.getAllMachineMaintenanceIssues();
     }
