@@ -73,7 +73,7 @@ export default {
     }),
     methods: {
         formatDateTimeforTemplate(value) {
-            return moment(value).utcOffset(-120).locale("nl").format("DD/MM/YYYY HH:mm:ss");
+            return moment(value).utcOffset(0).locale("nl").format("DD/MM/YYYY HH:mm:ss");
         },
         ...mapActions({
             getAllTankTransactions: "tank_transactions/getAllTankTransactions"
