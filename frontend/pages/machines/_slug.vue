@@ -61,7 +61,7 @@
       <v-tabs-items v-model="tab">
         <!-- Onderhoud -->
         <v-tab-item :key="onderhoud">
-          <v-data-table :search="searchOnderhoud" :headers="userIsAdmin ? headersOnderhoudAdmin : headersOnderhoud"
+          <v-data-table :search="searchOnderhoud" :headers="userIsAdmin() ? headersOnderhoudAdmin : headersOnderhoud"
             :sort-by="['created_at']" show-expand :sort-desc="[true]" :items="filteredMaintenanceIssues"
             class="elevation-1">
             <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
