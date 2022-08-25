@@ -1,4 +1,5 @@
 export default () => ({
-    machines: []
+    machines: [],
+    currentMachine : null
   })
   

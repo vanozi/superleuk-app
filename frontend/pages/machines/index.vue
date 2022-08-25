@@ -58,7 +58,11 @@
             </v-text-field>
           </v-toolbar>
         </template>
-
+  <template v-slot:[`item.work_number`]="{ item }">
+    <router-link :to="{ name: 'machines-slug', params: { slug: item.id } }">
+      {{ item.work_number }}
+    </router-link>
+  </template>
         <!-- Actions column only if user is admin -->
         <template v-if="userIsAdmin" v-slot:[`item.actions`]="{ item }">
           <v-icon color="warning" outlined class="mr-3" @click="editItem(item)">

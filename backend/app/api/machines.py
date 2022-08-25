@@ -2,13 +2,16 @@ import os
 from platform import machine
 from typing import List
 
-from app.models.pydantic import MachineCreateSchema, MachineResponseSchema
-from app.models.tortoise import Machines
+from app.models.pydantic import MachineCreateSchema, MachineResponseSchema, SingleMachineDataReponse
+from app.models.tortoise import Machines, TankTransactions
 from app.services.auth import RoleChecker, get_current_active_user
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
 from starlette.responses import JSONResponse
+
+from app.models.tortoise import MaintenanceMachines
+
 
 
 router = APIRouter()
@@ -78,17 +81,20 @@ async def get_machines(
     return await Machines.all()
 
 
-@router.get("/{id}", status_code=200, response_model=MachineResponseSchema)
+@router.get("/{id}", status_code=200, response_model=SingleMachineDataReponse)
 async def get_single_machines(
     id: int, current_active_user=Depends(get_current_active_user)
-) -> MachineResponseSchema:
+) -> SingleMachineDataReponse:
     machine = await Machines.get_or_none(id=id)
     if machine is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Machine met ID {id} niet gevonden al",
             )
-    return machine
+    maintenance_issues = await MaintenanceMachines.filter(machine=machine.id)
+    tank_transactions = await TankTransactions.filter(vehicle=machine.work_name)
+
+    return {"info" : machine, "maintenance_issues" : maintenance_issues, "tank_transactions": tank_transactions}
 
 
 @router.delete("/{id}", status_code=200, dependencies=[Depends(RoleChecker(["admin"]))])

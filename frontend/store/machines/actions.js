@@ -12,6 +12,19 @@ export default {
       }
     }
   },
+  async getMachineById({commit}, id) {
+    try {
+      let response = await this.$axios.get("/machines/" + id);
+      commit("SETCURRENTMACHINE", response.data)
+    } catch (err) {
+      if (err.response) {
+        this.$notifier.showMessage({
+          content: err.response.data.detail,
+          color: "error",
+        });
+      }
+    } 
+  },
   async addMachine({ commit }, payload) {
     try {
       let response = await this.$axios.post("/machines/", payload);

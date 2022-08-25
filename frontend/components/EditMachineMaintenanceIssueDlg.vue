@@ -108,6 +108,7 @@ export default {
             this.title = title;
             this.options = Object.assign(this.options, options);
             this.maintenance_issue = Object.assign(this.maintenance_issue, maintenance_issue)
+            console.log(maintenance_issue)
             this.edit = true;
             this.dialog = true;
         },

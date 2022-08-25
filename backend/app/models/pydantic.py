@@ -193,8 +193,48 @@ class MachineCreateSchema(pydantic.BaseModel):
     construction_year: Optional[str]
     ascription_code: Optional[str]
 
+class MachineBaseInfo(pydantic.BaseModel):
+    id : Optional[int]
+    work_number: Optional[str]
+    work_name: Optional[str]
+    category: Optional[str]
+    group: Optional[str]
+    brand_name: Optional[str]
+    type_name: Optional[str]
+    licence_number: Optional[str]
+    chassis_number: Optional[str]
+    construction_year: Optional[str]
+    ascription_code: Optional[str]
+
+class MainetenanceIssueInfo(pydantic.BaseModel):
+    id: int
+    created_at : Optional[datetime.datetime]
+    created_by : Optional[str]
+    issue_description: Optional[str]
+    status: Optional[str]
+    priority: Optional[str]
+
+class TankTransactionInfo(pydantic.BaseModel):
+    id: int
+    vehicle: Optional[str]
+    driver: Optional[str]
+    transaction_type: Optional[str]
+    acquisition_mode: Optional[str]
+    transaction_status: Optional[str]
+    start_date_time: Optional[datetime.datetime]
+    transaction_number: Optional[int]
+    product: Optional[str]
+    quantity: Optional[float]
+    transaction_duration: Optional[str]
+    meter: Optional[str]
+    meter_type: Optional[str]
 
 MachineResponseSchema = pydantic_model_creator(Machines)
+
+class SingleMachineDataReponse(pydantic.BaseModel):
+    info : MachineBaseInfo
+    maintenance_issues : Optional[List[MainetenanceIssueInfo]]
+    tank_transactions : Optional[List[TankTransactionInfo]]
 
 # Machine maintenance
 class MachineMaintenanceCreate(pydantic.BaseModel):

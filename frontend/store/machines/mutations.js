@@ -14,4 +14,7 @@ export default {
         var index = state.machines.findIndex(item => item.id == id);
         state.machines.splice(index, 1);
     },
+    SETCURRENTMACHINE(state, payload) {
+        state.currentMachine = payload
+    }
 }
