@@ -61,7 +61,7 @@
       <v-tabs-items v-model="tab">
         <!-- Onderhoud -->
         <v-tab-item :key="onderhoud">
-          <v-data-table :search="searchOnderhoud" :headers="userIsAdmin() ? headersOnderhoudAdmin : headersOnderhoud"
+          <v-data-table :search="searchOnderhoud" :headers="userIsAdmin ? headersOnderhoudAdmin : headersOnderhoud"
             :sort-by="['created_at']" show-expand :sort-desc="[true]" :items="filteredMaintenanceIssues"
             class="elevation-1">
             <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
@@ -324,13 +324,7 @@ export default {
     ],
   }),
   methods: {
-    userIsAdmin() {
-      if (this.$auth.user.roles.filter((e) => e.name === "admin").length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+
     formatDateTimeforTemplate(value) {
       return moment(value).utcOffset(0).locale("nl").format("DD/MM/YYYY HH:mm:ss");
     },
@@ -393,6 +387,13 @@ export default {
     }
   },
   computed: {
+        userIsAdmin() {
+      if (this.$auth.user.roles.filter((e) => e.name === "admin").length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
             // Filter de maintenance issues op basis van de filters in de columns
         filteredMaintenanceIssues() {
             this.conditions = [];
