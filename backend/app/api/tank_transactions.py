@@ -32,7 +32,7 @@ async def post_tank_transaction(
             transaction = await TankTransactions.create(
                 **incoming_tank_transaction.dict(),
             )
-        except:
+        except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
@@ -49,7 +49,7 @@ async def post_tank_transaction(
 async def get_tank_transactions(
     current_active_user=Depends(get_current_active_user),
 ) -> List[TankTransactionResponseSchema]:
-    return await TankTransactions.all().order_by("-start_date_time")
+    return await TankTransactions.all().exclude(vehicle="Klein materiaal").order_by("-start_date_time")
 
 
 @router.get("/{id}", status_code=200, response_model=TankTransactionResponseSchema)
