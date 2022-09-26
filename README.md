@@ -15,7 +15,8 @@
    Via een enironment file worden de omgevings variabelen in de containers geladen
    Maak hiervoor in de root directory een file aan genaamd .env.dev en voeg daar in volgende environment variables toe.
 
-    ```MAIL_USERNAME=supermooiapp
+    ```
+    MAIL_USERNAME=supermooiapp
     MAIL_PASSWORD=supermooi123$%
     MAIL_FROM=supermooiapp@gmail.com
     MAIL_PORT=587
@@ -32,10 +33,11 @@
     DATABASE_TEST_BACKEND_URL=postgres://postgres:postgres@database:5432/test_backend
 
     POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=supergeheim
+    POSTGRES_PASSWORD=postgres
 
     PGADMIN_DEFAULT_EMAIL=ad@min.com
-    PGADMIN_DEFAULT_PASSWORD=nogveelgeheimer```
+    PGADMIN_DEFAULT_PASSWORD=nogveelgeheimer
+    ```
 
 3. Nu is het tijd om de images te builden en de containers te starten, in de terminal type hiervoor de volgende commands, zorg dat je je op het niveau van de root directory bevind.  
     ```
