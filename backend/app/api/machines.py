@@ -40,7 +40,7 @@ async def post_machine(
         except:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
+                detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
             )
         return machine
     else:
@@ -65,7 +65,7 @@ async def update_machine(
     if machine is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Machine met werknummer {incoming_machine.work_number} niet gevonden al",
+                detail=f"Machine met werknummer {incoming_machine.work_number} niet gevonden",
             )
     else:
         await machine.update_from_dict(incoming_machine.dict()).save()
@@ -89,7 +89,7 @@ async def get_single_machines(
     if machine is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Machine met ID {id} niet gevonden al",
+                detail=f"Machine met ID {id} niet gevonden",
             )
     maintenance_issues = await MaintenanceMachines.filter(machine=machine.id)
     tank_transactions = await TankTransactions.filter(vehicle=machine.work_name)

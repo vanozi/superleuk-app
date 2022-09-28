@@ -35,7 +35,7 @@ async def register(
     if await AllowedUsers.get_or_none(email=register_info.email.lower()) is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dit email adres is niet bevoegd om zich te registeren",
+            detail="Dit e-mailadres is niet bevoegd om zich te registeren",
         )
     # Create user and send email if something goed wrong, delete the created user
     try:
@@ -74,7 +74,7 @@ async def register(
             await user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een overwachte fout opgetreden, neem contact op met de beheerder",
+            detail=f"Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
         )
 
     await user.fetch_related("roles")
@@ -153,7 +153,7 @@ async def resent_activation_code(
         await user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een overwachte fout opgetreden bij het versturen van de email",
+            detail=f"Er is een onverwachte fout opgetreden bij het versturen van de email",
         )
 
 
@@ -258,7 +258,7 @@ async def forgot_password(
     except:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een overwachte fout opgetreden bij het versturen van de email",
+            detail=f"Er is een onverwachte fout opgetreden bij het versturen van de email",
         )
 
 

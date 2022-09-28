@@ -27,7 +27,7 @@ async def post_general_maintenance(
     except:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
+            detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
         )
     return maintenace_issue
 
