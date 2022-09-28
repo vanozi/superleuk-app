@@ -42,7 +42,7 @@ async def post_machine_maintenance_issue(
         except:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
+                detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
             )
         return maintenace_issue
     else:
@@ -76,7 +76,7 @@ async def update_machine_maintenance_issue(
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
+                detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
             )
     else:
         raise HTTPException(

@@ -17,7 +17,7 @@ dependencies=[Depends(RoleChecker(['admin']))]
 async def create_role(role:RolesSchema):
     role = Roles.get_or_none(name=role.name)
     if role:
-        raise HTTPException(status_code=400, detail="Role allready exists")
+        raise HTTPException(status_code=400, detail="Role already exists")
     role = await Roles.create(name=role.name, description=role.description)
     return role
 

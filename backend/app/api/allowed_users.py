@@ -34,14 +34,14 @@ async def post_allowed_users(
     added_user: AllowedUsersCreateSchema,
 ) -> AllowedUsersResponseSchema:
     if await AllowedUsers.get_or_none(email=added_user.email.lower()) is not None:
-        return JSONResponse(status_code=400, content={"detail": "Er is al een uitnodiging gestuurd naar dit email adres"})
+        return JSONResponse(status_code=400, content={"detail": "Er is al een uitnodiging gestuurd naar dit e-mailadres"})
     elif await Users.get_or_none(email=added_user.email) is not None:
-        return JSONResponse(status_code=400, content={"detail": "Dit email adres is al geregistreerd"})
+        return JSONResponse(status_code=400, content={"detail": "Dit e-mailadres is al geregistreerd"})
     # Add allowed user to database
     try:
         allowed_user = await AllowedUsers.create(email=added_user.email.lower())
     except:
-        return JSONResponse(status_code=500, content={"detail","Er is een overwachte fout opgetreden bij het opslaan in de database"})
+        return JSONResponse(status_code=500, content={"detail","Er is een onverwachte fout opgetreden bij het opslaan in de database"})
     # Send email
     try:
         await Mailer.send_invitation_message(
@@ -57,7 +57,7 @@ async def post_allowed_users(
         await allowed_user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een overwachte fout opgetreden bij het versturen van de email",
+            detail=f"Er is een onverwachte fout opgetreden bij het versturen van de email",
         )
     return allowed_user
 
@@ -82,7 +82,7 @@ async def get_allowed_user(id: int):
     if allowed_user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dit email adres komt niet voor in de lijst met toegestane gebruikers",
+            detail="Dit e-mailadres komt niet voor in de lijst met toegestane gebruikers",
         )
     else:
         return allowed_user
@@ -99,7 +99,7 @@ async def update_allowed_user(
     if allowed_user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dit email adres komt niet voor in de lijst met toegestane gebruikers",
+            detail="Dit e-mailadres komt niet voor in de lijst met toegestane gebruikers",
         )
     else:
         allowed_user.email = user_to_update.email
@@ -131,7 +131,7 @@ async def delete_allowed_user(id: int):
     if allowed_user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dit email adres komt niet voor in de lijst met toegestane gebruikers",
+            detail="Dit e-mailadres komt niet voor in de lijst met toegestane gebruikers",
         )
     else:
         await allowed_user.delete()

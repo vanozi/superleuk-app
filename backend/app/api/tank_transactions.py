@@ -35,7 +35,7 @@ async def post_tank_transaction(
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Er is een overwachte fout opgetreden, neem contact op met de beheerder",
+                detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
             )
         return transaction
     else:
