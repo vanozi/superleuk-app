@@ -73,7 +73,6 @@ async def update_machine(
         return machine
 
 
-
 @router.get("/", status_code=200, response_model=List[MachineResponseSchema])
 async def get_machines(
     current_active_user=Depends(get_current_active_user),

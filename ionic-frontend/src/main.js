@@ -3,6 +3,8 @@ import App from './App.vue'
 import BaseLayout from './components/base/BaseLayout.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 import { IonicVue } from '@ionic/vue';
 
@@ -26,14 +28,21 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/core.css';
 
+// Imports for 1st time app start
+import { Device } from '@capacitor/device'
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(store);
+  .use(store)
+  .use(VueAxios, axios);
   
 app.component('base-layout', BaseLayout)
 
-router.isReady().then(() => {
+router.isReady().then(async () => {
+  const info = await Device.getInfo();
+  const id = await Device.getId();
+  const deviceId = info.platform + info.model + id.uuid;
+  console.log(deviceId)
   app.mount('#app');
 });
