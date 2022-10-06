@@ -6,7 +6,7 @@
           <ion-list>
             <ion-item>
               <ion-label position="floating" type="email">E-Mail</ion-label>
-              <ion-input type="text" required v-model="username"></ion-input>
+              <ion-input type="text" required v-model="email"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Wachtwoord</ion-label>
@@ -34,13 +34,15 @@
 </template>
   
 <script>
+import { mapGetters } from 'vuex'
 import {
   IonItem,
   IonButton,
   IonLabel,
   IonInput,
   IonList,
-  IonRow
+  IonRow,
+  IonCard
 } from "@ionic/vue";
 export default {
   emits: ["attempt-login", "change-mode"],
@@ -50,7 +52,8 @@ export default {
     IonInput,
     IonList,
     IonButton,
-    IonRow
+    IonRow,
+    IonCard
   },
   data() {
     return {
@@ -64,6 +67,7 @@ export default {
       const loginData = {
         email: this.email,
         password: this.password,
+        deviceId : this.logged_in_device_id
       };
       this.$emit("attempt-login", loginData);
     },
@@ -71,6 +75,11 @@ export default {
       this.$emit("change-mode", mode);
     }
   },
+  computed: {
+        ...mapGetters({
+            logged_in_device_id : 'auth/loggedIndeviceId'
+        })
+    },
 };
 </script>
   

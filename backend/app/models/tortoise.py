@@ -1,4 +1,5 @@
 from io import BufferedRandom
+import string
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
@@ -157,3 +158,18 @@ class TankTransactions(models.Model):
 
     class Meta:
         table = "tank_transactions"
+
+
+class LoginStatusDevices(models.Model):
+    id = fields.IntField(pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    last_modified_at = fields.DatetimeField(auto_now=True)
+    device_id = fields.CharField(null=True, max_length=500)
+    logged_in = fields.BooleanField(null=False, default=False)
+    last_provided_access_token = fields.CharField(null=True,max_length=500)
+    # Relations
+    user = fields.ForeignKeyField('models.Users', related_name='device_login_statusses')
+
+
+    class Meta:
+        table = "login_status_device"

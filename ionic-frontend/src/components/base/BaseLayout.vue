@@ -15,6 +15,9 @@
         <ion-title> {{ pageTitle }} </ion-title>
       </ion-toolbar>
     </ion-header>
+    <ion-content>
+      <slot/>
+    </ion-content>
   </ion-page>
 </template>
 
@@ -27,7 +30,8 @@ import {
   IonButtons,
   IonPage,
   IonMenuToggle,
-  IonMenuButton
+  IonMenuButton,
+  IonContent
 
 } from "@ionic/vue";
 export default {
@@ -40,7 +44,8 @@ export default {
     IonButtons,
     IonPage,
     IonMenuToggle,
-    IonMenuButton
+    IonMenuButton,
+    IonContent
 
   },
 };

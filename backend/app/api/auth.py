@@ -188,6 +188,7 @@ async def get_login_token(
     )
 
 
+
 @router.post("/refresh")
 async def refresh(token: TokenSchema, settings: Settings = Depends(get_settings)):
     invalid_token_error = HTTPException(status_code=400, detail="Invalid token")

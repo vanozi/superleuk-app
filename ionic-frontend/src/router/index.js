@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
-import MemoriesPage from '../pages/MemoriesPage.vue'
-// import UserAuth from '../pages/auth/UserAuth.vue'
 import HomePage from '../pages/HomePage.vue'
-import HomePage2 from '../pages/HomePage2.vue'
+import UserAuthPage from '../pages/auth/UserAuthPage.vue'
 
 const routes = [
   {
@@ -14,35 +12,18 @@ const routes = [
     component: HomePage
   },
   {
-    path: '/home2',
-    component: HomePage2
+    path: '/auth',
+    component : UserAuthPage
   },
-  {
-    path: '/memories',
-    component: MemoriesPage
-  },
-  // auth routes
-  // {
-  //   path: '/auth',
-  //   component: UserAuth
-  // },
-
-  // {
-  //   path: '/',
-  //   redirect: '/auth'
-  // },
+  // Memories example pages
   // {
   //   path: '/memories',
-  //   component:MemoriesPage
+  //   component: MemoriesPage
   // },
   // {
   //   path: '/memories/:id',
   //   component : () => import('../pages/MemoryDetailsPage.vue')
   // },
-  // {
-  //   path: '/memories/add',
-  //   component : () => import('../pages/AddMemoryPage.vue')
-  // }
 ]
 
 const router = createRouter({

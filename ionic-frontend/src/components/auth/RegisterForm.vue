@@ -1,6 +1,6 @@
 <template>
-
-    <ion-card>
+    <ion-row class="ion-justify-content-center">
+      <ion-card style="width:800px" >
         <form action="" class="ion-padding" @submit.prevent="submitForm">
             <ion-list>
                 <ion-item>
@@ -23,6 +23,7 @@
                 inloggen ?</ion-button>
         </ion-row>
     </ion-card>
+    </ion-row>
 </template>
     
 <script>
@@ -31,7 +32,9 @@ import {
     IonLabel,
     IonInput,
     IonButton,
-    IonList
+    IonList,
+    IonRow,
+    IonCard
 } from "@ionic/vue";
 export default {
     emits: ["attempt-register", "change-mode"],
@@ -41,6 +44,8 @@ export default {
         IonLabel,
         IonInput,
         IonButton,
+        IonRow,
+        IonCard
     },
     data() {
         return {

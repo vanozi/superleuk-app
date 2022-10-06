@@ -1,5 +1,3 @@
-import os
-from platform import machine
 from typing import List
 
 from app.models.pydantic import (
@@ -7,7 +5,7 @@ from app.models.pydantic import (
     MachineMaintenanceResponseSchema,
     MachineMaintenanceUpdate,
 )
-from app.services.auth import RoleChecker, get_current_active_user
+from app.services.auth import get_current_active_user
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
