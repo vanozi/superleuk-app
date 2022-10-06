@@ -36,11 +36,13 @@ class CreateUser(pydantic.BaseModel):
     email: EmailStr
     password: pydantic.SecretStr
 
+class LogoutRequest(pydantic.BaseModel):
+    device_id : str
 
 User_Pydantic = pydantic_model_creator(
     Users,
     name="User",
-    exclude=("hashed_password", "confirmation", "working_hours"),
+    exclude=("hashed_password", "confirmation", "working_hours", "device_login_statusses"),
 )
 
 # Roles
@@ -274,5 +276,4 @@ class TankTransactionCreate(pydantic.BaseModel):
 
 
 TankTransactionResponseSchema = pydantic_model_creator(TankTransactions)
-
 

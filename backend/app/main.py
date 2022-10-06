@@ -1,5 +1,4 @@
 import logging
-import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import (
     allowed_users,
     auth,
-    general_maintenance,
     roles,
     user_roles,
     users,
@@ -15,7 +13,8 @@ from app.api import (
     bouwplan,
     machines,
     machine_onderhoud,
-    tank_transactions
+    tank_transactions,
+    ionic
 )
 from app.db import init_db
 
@@ -50,14 +49,10 @@ def create_application() -> FastAPI:
         prefix="/api/tank_transactions",
         tags=["tank_transactions"],
     )
-    # application.include_router(
-    #     general_maintenance.router,
-    #     prefix="/api/general_maintenance",
-    #     tags=["general_maintenance"],
-    # )
     application.include_router(
         working_hours.router, prefix="/api/working_hours", tags=["working_hours"]
     )
+    application.include_router(ionic.router, prefix="/api/ionic", tags=["ionic-test"])
 
     application.add_middleware(
         CORSMiddleware,
