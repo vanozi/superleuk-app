@@ -21,16 +21,12 @@ export default defineComponent({
     IonRouterOutlet,
     IonSplitPane,
   },
+  data() {
+        return {
+        }
+    },
   methods: {
-    // async checkAccessToken() {
-    //   const { value } = await Preferences.get({ key: 'accessToken' });
-    //   if(value){
-    //     return true
-    //   }
-    //   else {
-    //     return false
-    //   }
-    // }
+
   },
   computed: {
         ...mapGetters({
@@ -38,6 +34,8 @@ export default defineComponent({
             logged_in_user : 'auth/loggedInUser'
         })
     },
+
+
 });
 </script>
 

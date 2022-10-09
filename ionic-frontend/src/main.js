@@ -26,6 +26,11 @@ import '@ionic/vue/css/display.css';
 import { addIcons } from 'ionicons';
 import { homeOutline, timeOutline, logOutOutline } from 'ionicons/icons';
 
+
+// vue date-picker
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 addIcons({
   homeoutline: homeOutline,
   timeoutline : timeOutline,
@@ -49,6 +54,7 @@ const app = createApp(App)
   .use(store);
 
 app.component('base-layout', BaseLayout)
+app.component('date-picker', Datepicker);
 
 // methodes voor access tokens 
 const setAccessToken = async (accessToken) => {

@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import HomePage from '../pages/HomePage.vue'
 import UserAuthPage from '../pages/auth/UserAuthPage.vue'
+import WorkingHours from '../components/working-hours/WorkingHours.vue'
+import WeekViewComponent from '../components/working-hours/WeekViewComponent.vue'
 
 const routes = [
   {
@@ -15,15 +17,26 @@ const routes = [
     path: '/auth',
     component : UserAuthPage
   },
-  // Memories example pages
-  // {
-  //   path: '/memories',
-  //   component: MemoriesPage
-  // },
-  // {
-  //   path: '/memories/:id',
-  //   component : () => import('../pages/MemoryDetailsPage.vue')
-  // },
+  {
+    path: '/uren',
+    // You could also have named views at tho top
+    component: WorkingHours,
+    children: [
+      {
+        path: 'invoeren',
+        component: WeekViewComponent,
+      },
+      // {
+      //   path: 'profile',
+      //   components: {
+      //     default: UserProfile,
+      //     helper: UserProfilePreview,
+      //   },
+      // },
+    ],
+  },
+
+
 ]
 
 const router = createRouter({

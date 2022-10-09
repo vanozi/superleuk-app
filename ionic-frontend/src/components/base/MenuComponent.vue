@@ -15,10 +15,16 @@
                     </ion-label>
 
                 </ion-item>
-                <ion-item button>
+                <ion-item button @click="$router.push('/uren')">
                     <ion-icon icon="timeoutline"></ion-icon>
                     <ion-label class="ion-margin-start">
                         Uren
+                    </ion-label>
+                </ion-item>
+                <ion-item button @click="$router.push('/uren/invoeren')">
+                    <ion-icon icon="timeoutline"></ion-icon>
+                    <ion-label class="ion-margin-start">
+                        Uren Invoeren
                     </ion-label>
                 </ion-item>
             </ion-list>
@@ -42,14 +48,14 @@
 <script>
 import { mapGetters } from 'vuex';
 import { Preferences } from '@capacitor/preferences';
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon } from '@ionic/vue';
+import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon, IonFooter } from '@ionic/vue';
 import api from '../../api';
 export default {
     data: () => ({
     }),
 
     components: {
-        IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon
+        IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon, IonFooter
     },
     methods: {
         async removeAccessToken() {
@@ -69,7 +75,8 @@ export default {
                 this.$store.commit('auth/DELETE_ACCESS_TOKEN');
                 this.$store.commit('auth/DELETE_LOGGED_IN_USER');
                 this.$store.commit('auth/DELETE_LOGGED_IN_DEVICE_ID');
-                this.$router.replace('/auth')
+                this.$router.push('/auth')
+                window.location.reload()
             }).catch((e) => {
                 console.log(e)
             })

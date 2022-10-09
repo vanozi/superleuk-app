@@ -1,5 +1,5 @@
 <template>
-    <base-layout :page-Title=mode>
+    <base-layout :page-Title=mode backButtonHidden="true">
         <login-form v-if="mode==='Login'"  @change-mode="changeMode" @attempt-login="submitLogin($event)"></login-form>
         <register-form v-else-if="mode==='Registreer'" @change-mode="changeMode"></register-form>
     </base-layout>
@@ -8,7 +8,7 @@
 <script>
 import LoginForm from "@/components/auth/LoginForm.vue";
 import RegisterForm from "@/components/auth/RegisterForm.vue";
-import { mapActions, mapGetters } from "vuex"; 
+import { mapActions } from "vuex"; 
 import router from "../../router";
 
 export default {
@@ -30,9 +30,8 @@ export default {
             let response = await this.performLogin(loginData)
             console.log(response)
             if(response.status == 200) {
-                await this.getUserInfo(this.accessToken)
+                await this.getUserInfo(response.data['access_token'])
                 router.replace("/home")
-                router.go()
             }
         },
         ...mapActions({
@@ -40,11 +39,6 @@ export default {
             getUserInfo : 'auth/getUserInfo'
         })
     },
-    computed : {
-        ...mapGetters({
-            accessToken : 'auth/accessToken'
-        })
-    }
 };
 </script>
   

@@ -5,12 +5,12 @@ export default {
     state: {
         accessToken: null,
         loggedInUser: null,
-        deviceId:null
+        loggedIndeviceId:null
     },
     getters: {
         accessToken: state => state.accessToken,
         loggedInUser: state => state.loggedInUser,
-        loggedIndeviceId: state => state.deviceId
+        loggedIndeviceId: state => state.loggedIndeviceId
     },
     actions: {
         // Login
@@ -48,7 +48,7 @@ export default {
             state.loggedInUser = user;
         },
         SET_LOGGED_IN_DEVICE_ID(state, deviceId) {
-            state.deviceId = deviceId;
+            state.loggedIndeviceId = deviceId;
         },
         DELETE_ACCESS_TOKEN(state) {
             state.accessToken = null;
