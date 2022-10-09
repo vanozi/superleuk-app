@@ -4,9 +4,12 @@
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-toggle>
-            <ion-menu-button auto-hide="false" menu="main-menu"></ion-menu-button>
+            <ion-menu-button  auto-hide="false" menu="main-menu"></ion-menu-button>
           </ion-menu-toggle>
-          <ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
+          <ion-back-button 
+          
+          
+          :default-href="pageDefaultBackLink"></ion-back-button>
         </ion-buttons>
 
         <ion-buttons slot="end">
@@ -35,7 +38,7 @@ import {
 
 } from "@ionic/vue";
 export default {
-  props: ["pageTitle", "pageDefaultBackLink"],
+  props: ["pageTitle", "pageDefaultBackLink", "backButtonHidden"],
   components: {
     IonHeader,
     IonTitle,
