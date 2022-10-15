@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import HomePage from '../pages/HomePage.vue'
 import UserAuthPage from '../pages/auth/UserAuthPage.vue'
-import WorkingHours from '../components/working-hours/WorkingHours.vue'
-import WeekViewComponent from '../components/working-hours/WeekViewComponent.vue'
+import WorkingHoursIndex from '../components/working-hours/WorkingHoursIndex.vue'
+import WorkingHoursHome from '../components/working-hours/WorkingHoursHome.vue'
+// import WeekViewComponent from '../components/working-hours/WeekViewComponent.vue'
 
 const routes = [
   {
@@ -20,11 +21,12 @@ const routes = [
   {
     path: '/uren',
     // You could also have named views at tho top
-    component: WorkingHours,
+    component: WorkingHoursIndex,
     children: [
       {
-        path: 'invoeren',
-        component: WeekViewComponent,
+        path: '',
+        name : 'hourshome',
+        component: WorkingHoursHome,
       },
       // {
       //   path: 'profile',

@@ -19,7 +19,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <slot/>
+      <slot name="default-view-body"></slot>
     </ion-content>
   </ion-page>
 </template>

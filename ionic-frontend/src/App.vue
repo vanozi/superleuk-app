@@ -1,14 +1,14 @@
 <template>
   <IonApp>
-    <ion-split-pane content-id="main-content" when="lg">
+    <ion-split-pane when="lg">
       <Menu v-if="logged_in_user!=null" />
-      <ion-router-outlet id="main-content"></ion-router-outlet>
+      <router-view></router-view>
     </ion-split-pane>
   </IonApp>
 </template>
 
 <script>
-import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/vue';
+import { IonApp, IonSplitPane } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import Menu from './components/base/MenuComponent.vue'
 import { mapGetters } from 'vuex'
@@ -18,7 +18,6 @@ export default defineComponent({
   components: {
     Menu,
     IonApp,
-    IonRouterOutlet,
     IonSplitPane,
   },
   data() {
