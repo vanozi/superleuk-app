@@ -1,9 +1,6 @@
 import datetime
-from tortoise.functions import Min
 
-from pydantic.typing import NoneType, resolve_annotations
 from isoweek import Week
-import os
 from typing import List
 
 from app.helpers.date_functions import daterange
@@ -11,16 +8,13 @@ from app.models.pydantic import (WeeksNotSubmittedAllUsersResponseSchema,
                                  WorkingHoursCreateSchema,
                                  WorkingHoursResponseSchema,
                                  WeeksNotSubmittedSingleUsersResponseSchema,
-                                 WorkingHoursSubmitSchema,
-                                 WorkingHoursUpdateSchema,
-                                 WorkingHoursResponseSchemaComplete)
+                                 WorkingHoursUpdateSchema)
 from app.models.tortoise import Users, WorkingHours
 from app.services.auth import RoleChecker, get_current_active_user
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
 from starlette.responses import JSONResponse
-from starlette.routing import request_response
 
 router = APIRouter()
 
@@ -199,7 +193,8 @@ async def get_working_hours_between_dates(from_date:datetime.date, to_date:datet
 ):
     user = await Users.get(id=current_user.id)
     await user.fetch_related('working_hours')
-    return await user.working_hours
+    working_hours = user.working_hours
+    return [x for x in working_hours if (x.date >= from_date and x.date <= to_date)]
 
 # admin routes
 # Get weeks not submitted for all users in timerange
