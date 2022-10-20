@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '../store'
 
 const baseURL = process.env.VUE_APP_BASE_URL_API;
 
@@ -10,12 +11,18 @@ const api = axios.create({
   },
 });
 
-// api.interceptors.request.use(async (config) => {
-//   const token = await Storage.get({ key: 'token' });
-//   config.headers.Authorization = `Bearer ${token.value || null}`;
-
-//   return config;
-// });
+// Add a request interceptor
+api.interceptors.request.use(function (config) {
+  // Do something before request is sent
+  if (store.state.auth.accessToken != null) {
+    config.headers.Authorization = `Bearer ${store.state.auth.accessToken}`;
+  }
+  return config;
+}, function (error) {
+  // Do something with request error
+  console.log(error)
+  return Promise.reject(error);
+});
 
 // api.interceptors.response.use((response) => response,
 //   (pError) => {
@@ -26,5 +33,7 @@ const api = axios.create({
 
 //     return Promise.reject(pError);
 //   });
+
+
 
 export default api;

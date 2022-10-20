@@ -12,17 +12,13 @@
             :rules="rules"
             :show-label="formShowLabel"
           >
-            <n-form-item
-              path="loginInfo.email"
-            >
+            <n-form-item path="loginInfo.email">
               <n-input
                 v-model:value="formValue.loginInfo.email"
                 placeholder="E-mail adres"
               />
             </n-form-item>
-            <n-form-item
-              path="loginInfo.password"
-            >
+            <n-form-item path="loginInfo.password">
               <n-input
                 v-model:value="formValue.loginInfo.password"
                 placeholder="Wachtwoord"
@@ -32,7 +28,9 @@
               />
             </n-form-item>
             <n-form-item>
-              <n-button @click="submitLogin(formValue.loginInfo)"> Login </n-button>
+              <n-button @click="submitLogin(formValue.loginInfo)">
+                Login
+              </n-button>
             </n-form-item>
           </n-form>
         </n-space>
@@ -52,20 +50,20 @@ import { defineComponent, ref, onBeforeMount } from "vue";
 import { useMessage } from "naive-ui";
 import { GlassesOutline, Glasses } from "@vicons/ionicons5";
 import { Device } from "@capacitor/device";
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router'
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const store = useStore()
-    const router = useRouter()
+    const store = useStore();
+    const router = useRouter();
     const formValue = ref({
-        loginInfo: {
-          email: "",
-          password: "",
-          deviceId: "",
-        },
-      });
+      loginInfo: {
+        email: "",
+        password: "",
+        deviceId: "",
+      },
+    });
     const formShowLabel = ref(false);
     const formRef = ref(null);
     const message = useMessage();
@@ -73,8 +71,8 @@ export default defineComponent({
     // lifecycle hooks
     onBeforeMount(async function () {
       // de store legen voor als er nog auth info in zit
-      store.commit('auth/DELETE_ACCESS_TOKEN')
-      store.commit('auth/DELETE_LOGGED_IN_USER')
+      store.commit("auth/DELETE_ACCESS_TOKEN");
+      store.commit("auth/DELETE_LOGGED_IN_USER");
       // device id ophalen en alvast in de form opslaan
       const info = await Device.getInfo();
       const id = await Device.getId();
@@ -84,22 +82,23 @@ export default defineComponent({
     });
 
     //  store action
-    
 
     return {
       formRef,
       formShowLabel,
       size: ref("medium"),
       formValue,
-      async submitLogin(loginData){
-        console.log(loginData.email)
-            let response = await store.dispatch('auth/performLogin', loginData)
-            console.log(response)
-            if(response.status == 200) {
-                await store.dispatch('auth/getUserInfo', response.data['access_token'])
-                router.push("/home")
-            }
-        },
+      async submitLogin(loginData) {
+        let response = await store.dispatch("auth/performLogin", loginData);
+        console.log(response);
+        if (response.status == 200) {
+          await store.dispatch(
+            "auth/getUserInfo",
+            response.data["access_token"]
+          );
+          router.push("/home");
+        }
+      },
       rules: {
         loginInfo: {
           email: {

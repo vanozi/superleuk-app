@@ -1,11 +1,11 @@
 <template>
   <ion-app>
-    <ion-split-pane contentId="main" when="lg">
+    <ion-split-pane content-id="main">
       <!--  the side menu  -->
-      <menu-component />
+      <menu-component content-id="main" />
       <!-- the main content -->
       <n-message-provider placement="bottom">
-        <router-view id="main" />
+        <ion-router-outlet id="main"/>
       </n-message-provider>
 
     </ion-split-pane>
@@ -14,10 +14,25 @@
 </template>
 
 <script setup>
-import { IonApp, IonSplitPane } from '@ionic/vue';
+import { IonApp, IonSplitPane, IonRouterOutlet } from '@ionic/vue';
 import MenuComponent from './components/layouts/MenuComponent.vue'
+import {useRouter} from 'vue-router'
+import {watch} from 'vue';
+import { ref } from 'vue';
+const componentKey = ref(0);
 
+const forceRerender = () => {
+  componentKey.value += 1;
+};
 
+const router=useRouter();
+
+console.log(router.currentRoute)
+
+watch([router.currentRoute], function (newValue, oldValue) {
+    console.log(newValue, oldValue)
+    forceRerender();
+});
 
 </script>
 

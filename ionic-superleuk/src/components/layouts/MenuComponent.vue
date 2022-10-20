@@ -1,21 +1,21 @@
 <template>
-    <ion-menu contentId="main" id="main-menu" v-if="store.state.auth.user != null">
-        <ion-header>
+    <ion-menu id="main-menu">
+        <ion-header >
             <ion-toolbar>
                 <ion-title>Superleuk</ion-title>
             </ion-toolbar>
         </ion-header>
-        <ion-content class="ion-padding">
-            <ion-list>
+        <ion-content class="ion-padding" v-if="store.state.auth.accessToken!=null">
+            <ion-list >
                 <ion-item-group>
                     <ion-item-divider>
                         <ion-label>Uren</ion-label>
                     </ion-item-divider>
-                    <ion-item button @click="closeMenuOnSmallScreens(); $router.push('/uren/invoeren')">
+                    <ion-item button @click="closeMenuOnSmallScreens();$router.push('/uren/invoeren')">
                         <ion-icon slot="start" icon="penciloutline"></ion-icon>
                         <ion-label>Invoeren</ion-label>
                     </ion-item>
-                    <ion-item button @click="closeMenuOnSmallScreens();$router.push('/uren/overzicht')" lines="none">
+                    <ion-item button @click="closeMenuOnSmallScreens();$router.push('/uren')" lines="none">
                         <ion-icon slot="start" icon="reorderthreeoutline"></ion-icon>
                         <ion-label>Overzicht</ion-label>
                     </ion-item>

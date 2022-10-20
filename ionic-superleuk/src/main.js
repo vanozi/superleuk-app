@@ -63,11 +63,11 @@ import {
   // create naive ui
   create,
   // component
-  NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace
+  NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace, NGrid, NGridItem, NH3, NH4, NButtonGroup
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace]
+  components: [NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace, NGrid, NGridItem, NH3, NH4, NButtonGroup]
 })
 const app = createApp(App)
   .use(IonicVue)
