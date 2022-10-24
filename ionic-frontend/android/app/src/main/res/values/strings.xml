@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">ionic-superleuk</string>
-    <string name="title_activity_main">ionic-superleuk</string>
-    <string name="package_name">com.gebroedersvroege.superleuk</string>
-    <string name="custom_url_scheme">com.gebroedersvroege.superleuk</string>
-</resources>
