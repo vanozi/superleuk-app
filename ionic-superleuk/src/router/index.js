@@ -9,6 +9,7 @@ import HomeView from '../views/HomeView'
 import UrenInvoerOptions from '../views/Uren/UrenInvoerOptions.vue'
 import UrenOverzicht from '../views/Uren/UrenOverzicht.vue'
 import LoginView from '../views/Auth/LoginView.vue'
+import TankenView from '../views/Machines/TankenView.vue'
 import store from '../store'
 
 // middleware
@@ -43,7 +44,9 @@ const routes = [
   //   ],
   // },
   { path: '/uren', component:  UrenOverzicht,  meta: { requiresAuth: true } },
-  { path: '/uren/invoeren', component: UrenInvoerOptions, meta: { requiresAuth: true } }
+  { path: '/uren/invoeren', component: UrenInvoerOptions, meta: { requiresAuth: true } },
+  { path: '/uren', component:  UrenOverzicht,  meta: { requiresAuth: true } },
+  { path: '/machines/tanken', component: TankenView, meta: { requiresAuth: true } }
 ]
 
 

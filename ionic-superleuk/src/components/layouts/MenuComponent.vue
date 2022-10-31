@@ -7,7 +7,7 @@
         </ion-header>
         <ion-content class="ion-padding" v-if="store.state.auth.accessToken!=null">
             <ion-list >
-                <ion-item-group>
+                <!-- <ion-item-group>
                     <ion-item-divider>
                         <ion-label>Uren</ion-label>
                     </ion-item-divider>
@@ -19,7 +19,18 @@
                         <ion-icon slot="start" icon="reorderthreeoutline"></ion-icon>
                         <ion-label>Overzicht</ion-label>
                     </ion-item>
+                </ion-item-group> -->
+                <ion-item-group>
+                    <ion-item-divider>
+                        <!-- <ion-icon slot="start" icon="personCircleOutline"></ion-icon> -->
+                        <ion-label>Machines</ion-label>
+                    </ion-item-divider>
+                    <ion-item button lines="none" @click="closeMenuOnSmallScreens(); $router.push('/machines/tanken')">
+                        <ion-icon slot="start" icon="colorfilloutline"></ion-icon>
+                        <ion-label>Tankstation</ion-label>
+                    </ion-item>
                 </ion-item-group>
+
 
                 <ion-item-group>
                     <ion-item-divider>
@@ -71,7 +82,6 @@ export default defineComponent({
                 return
             },
             async performLogout() {
-                console.log(store.state.auth.deviceId)
                 let response = await store.dispatch('auth/logOut', store.state.auth.accessToken)
                 if (response.status == 200) {
                     router.push("/login")

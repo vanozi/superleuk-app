@@ -25,7 +25,7 @@ import '@ionic/vue/css/display.css';
 
 // icons
 import { addIcons } from 'ionicons';
-import { add, homeOutline, timeOutline, trashOutline, logOutOutline, createOutline,reorderThreeOutline, pencilOutline, personCircleOutline, chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
+import { add, colorFillOutline, homeOutline, timeOutline, trashOutline, logOutOutline, createOutline,reorderThreeOutline, pencilOutline, personCircleOutline, chevronBackOutline, chevronForwardOutline, hammerOutline } from 'ionicons/icons';
 
 addIcons({
   homeoutline: homeOutline,
@@ -38,7 +38,9 @@ addIcons({
   chevronforwardoutline:chevronForwardOutline,
   add:add,
   createoutline:createOutline,
-  trashoutline:trashOutline
+  trashoutline:trashOutline,
+  hammeroutline:hammerOutline,
+  colorfilloutline:colorFillOutline
 });
 
 // Vue datepicker
@@ -63,11 +65,11 @@ import {
   // create naive ui
   create,
   // component
-  NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace, NGrid, NGridItem, NH3, NH4, NButtonGroup
+  NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace, NGrid, NGridItem, NH3, NH4, NButtonGroup, NConfigProvider
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace, NGrid, NGridItem, NH3, NH4, NButtonGroup]
+  components: [NButton, NDataTable, NIcon, NTag, NForm, NFormItem, NInput, NMessageProvider, NSpace, NGrid, NGridItem, NH3, NH4, NButtonGroup, NConfigProvider]
 })
 const app = createApp(App)
   .use(IonicVue)

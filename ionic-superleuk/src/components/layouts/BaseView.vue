@@ -11,6 +11,7 @@
 					<ion-title>
 						<slot name="default-view-title"></slot>
 					</ion-title>
+
 				</ion-toolbar>
 			</ion-header>
 			<ion-content>
