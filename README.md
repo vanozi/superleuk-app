@@ -66,4 +66,4 @@ Open hiervoor een shell in de database container en voer het volgende command ui
 7. Voor het gemak van ontwikkelen wordt de frontend niet vanuit een docker container gestart maar gewoon lokaal gedraaid. Navigeer in de vscode terminal daarvoor naar de frontend folder. Allereerst dien je daar de npm packages te installeren middel `npm install` , vervolgens kun je development server starten met `npm run dev` en komt de applicatie beschikbaar op waarschijnlijk `localhost:3000` en een andere port als op 3000 al een process draait.
 
 8. De nieuwe frontend is gebaseerd op een vue template wat ubergaaf is omdat daar al heel veel toffe packages bij in zitten. De github pagina van dit template is te vinden op [Deze github pagina](https://github.com/antfu/vitesse).  
-Dit project maakt gebruikt van [pnpm](https://pnpm.io/) ipv npm om de boel te installeren en starten. dus installeer de node modules met `pnpm install` en enjoy. 
+Dit project maakt gebruikt van [pnpm](https://pnpm.io/) ipv npm om de boel te installeren en starten. dus installeer de node modules met `pnpm install`, met pnpm dev start je de ontwikkel server. 
