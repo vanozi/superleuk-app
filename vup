@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# vup up -d
+# vup down
+#
+docker-compose -f docker-compose-dev.yml -f docker-compose-dev.override.yml --env-file .env.dev $1 $2
