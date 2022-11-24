@@ -3,7 +3,7 @@
     <ConfirmDlg ref="confirm" />
     <!-- Tabel met de machines en opties om er 1 toe te voegen -->
     <section>
-      <v-data-table :search="search" :headers="userIsAdmin ? headersAdmin : headers" :items="machines" 
+      <v-data-table :search="search" :headers="userIsAdmin ? headersAdmin : headers" :items="machines"
         class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat>
@@ -217,11 +217,6 @@ export default {
         sortable: true
       },
 
-      {
-        text: "Tenaamstellingscode",
-        value: "ascription_code",
-        sortable: true
-      },
     ],
   }),
   head() {

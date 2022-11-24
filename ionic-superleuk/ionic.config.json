@@ -1,7 +1,0 @@
-{
-  "name": "ionic-superleuk",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "vue"
-}
