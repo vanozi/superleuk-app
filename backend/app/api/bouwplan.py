@@ -17,7 +17,7 @@ router = APIRouter()
 # TODO: Create test
 @router.get(
     "/",
-    dependencies=[Depends(RoleChecker(["admin", "werknemer"]))],
+    dependencies=[Depends(RoleChecker(["admin", "werknemer", "monteur"]))],
     response_model=List[BouwPlanDataModelOut],
 )
 async def get_bouwplan(year: int):

@@ -11,7 +11,7 @@ from fastapi.param_functions import Depends
 from starlette import status
 from starlette.responses import JSONResponse
 
-from app.models.tortoise import MaintenanceMachines, Machines
+from app.models.tortoise import MaintenanceMachines, Machines, Users
 
 
 router = APIRouter()
@@ -37,12 +37,16 @@ async def post_machine_maintenance_issue(
                 last_modified_by=current_active_user.email,
                 machine=machine
             )
+            user = await Users.get_or_none(email=maintenace_issue.created_by)
+            await user.fetch_related("roles")
+            maintenace_issue.user = user
+            return maintenace_issue
         except:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
             )
-        return maintenace_issue
+
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -70,6 +74,9 @@ async def update_machine_maintenance_issue(
             maintenance_issue.last_modified_by = current_active_user.email
             await maintenance_issue.save()
             await maintenance_issue.fetch_related('machine')
+            user = await Users.get_or_none(email=maintenance_issue.created_by)
+            await user.fetch_related("roles")
+            maintenance_issue.user = user
             return maintenance_issue
         except Exception as e:
             raise HTTPException(
@@ -87,7 +94,13 @@ async def update_machine_maintenance_issue(
 async def get_maintenance_issues(
     current_active_user=Depends(get_current_active_user),
 ) -> List[MachineMaintenanceResponseSchema]:
-    return await MaintenanceMachines.all().prefetch_related('machine')
+    maintenance_issues =  await MaintenanceMachines.all().prefetch_related('machine')
+    for issue in maintenance_issues:
+        user = await Users.get_or_none(email=issue.created_by)
+        await user.fetch_related("roles")
+        issue.user = user
+    return maintenance_issues
+
 
 
 @router.get("/{id}", status_code=200, response_model=MachineMaintenanceResponseSchema)

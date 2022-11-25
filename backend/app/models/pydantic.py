@@ -42,8 +42,9 @@ class LogoutRequest(pydantic.BaseModel):
 User_Pydantic = pydantic_model_creator(
     Users,
     name="User",
-    exclude=("hashed_password", "confirmation", "working_hours", "device_login_statusses"),
+    exclude=("hashed_password", "confirmation", "working_hours", "device_login_statusses", "reported_maintenance_issues"),
 )
+
 
 # Roles
 
@@ -254,6 +255,7 @@ class MachineMaintenanceUpdate(pydantic.BaseModel):
 
 
 MachineMaintenanceResponseSchema = pydantic_model_creator(MaintenanceMachines)
+
 
 def datetime_converter(v:str) -> datetime.datetime:
     print(v)

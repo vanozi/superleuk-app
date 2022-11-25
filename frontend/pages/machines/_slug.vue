@@ -61,7 +61,7 @@
       <v-tabs-items v-model="tab">
         <!-- Onderhoud -->
         <v-tab-item :key="onderhoud">
-          <v-data-table :search="searchOnderhoud" :headers="userIsAdmin ? headersOnderhoudAdmin : headersOnderhoud"
+          <v-data-table :search="searchOnderhoud" :headers="userHasRole(['admin','monteur']) ? headersOnderhoudAdmin : headersOnderhoud"
             :sort-by="['created_at']" show-expand :sort-desc="[true]" :items="filteredMaintenanceIssues"
             class="elevation-1">
             <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
@@ -143,7 +143,7 @@
               </td>
             </template>
             <!-- Actions column only if user is admin -->
-            <template v-if="userIsAdmin" v-slot:[`item.actions`]="{ item }">
+            <template v-if="userHasRole(['admin', 'monteur'])" v-slot:[`item.actions`]="{ item }">
               <v-icon small class="mr-2" @click="editMaintenanceIssue(item)">
                 mdi-pencil
               </v-icon>
@@ -324,6 +324,14 @@ export default {
     ],
   }),
   methods: {
+    userHasRole(rolesToCheck) {
+      for (let i = 0; i < rolesToCheck.length; i++) {
+        if (this.$auth.user.roles.filter((e) => e.name === rolesToCheck[i]).length > 0) {
+          return true;
+        }
+      }
+      return false
+    },
 
     formatDateTimeforTemplate(value) {
       return moment(value).utcOffset(0).locale("nl").format("DD/MM/YYYY HH:mm:ss");

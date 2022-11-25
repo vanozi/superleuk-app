@@ -24,6 +24,10 @@ class Users(models.Model):
     def __str__(self):
         return self.email
 
+    class PydanticMeta:
+        # Let's exclude the created timestamp
+        exclude = ("working_hours", "device_login_statusses")
+
 
 class Roles(models.Model):
     id = fields.IntField(pk=True)
@@ -135,6 +139,7 @@ class MaintenanceMachines(models.Model):
     priority = fields.CharField(null=True, max_length=255)
     # Relations
     machine = fields.ForeignKeyField('models.Machines', related_name='maintenance_issues')
+    user = fields.ForeignKeyField("models.Users", related_name="reported_maintenance_issues")
     
     class Meta:
         table = "machine_maintenance"

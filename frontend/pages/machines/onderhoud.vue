@@ -7,7 +7,7 @@
         <ConfirmDlg ref="confirm" />
         <!-- Tabel met de machines en opties om er 1 toe te voegen -->
         <section>
-            <v-data-table :search="search" :headers="userIsAdmin ? headersAdmin : headers" :sort-by="['created_at']"
+            <v-data-table :search="search" :headers="userHasRole(['admin','monteur']) ? headersAdmin : headers" :sort-by="['created_at']"
                 show-expand :sort-desc="[true]" :items="filteredMaintenanceIssues" class="elevation-1">
                 <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
                 <template v-slot:top>
@@ -106,6 +106,10 @@
                 <template v-slot:item.machine.work_name="{ item }">
                     <span>{{ item.machine.work_number }} - {{ item.machine.work_name }}</span>
                 </template>
+                <!-- Item template om de naam van de machine weer te geven met werknummer en werknaam -->
+                <template v-slot:item.aangemaakt_door="{ item }">
+                    <span>{{ item.user.first_name }}  {{ item.user.last_name }}</span>
+                </template>
                 <!-- Expansion panel voor de omschrijving van het issue -->
                 <template v-slot:expanded-item="{ headers, item }">
                     <td :colspan="headers.length">
@@ -113,7 +117,7 @@
                     </td>
                 </template>
                 <!-- Actions column only if user is admin -->
-                <template v-if="userIsAdmin" v-slot:[`item.actions`]="{ item }">
+                <template v-if="userHasRole(['admin','monteur'])" v-slot:[`item.actions`]="{ item }">
                     <v-icon small class="mr-2" @click="editMaintenanceIssue(item)">
                         mdi-pencil
                     </v-icon>
@@ -161,7 +165,7 @@ export default {
             },
             {
                 text: "Aangemaakt door",
-                value: "created_by",
+                value: "aangemaakt_door",
                 sortable: true
             },
             {
@@ -206,7 +210,7 @@ export default {
             },
             {
                 text: "Aangemaakt door",
-                value: "created_by",
+                value: "aangemaakt_door",
                 sortable: true
             },
             {
@@ -227,6 +231,14 @@ export default {
         ],
     }),
     methods: {
+      userHasRole(rolesToCheck) {
+      for (let i = 0; i < rolesToCheck.length; i++) {
+        if (this.$auth.user.roles.filter((e) => e.name === rolesToCheck[i]).length > 0) {
+          return true;
+        }
+      }
+      return false
+    },
         // Filter methodes
         filterWerkNaamMachine(item) {
             if (

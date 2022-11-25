@@ -9,42 +9,25 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <!-- Normal Users navigation list -->
-      <v-list v-if="!userIsAdmin">
-        <!-- If one item then just an item -->
-        <v-list-group v-for="item in Items" :key="item.title" v-model="item.active" :prepend-icon="item.action"
-          no-action>
+      <!-- role based navigation -->
+      <v-list>
+        <v-list-group v-if="userHasRole(item.roles)" v-for="item in Items" :key="item.title" v-model="item.active"
+          :prepend-icon="item.action" no-action>
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in item.items" :key="child.title" :to="child.route" exact>
+          <v-list-item v-if="userHasRole(child.roles)" v-for="child in item.items" :key="child.title" :to="child.route"
+            exact>
             <v-list-item-content>
               <v-list-item-subtitle v-text="child.title"></v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-divider></v-divider>
-      <!-- Admin navigation list -->
-      <v-list v-if="userIsAdmin">
-        <v-list-group v-for="item in adminItems" :key="item.title" v-model="item.active" :prepend-icon="item.action"
-          no-action>
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
-          </template>
 
-          <v-list-item v-for="child in item.items" :key="child.title" :to="child.route" exact>
-            <v-list-item-content>
-              <v-list-item-subtitle v-text="child.title"></v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
     </v-navigation-drawer>
     <!-- NAVIGATION BAR -->
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -120,38 +103,13 @@ export default {
       right: true,
       rightDrawer: false,
       title: "Superleuk App",
-      // Navigation drawer items
+
       Items: [
-        // {
-        //   action: "mdi-format-color-text",
-        //   items: [{ title: "Onderhoud", route: "/general_maintenance" }],
-        //   title: "Algemeen",
-        // },
-        {
-          action: "mdi-account-clock-outline",
-          items: [
-            { title: "Overzicht", route: "/working_hours/overview" },
-            { title: "Invoeren", route: "/working_hours/" },
-            // { title: "Overzicht", route: "/working_hours/overview" },
-          ],
-          title: "Uren",
-        },
-        {
-          title: "Bouwplan",
-          action: "mdi-sprout-outline",
-          items: [{ title: "2022", route: "/bouwplan" }],
-        },
-        {
-          title: "Machines (Test)",
-          action: "mdi-tractor-variant",
-          items: [{ title: "Machinepark", route: "/machines" }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud" },{ title: "Tankbeurten", route: "/machines/tank_transactions" }],
-        }
-      ],
-      adminItems: [
         {
           action: "mdi-account-group-outline",
-          items: [{ title: "Uitnodigingen", route: "/admin/allowed_users" }],
+          items: [{ title: "Uitnodigingen", route: "/admin/allowed_users", roles: ["admin"] }],
           title: "Toegestane users",
+          roles: ["admin"]
         },
         {
           action: "mdi-account-clock-outline",
@@ -159,41 +117,52 @@ export default {
             {
               title: "Week overzicht",
               route: "/admin/working_hours/week_overview",
+              roles: ["admin"]
             },
             {
               title: "Medewerker overzicht",
               route: "/admin/working_hours/employee_overview",
+              roles: ["admin"]
             },
+            { title: "Overzicht", route: "/working_hours/overview", roles: ["werknemer"] },
+            { title: "Invoeren", route: "/working_hours/", roles: ["werknemer"] },
           ],
           title: "Uren",
+          roles: ["admin", "werknemer"]
         },
         {
           title: "Bouwplan",
           action: "mdi-sprout-outline",
-          items: [{ title: "2022", route: "/bouwplan" }],
+          items: [{ title: "2022", route: "/bouwplan", roles: ["werknemer", "monteur", "admin"] }],
+          roles: ["werknemer", "monteur", "admin"]
         },
+
         {
           title: "Machines (Test)",
           action: "mdi-tractor-variant",
-          items: [{ title: "Machinepark", route: "/machines" }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud" },{ title: "Tankbeurten", route: "/machines/tank_transactions" },],
+          items: [{ title: "Machinepark", route: "/machines", roles: ["werknemer", "monteur", "admin"] }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud", roles: ["werknemer", "monteur", "admin"] }, { title: "Tankbeurten", route: "/machines/tank_transactions", roles: ["werknemer", "monteur", "admin"] },],
+          roles: ["werknemer", "monteur", "admin"]
         }
       ],
     };
   },
   methods: {
+
     async logout() {
       await this.$auth.logout();
       this.$router.push("/auth/login");
     },
+    userHasRole(rolesToCheck) {
+      for (let i = 0; i < rolesToCheck.length; i++) {
+        if (this.$auth.user.roles.filter((e) => e.name === rolesToCheck[i]).length > 0) {
+          return true;
+        }
+      }
+      return false
+    }
   },
   computed: {
-    userIsAdmin() {
-      if (this.$auth.user.roles.filter((e) => e.name === "admin").length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+
   },
 };
 </script>
@@ -201,7 +170,7 @@ export default {
 <style>
 @use "sass:math";
 
-/* .v-simple-table { 
+/* .v-simple-table {
   overflow-x: auto;
 } */
 </style>
