@@ -114,7 +114,10 @@ async def get_single_maintenance_issues(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Onderhouds issue niet gevonden",
             )
-    await maintenance_issue.fetch_related('machine','user')
+    user_reported = await Users.get_or_none(id=maintenance_issue.user_id)
+    await user_reported.fetch_related('roles')
+    maintenance_issue.user = user_reported
+    await maintenance_issue.fetch_related('machine')
     return maintenance_issue
 
 
