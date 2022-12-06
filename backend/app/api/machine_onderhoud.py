@@ -35,11 +35,12 @@ async def post_machine_maintenance_issue(
                 **incoming_issue.dict(),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
-                machine=machine
+                machine=machine,
             )
             user = await Users.get_or_none(email=maintenace_issue.created_by)
             await user.fetch_related("roles")
             maintenace_issue.user = user
+            await maintenace_issue.save()
             return maintenace_issue
         except:
             raise HTTPException(
@@ -113,7 +114,7 @@ async def get_single_maintenance_issues(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Onderhouds issue niet gevonden",
             )
-    await maintenance_issue.fetch_related('machine')
+    await maintenance_issue.fetch_related('machine','user')
     return maintenance_issue
 
 
