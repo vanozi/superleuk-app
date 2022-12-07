@@ -1,23 +1,32 @@
 import { defineStore } from "pinia";
 import { api } from "src/boot/axios";
+import { useMachineStore } from "./machine-store";
 
-export const useTankGegevens = defineStore("tankgegevens", {
+export const useTankGegevens = defineStore( {
+  id: "tankgegevens",
   state: () => ({
     tankGegevens: null,
     loading: false,
-    error: null
+    error: null,
   }),
-  getters: {},
+  getters: {
+    getMachineTankdata: (state) => {
+      const machineStore = useMachineStore();
+      return (machineStore.machine ? state.tankGegevens.filter((tankbeurt) => tankbeurt.vehicle === machineStore.machine.work_name) : null);
+    },
+  },
+
   actions: {
     async fetchTankgegevens() {
-      this.loading = true
+      this.loading = true;
       try {
-        this.tankGegevens = await api.get('/tank_transactions/')
-          .then((response) => response.data)
+        this.tankGegevens = await api
+          .get("/tank_transactions/")
+          .then((response) => response.data);
       } catch (error) {
-        this.error = error
+        this.error = error;
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
   },

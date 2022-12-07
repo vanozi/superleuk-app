@@ -25,7 +25,7 @@
       >
         <q-list dense bordered>
 
-          <q-item clickable v-ripple :active="selectedLink === 'machinelijst'" @click="selectedLink='machinelijst'">
+          <q-item clickable v-ripple to="/werkplaats/machines" :active="selectedLink === 'machinelijst'" @click="selectedLink='machinelijst'">
             <q-item-section>Machinelijst</q-item-section>
           </q-item>
           <q-item clickable v-ripple>

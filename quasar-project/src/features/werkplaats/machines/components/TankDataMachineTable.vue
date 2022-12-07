@@ -1,33 +1,18 @@
-<template>
-      <div class="row justify-center q-gutter-x-md ">
-      <h6 class="col text-center">Tankoverzicht</h6>
-    </div>
-    <AgGridVue style="width: 100%; height: 600px;" class="ag-theme-material q-ma-md" :column-defs="columnDefs"
-    :row-data="tankGegevens" :default-col-def="defaultColDef" animate-rows="true" :sorting-order="sortingOrder"
-    :pagination="true" />
-
-
-</template>
-
-
-
 <script setup>
+import { reactive, inject } from 'vue'
+// imports voor de grid
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-material.css'
 import { AgGridVue } from 'ag-grid-vue3'
-import { storeToRefs } from 'pinia';
-import { useTankGegevens } from 'src/stores/tankgegevens-store';
-import { reactive } from 'vue';
 import { dateTimeFormatter, meterFormatter } from 'src/utils/table_formatters'
 
-const { tankGegevens } = storeToRefs(useTankGegevens())
-const { fetchTankgegevens } = useTankGegevens()
+// props
+const machine =  inject('machine');
 
-fetchTankgegevens();
-
+// column definitions
 const columnDefs = reactive([
   {
-    headerName: 'Getank op', field: 'start_date_time', filter: 'agDateColumnFilter', valueFormatter: dateTimeFormatter,
+    headerName: 'Getank op', field: 'start_date_time', filter: 'agDateColumnFilter', sort: 'desc', valueFormatter: dateTimeFormatter,
     filterParams: {
       // provide comparator function
       comparator: (filterTankDate, cellValue) => {
@@ -56,7 +41,6 @@ const columnDefs = reactive([
       }
     }
   },
-  { headerName: 'Machine', field: 'vehicle' },
   { headerName: 'Chauffeur', field: 'driver' },
   { headerName: 'Aantal liter', field: 'quantity' },
   { headerName: 'Uren/kilometer stand', field: 'meter', valueFormatter: meterFormatter },
@@ -70,7 +54,11 @@ const defaultColDef = {
   cellStyle: { textAlign: 'right' },
   // floatingFilter: true,
 }
-
-
-
 </script>
+
+<template>
+  <AgGridVue style="height: 600px;" class="ag-theme-material" :column-defs="columnDefs"
+    :row-data="machine.tank_transactions" :default-col-def="defaultColDef" animate-rows="true" :sorting-order="sortingOrder"
+    :pagination="true" />
+
+</template>

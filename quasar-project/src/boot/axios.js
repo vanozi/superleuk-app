@@ -18,6 +18,7 @@ const api = axios.create({
 // Add a request interceptor
 api.interceptors.request.use(
   function (config) {
+    config.headers['Access-Control-Allow-Origin'] = "*";
     // Do something before request is sent
     if (config._retry == true) {
       return config;
