@@ -1,15 +1,20 @@
 import os
+from collections import Counter
+from datetime import date
+from functools import reduce
+from operator import add
 from platform import machine
 from typing import List
 
-from app.models.pydantic import TankTransactionCreate, TankTransactionResponseSchema
+from app.models.pydantic import (TankTransactionCreate,
+                                 TankTransactionResponseSchema)
 from app.models.tortoise import TankTransactions
 from app.services.auth import RoleChecker, get_current_active_user
+from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
 from starlette.responses import JSONResponse
-
 
 router = APIRouter()
 
@@ -95,3 +100,19 @@ async def delete_single_machine(id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Tank transactie niet gevonden",
         )
+
+
+# Methods for charts
+@router.get("/summed_quantity/between_dates", status_code=200)
+async def get_data_for_chart_between_two_dates(
+    from_date: date = date.today() - relativedelta(months=1),
+    to_date: date = date.today(),
+    current_active_user=Depends(get_current_active_user)
+):
+    data = []
+    transactions = await TankTransactions.filter(start_date_time__gte=from_date, start_date_time__lte=to_date).exclude(vehicle="Klein materiaal").order_by("start_date_time")
+    for transaction in transactions:
+        list_item = {transaction.start_date_time.strftime('%Y-%m-%d') : int(transaction.quantity)}
+        data.append(list_item)
+    sum_dict = reduce(add, (map(Counter, data)))
+    return sum_dict
