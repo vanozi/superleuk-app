@@ -38,7 +38,7 @@ async def post_general_maintenance(
     dependencies=[Depends(get_current_active_user)],
 )
 async def get_all_general_maintenace():
-    return await GeneralMaintenance.all()
+    return await GeneralMaintenance.all().order_by("-created_at")
 
 # Read single general maintenace issue
 @router.get('/{id}', response_model=GeneralMaintenanceResponseSchema, dependencies=[Depends(get_current_active_user)])
