@@ -95,7 +95,7 @@ async def update_machine_maintenance_issue(
 async def get_maintenance_issues(
     current_active_user=Depends(get_current_active_user),
 ) -> List[MachineMaintenanceResponseSchema]:
-    maintenance_issues =  await MaintenanceMachines.all().prefetch_related('machine')
+    maintenance_issues =  await MaintenanceMachines.all().prefetch_related('machine').order_by('-created_at')
     for issue in maintenance_issues:
         user = await Users.get_or_none(email=issue.created_by)
         await user.fetch_related("roles")
