@@ -1,0 +1,61 @@
+<script setup>
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-material.css";
+import { AgGridVue } from "ag-grid-vue3";
+import { storeToRefs } from "pinia";
+import { useStoringenStore } from "src/stores/storingen-store";
+import {reactive} from 'vue'
+import  MachineLinkCellRenderer from '../../machines/components/MachineLinkForStoringenViewCellRenderer .vue'
+
+const { storingen, loading, error, getNotClosedStoringen  } = storeToRefs(useStoringenStore());
+const { fetchAllStoringen } = useStoringenStore();
+
+fetchAllStoringen();
+
+const columnDefs = reactive([
+  { headerName: "Datum", valueGetter : params =>  { return params.data.created_at.split('T')[0] } },
+  { headerName: "Status", field: "status"},
+  { headerName: "Melder", valueGetter : params =>  { return params.data.user.first_name + ' ' + params.data.user.last_name } },
+  { headerName: "Machine", field: "machine.work_name", cellRenderer:MachineLinkCellRenderer },
+  { headerName: "Omschrijving", field: "issue_description"},
+]);
+
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  filter: true,
+  cellStyle: { textAlign: "left" },
+};
+
+const onGridReady = (params) => {
+      const allColumnIds = [];
+      params.columnApi.getAllColumns().forEach((column) => {
+        allColumnIds.push(column.getId());
+      });
+      params.columnApi.autoSizeColumns(allColumnIds, true);
+    }
+  // params.api.sizeColumnsToFit();
+
+
+
+
+</script>
+
+<template>
+  <div class="row justify-center q-gutter-x-md">
+    <h6 class="col text-center">Storingen</h6>
+  </div>
+  <AgGridVue
+  v-if="!loading"
+    style="width: 100%; height: 600px"
+    class="ag-theme-material q-ma-md"
+    :column-defs="columnDefs"
+    :row-data="getNotClosedStoringen"
+    :default-col-def="defaultColDef"
+    animate-rows="true"
+    :sorting-order="sortingOrder"
+    :pagination="true"
+    @grid-ready="onGridReady"
+  />
+
+</template>

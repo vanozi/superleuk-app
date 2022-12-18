@@ -1,26 +1,49 @@
 <script>
 export default {
-  name: 'IndexPage',
-}
+  name: "IndexPage",
+};
 </script>
 
 <script setup>
-import ExampleChart from 'src/components/charts/tankChart.vue'
-import { ref, computed } from 'vue'
+import ExampleChart from "src/components/charts/tankChart.vue";
+import { ref, computed, watch } from "vue";
+import { date } from "quasar";
 
-const dateRange = ref({ from: '2020/07/08', to: '2020/07/17' })
-const model = ref({ from: '2020/07/08', to: '2020/07/17' })
+const toDate = ref(new Date());
+const fromDate = ref(
+  date.subtractFromDate(toDate.value, { months: 1 })
+);
 
-const fromDate = computed(() => {
-  return dateRange.value.from
-})
+const fromDateGraph = computed({
+  // getter
+  get() {
+    return ref(date.formatDate(fromDate.value, 'YYYY/MM/DD'))
+  },
+  // setter
+  set(newDate) {
+    fromDate.value = newDate.from;
+  },
+});
 
-const toDate = computed(() => {
-  return dateRange.value.to
-})
+const toDateGraph = computed({
+  // getter
+  get() {
+    return ref(date.formatDate(toDate.value, 'YYYY/MM/DD'))
+  },
+  // setter
+  set(newDate) {
+    toDate.value = newDate.value;
+  },
+});
 
-const inputDateRagenText = computed(() => {
-  return `${fromDate.value} - ${toDate.value}`
+const dateRange = ref({ from: fromDateGraph.value.value, to: toDateGraph.value.value });
+
+const inputDateRangeText = computed(() => {
+  return `${fromDateGraph.value.value} - ${toDateGraph.value.value}`;
+});
+
+watch(dateRange, async (newRange, oldRange) => {
+  console.log('newRange', newRange.from)
 })
 </script>
 
@@ -31,19 +54,30 @@ const inputDateRagenText = computed(() => {
         <q-card class="q-ma-md">
           <q-card-section>
             <div class="text-h6">Tankdata</div>
-            <div class="text-subtitle2">Totaal aantal liters per dag (uitgezonderd klein materiaal)</div>
+            <div class="text-subtitle2">
+              Totaal aantal liters per dag (uitgezonderd klein materiaal)
+            </div>
           </q-card-section>
           <q-card-section>
             <ExampleChart />
           </q-card-section>
           <q-card-actions horizontal align="center">
-            <q-input v-model="inputDateRagenText" >
+            <q-input v-model="inputDateRangeText" style="width: 200px">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date v-model="dateRange" range>
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Sluiten" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Sluiten"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -54,7 +88,7 @@ const inputDateRagenText = computed(() => {
         </q-card>
       </div>
     </div>
-    <div>From: {{fromDate}} / To: {{toDate}}</div>
-    {{model}}
+    <div>From: {{ fromDateGraph }} / To: {{ toDateGraph }}</div>
+    {{dateRange}}
   </q-page>
 </template>

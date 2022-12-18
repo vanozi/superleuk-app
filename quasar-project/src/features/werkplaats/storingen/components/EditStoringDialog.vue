@@ -1,15 +1,34 @@
 <script setup>
 import { inject ,ref } from 'vue';
-
+import { useStoringenStore } from 'src/stores/storingen-store'
+import { useQuasar } from "quasar";
+const $q = useQuasar();
 const storingTeWijzigen = inject('storingTeWijzigen')
 const storingsMeldingsdag = inject('storingsMeldingsdag')
 const storingsMelder = inject('storingsMelder')
 const resetData = function () {
   storingTeWijzigen.value = {};
 };
+const { updateStoring } = useStoringenStore();
 const update = function() {
-
+  storingTeWijzigen.value.machine_id = storingTeWijzigen.value.machine.id
+  updateStoring(storingTeWijzigen.value,  function () {
+      $q.notify({
+        color: "positive",
+        textColor: "white",
+        icon: "done",
+        message: `Storing geupdate`,
+      });
+    }, function () {
+      $q.notify({
+        color: "error",
+        textColor: "white",
+        icon: "warning",
+        message: `Er is iets misgegaan`,
+      });
+    },)
 }
+const options = ["Nieuw", "In Behandeling", "Gesloten"]
 
 </script>
 

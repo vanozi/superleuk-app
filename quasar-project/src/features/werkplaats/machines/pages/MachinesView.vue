@@ -28,7 +28,7 @@ const defaultColDef = {
   resizable: true,
   sortable: true,
   filter: true,
-  cellStyle: { textAlign: 'left' },
+  cellStyle: { textAlign: 'left' }
   // floatingFilter: true,
 }
 
@@ -44,6 +44,17 @@ const columnDefs = reactive([
 
 ])
 
+// const onGridReady = (params) => {
+//     params.api.sizeColumnsToFit();
+// }
+const onGridReady = (params) => {
+      const allColumnIds = [];
+      params.columnApi.getAllColumns().forEach((column) => {
+        allColumnIds.push(column.getId());
+      });
+      params.columnApi.autoSizeColumns(allColumnIds, false);
+    }
+
 </script>
 
 <template>
@@ -54,7 +65,8 @@ const columnDefs = reactive([
     <p v-if="loading">Loading posts...</p>
     <p v-if="error">{{ error.message }}</p>
     <AgGridVue
-    style="width: 100%; height: 600px;"
+    v-if="!loading"
+    style="width: 99%; height: 600px;"
     class="ag-theme-material q-ma-md"
     :column-defs="columnDefs"
     :row-data="machines"
@@ -63,6 +75,7 @@ const columnDefs = reactive([
     :sorting-order="sortingOrder"
     :pagination="true"
     @row-double-clicked="navigateToMachine"
+    @grid-ready="onGridReady"
   />
     <!-- <div v-if="machines">
       <div v-for="machine in machines" :key="machine.id">

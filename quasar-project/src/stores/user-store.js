@@ -1,16 +1,16 @@
 import { timestamp } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { api } from "src/boot/axios";
-import { ref } from "vue";
 import { LocalStorage } from "quasar";
-import { setWithExpiry, getWithExpiry } from "src/utils/local_storage";
-import { useQuasar } from "quasar";
-
-const $q = useQuasar();
+import { setWithExpiry } from "src/utils/local_storage";
 
 export const useUserStore = defineStore("user", {
   state: () => ({ user: null }),
-  getters: {},
+  getters: {
+    userHasRole: (state) => {
+      return (roleToValidate) => state.user ? state.user.roles.find((role) => role.name == roleToValidate) : null
+    },
+  },
   actions: {
     loginUser(loginData, _callback, _errorcallback) {
       const form = new FormData();
@@ -35,12 +35,12 @@ export const useUserStore = defineStore("user", {
         })
         .catch((error) => _errorcallback());
     },
-
-    logoutUser() {
+    logoutUser(_callback) {
       LocalStorage.remove("access_token");
       LocalStorage.remove("refresh_token");
       this.user = null;
-      return "logged out user";
+      _callback();
+
     },
     async refreshAccessToken(refreshToken) {
       api

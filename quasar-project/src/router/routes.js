@@ -13,7 +13,7 @@ const routes = [
       {
         path: "tankoverzicht",
         component: () =>
-          import("src/features/werkplaats/pages/TankOverzicht.vue"),
+          import("src/features/werkplaats/tankoverzicht/pages/TankOverzicht.vue"),
       },
       {
         path: "machines",
@@ -26,6 +26,11 @@ const routes = [
           import("src/features/werkplaats/machines/pages/MachineView.vue"),
       },
       // Storingen
+      {
+        path: "storingen",
+        component: () =>
+          import("src/features/werkplaats/storingen/pages/StoringenView.vue"),
+      },
       {
         path: "storing/:id",
         component: () =>

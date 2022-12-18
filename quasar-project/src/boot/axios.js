@@ -13,6 +13,7 @@ import { useUserStore } from "src/stores/user-store";
 // for each client)
 const api = axios.create({
   baseURL: "https://superleuk.gebroedersvroege.nl/api",
+  // baseURL: "http://localhost:8004/api",
 });
 
 // Add a request interceptor
@@ -31,8 +32,6 @@ api.interceptors.request.use(
     return config;
   },
   function (error) {
-    // Do something with request error
-    console.log(error);
     return Promise.reject(error);
   }
 );

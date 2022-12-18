@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { api } from "src/boot/axios";
+import { Notify } from 'quasar'
 
 export const useStoringenStore = defineStore( {
   id: "storingen",
@@ -10,7 +11,9 @@ export const useStoringenStore = defineStore( {
     storing : null
   }),
   getters: {
-
+    getNotClosedStoringen(state) {
+      return state.storingen.filter((storing) => storing.status !== 'Gesloten');
+    }
   },
 
   actions: {
@@ -38,14 +41,15 @@ export const useStoringenStore = defineStore( {
         this.loading = false
       }
     },
-    async updateStoring(updatedStoring) {
-      this.storing = null
+    async updateStoring(updatedStoring, _callback, _errorcallback) {
       this.loading = true
       try {
-        this.storing = await api.put(`/machine_maintenance_issues/`, updatedStoring)
-        .then((response) => response.data)
+        await api.put(`/machine_maintenance_issues/`, updatedStoring)
+        .then((response) => {this.storing = response.data; _callback()})
+
       } catch (error) {
-        this.error = error
+        this.error = error;
+        _errorcallback();
       } finally {
         this.loading = false
         this.fetchAllStoringen();
@@ -53,3 +57,4 @@ export const useStoringenStore = defineStore( {
     }
   },
 });
+

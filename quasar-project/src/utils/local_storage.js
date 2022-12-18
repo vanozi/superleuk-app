@@ -14,7 +14,6 @@ export function setWithExpiry(key, value, ttl) {
 }
 
 export function getWithExpiry(key) {
-  console.log(LocalStorage.getItem(key));
   const itemStr = LocalStorage.getItem(key);
   // if the item doesn't exist, return null
   if (!itemStr) {

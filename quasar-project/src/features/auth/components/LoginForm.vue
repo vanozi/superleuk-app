@@ -38,7 +38,6 @@
 import { useQuasar } from "quasar";
 import { reactive, ref } from "vue";
 import { useUserStore } from "src/stores/user-store";
-import { timestamp } from "@vueuse/core";
 import { useRouter, useRoute } from "vue-router";
 
 const $q = useQuasar();
@@ -51,8 +50,6 @@ const accept = ref(false);
 const loginData = reactive({});
 const userStore = useUserStore();
 
-const localStorageAccessToken = ref();
-const localStorageRefreshToken = ref();
 
 const loginForm = ref(null);
 
@@ -74,6 +71,12 @@ function loginUser(data) {
     data,
     function () {
       router.push(route.query.redirect || "/");
+      $q.notify({
+        color: "positive",
+        textColor: "white",
+        icon: "waving_hand",
+        message: `Welkom ${loginData.email}`,
+      });
     },
     function () {
       $q.notify({

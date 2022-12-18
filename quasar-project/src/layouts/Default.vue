@@ -1,3 +1,44 @@
+
+<script>
+export default {
+  name: 'DefaultLayout',
+}
+</script>
+
+<script setup>
+import { ref} from 'vue'
+import { useQuasar } from "quasar";
+import { storeToRefs} from 'pinia'
+import {useUserStore} from 'src/stores/user-store'
+import { useRouter } from "vue-router";
+const { user } = storeToRefs(useUserStore());
+const { logoutUser } = useUserStore();
+const selectedLink = ref();
+const leftDrawerOpen = ref(false)
+const toggleLeftDrawer = function() {
+    leftDrawerOpen.value = !leftDrawerOpen.value
+  }
+
+const $q = useQuasar();
+const router = useRouter();
+
+function logout() {
+  logoutUser(
+    function () {
+      router.push("/auth/login");
+      $q.notify({
+        color: "positive",
+        textColor: "white",
+        icon: "waving_hand",
+        message: `Succesvol uitgelogd`,
+      });
+    },
+  );
+}
+
+</script>
+
+
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
@@ -8,7 +49,7 @@
           Superleuk App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn v-if="user" flat outline @click="logout" >Logout</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -18,21 +59,39 @@
         <q-item-label header>
           Navigatie
         </q-item-label>
+        <!-- <q-item clickable v-ripple to="/" :active="selectedLink === 'indexPage'" @click="selectedLink='indexPage'">
+            <q-item-section class="text-left q-pl-md">Home</q-item-section>
+          </q-item> -->
+          <q-item clickable v-ripple to="/" :active="selectedLink === 'indexPagina'" @click="selectedLink='indexPagina'">
+            <q-item-section top avatar>
+              <q-avatar color="primary" text-color="white" icon="home" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Home</q-item-label>
+            </q-item-section>
+          </q-item>
         <q-expansion-item
         expand-separator
-        icon="build"
-        label="Werkplaats"
       >
+      <template v-slot:header>
+          <q-item-section avatar>
+            <q-avatar icon="build" color="secondary" text-color="white" />
+          </q-item-section>
+
+          <q-item-section>
+            Werkplaats
+          </q-item-section>
+        </template>
         <q-list dense bordered>
 
           <q-item clickable v-ripple to="/werkplaats/machines" :active="selectedLink === 'machinelijst'" @click="selectedLink='machinelijst'">
-            <q-item-section>Machinelijst</q-item-section>
+            <q-item-section class="text-left q-pl-md">Machinelijst</q-item-section>
           </q-item>
-          <q-item clickable v-ripple>
-            <q-item-section>Onderhoud</q-item-section>
+          <q-item clickable v-ripple to="/werkplaats/storingen" :active="selectedLink === 'storingen'" @click="selectedLink='storingen'">
+            <q-item-section class="text-left q-pl-md">Storingen</q-item-section>
           </q-item>
           <q-item clickable v-ripple  to="/werkplaats/tankoverzicht" :active="selectedLink === 'tankoverzicht'" @click="selectedLink='tankoverzicht'">
-            <q-item-section>Tankoverzicht</q-item-section>
+            <q-item-section class="text-left q-pl-md">Tankoverzicht</q-item-section>
           </q-item>
         </q-list>
         </q-expansion-item>
@@ -45,77 +104,3 @@
     </q-page-container>
   </q-layout>
 </template>
-
-<script>
-import { defineComponent, ref } from 'vue'
-// import EssentialLink from 'components/EssentialLink.vue'
-
-
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'build',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
-export default defineComponent({
-  name: 'MainLayout',
-
-  components: {
-    // EssentialLink
-  },
-
-  setup() {
-    const selectedLink = ref();
-    const leftDrawerOpen = ref(false)
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      selectedLink,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
-})
-</script>
