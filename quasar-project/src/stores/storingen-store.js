@@ -41,6 +41,19 @@ export const useStoringenStore = defineStore( {
         this.loading = false
       }
     },
+    async postNewStoring(storing, _callback, _errorcallback) {
+      this.loading = true;
+      try {
+        await api.post(`/machine_maintenance_issues/`, storing)
+        .then((response) => {_callback()})
+      } catch (error) {
+        this.error = error;
+        _errorcallback();
+      } finally {
+        this.loading = false
+        this.fetchAllStoringen();
+      }
+    },
     async updateStoring(updatedStoring, _callback, _errorcallback) {
       this.loading = true
       try {

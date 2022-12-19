@@ -67,7 +67,7 @@ const defaultColDef = {
 // }
 const onGridReady = (params) => {
       const allColumnIds = [];
-      params.columnApi.getAllColumns().forEach((column) => {
+      params.columnApi.getColumns().forEach((column) => {
         allColumnIds.push(column.getId());
       });
       params.columnApi.autoSizeColumns(allColumnIds, false);
@@ -83,7 +83,6 @@ const onGridReady = (params) => {
     :row-data="machine.tank_transactions"
     :default-col-def="defaultColDef"
     animate-rows="true"
-    :sorting-order="sortingOrder"
     :pagination="true"
     @grid-ready="onGridReady"
   />

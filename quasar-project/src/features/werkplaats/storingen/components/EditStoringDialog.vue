@@ -2,7 +2,10 @@
 import { inject ,ref } from 'vue';
 import { useStoringenStore } from 'src/stores/storingen-store'
 import { useQuasar } from "quasar";
+import { useRouter } from 'vue-router';
+
 const $q = useQuasar();
+const router = useRouter();
 const storingTeWijzigen = inject('storingTeWijzigen')
 const storingsMeldingsdag = inject('storingsMeldingsdag')
 const storingsMelder = inject('storingsMelder')
@@ -13,12 +16,26 @@ const { updateStoring } = useStoringenStore();
 const update = function() {
   storingTeWijzigen.value.machine_id = storingTeWijzigen.value.machine.id
   updateStoring(storingTeWijzigen.value,  function () {
+    console.log(storingTeWijzigen);
+    // als de storing wordt gesloten dan terug navigeren naar de vorige pagina
+    if(storingTeWijzigen.value.status === 'Gesloten') {
+      $q.notify({
+        color: "positive",
+        textColor: "white",
+        icon: "done",
+        message: `Storing gesloten`,
+      });
+      router.go(-1);
+      return
+    }
+    else {
       $q.notify({
         color: "positive",
         textColor: "white",
         icon: "done",
         message: `Storing geupdate`,
       });
+    }
     }, function () {
       $q.notify({
         color: "error",

@@ -6,6 +6,9 @@ import { storeToRefs } from "pinia";
 import { useStoringenStore } from "src/stores/storingen-store";
 import {reactive} from 'vue'
 import  MachineLinkCellRenderer from '../../machines/components/MachineLinkForStoringenViewCellRenderer .vue'
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const { storingen, loading, error, getNotClosedStoringen  } = storeToRefs(useStoringenStore());
 const { fetchAllStoringen } = useStoringenStore();
@@ -29,13 +32,16 @@ const defaultColDef = {
 
 const onGridReady = (params) => {
       const allColumnIds = [];
-      params.columnApi.getAllColumns().forEach((column) => {
+      params.columnApi.getColumns().forEach((column) => {
         allColumnIds.push(column.getId());
       });
       params.columnApi.autoSizeColumns(allColumnIds, true);
     }
   // params.api.sizeColumnsToFit();
 
+const navigateToStoring = (event) => {
+  router.push(`/werkplaats/storing/${event.data.id}`);
+}
 
 
 
@@ -53,9 +59,9 @@ const onGridReady = (params) => {
     :row-data="getNotClosedStoringen"
     :default-col-def="defaultColDef"
     animate-rows="true"
-    :sorting-order="sortingOrder"
     :pagination="true"
     @grid-ready="onGridReady"
+    @row-double-clicked="navigateToStoring"
   />
 
 </template>

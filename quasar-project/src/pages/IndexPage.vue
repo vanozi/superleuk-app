@@ -8,6 +8,9 @@ export default {
 import ExampleChart from "src/components/charts/tankChart.vue";
 import { ref, computed, watch } from "vue";
 import { date } from "quasar";
+import { useTankGegevens } from "src/stores/tankgegevens-store";
+
+const { fetchSummedDataBetweenDates } = useTankGegevens();
 
 const toDate = ref(new Date());
 const fromDate = ref(
@@ -39,12 +42,22 @@ const toDateGraph = computed({
 const dateRange = ref({ from: fromDateGraph.value.value, to: toDateGraph.value.value });
 
 const inputDateRangeText = computed(() => {
-  return `${fromDateGraph.value.value} - ${toDateGraph.value.value}`;
+  return `${dateRange.value.from} - ${dateRange.value.to}`;
 });
 
 watch(dateRange, async (newRange, oldRange) => {
   console.log('newRange', newRange.from)
+  const from = new Date(newRange.from.split('/')[0], newRange.from.split('/')[1], newRange.from.split('/')[2])
+  const to = new Date(newRange.to.split('/')[0], newRange.to.split('/')[1], newRange.to.split('/')[2])
+  fetchSummedDataBetweenDates(date.formatDate(from, 'YYYY-MM-DD'), date.formatDate(to, 'YYYY-MM-DD'))
+
 })
+
+
+const optionsFn = (datum) => { return datum <= date.formatDate(new Date(), 'YYYY/MM/DD') }
+
+fetchSummedDataBetweenDates();
+
 </script>
 
 <template>
@@ -65,19 +78,10 @@ watch(dateRange, async (newRange, oldRange) => {
             <q-input v-model="inputDateRangeText" style="width: 200px">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date v-model="dateRange" range>
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="dateRange" range :options="optionsFn">
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Sluiten"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Sluiten" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -88,7 +92,5 @@ watch(dateRange, async (newRange, oldRange) => {
         </q-card>
       </div>
     </div>
-    <div>From: {{ fromDateGraph }} / To: {{ toDateGraph }}</div>
-    {{dateRange}}
   </q-page>
 </template>
