@@ -62,8 +62,8 @@ fetchSummedDataBetweenDates();
 
 <template>
   <q-page>
-    <div class="fit row wrap justify-center items-start q-ma-md">
-      <div class="col-6 self-center">
+    <div class="row justify-center">
+      <div class="col-12 col-xl-8 col-lg-8">
         <q-card class="q-ma-md">
           <q-card-section>
             <div class="text-h6">Tankdata</div>

@@ -1,7 +1,5 @@
 <template>
-    <div class="container">
         <Bar v-if="!loading" :data="data" />
-    </div>
 </template>
 
 <script setup>

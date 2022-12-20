@@ -19,28 +19,31 @@ const router = useRouter();
 // ag grid vue variables
 // column definitions
 const defaultColDef = {
-    resizable: true,
-    sortable: true,
-    filter: true,
-    cellStyle: { textAlign: 'left' }
+  resizable: true,
+  sortable: true,
+  filter: true,
+  cellStyle: { textAlign: 'left' },
+  floatingFilter: true
 }
 
 const columnDefs = reactive([
-    { headerName: 'Werknummer / naam', valueGetter: params => { return params.data.work_number + ' - ' + params.data.work_name } },
-    { headerName: 'Merk', field: 'brand_name' },
-    { headerName: 'Model', field: 'type_name' },
-    { headerName: 'Groep', field: 'group' },
-    { headerName: 'Categorie', field: 'category' },
-    { headerName: 'Kenteken', field: 'licence_number' },
+  { headerName: 'Werknummer / naam', valueGetter: params => { return params.data.work_number + ' - ' + params.data.work_name } },
+  { headerName: 'Merk', field: 'brand_name' },
+  { headerName: 'Model', field: 'type_name' },
+  { headerName: 'Groep', field: 'group' },
+  { headerName: 'Categorie', field: 'category' },
+  { headerName: 'Kenteken', field: 'licence_number' },
 ])
 
 // grid events
 const onGridReady = (params) => {
-  const allColumnIds = [];
-  params.columnApi.getColumns().forEach((column) => {
-    allColumnIds.push(column.getId());
+  params.api.sizeColumnsToFit();
+  window.addEventListener('resize', function () {
+    setTimeout(function () {
+      params.api.sizeColumnsToFit();
+    });
   });
-  params.columnApi.autoSizeColumns(allColumnIds, false);
+  params.api.sizeColumnsToFit();
 }
 
 const navigateToMachine = (event) => {
@@ -49,7 +52,14 @@ const navigateToMachine = (event) => {
 </script>
 
 <template>
-    <AgGridVue style="width: 99%; height: 600px;" class="ag-theme-material q-ma-md"
-      :column-defs="columnDefs" :row-data="machines" :default-col-def="defaultColDef" animate-rows="true"
-      :pagination="true" @row-double-clicked="navigateToMachine" @grid-ready="onGridReady" />
+  <div class="row justify-center">
+    <div class="col-12 col-xl-8">
+      <div style=" overflow: hidden; flex-grow: 1;">
+      <AgGridVue style="width: 100%; height: 100%;" class="ag-theme-material q-ma-md" :column-defs="columnDefs"
+        :row-data="machines" :default-col-def="defaultColDef" animate-rows="true" :pagination="true"
+        @row-double-clicked="navigateToMachine" paginationPageSize="20" domLayout="autoHeight" @grid-ready="onGridReady" />
+      </div>
+    </div>
+    </div>
+  
 </template>

@@ -40,6 +40,7 @@ const showNewStoringDialog = ref(false)
       </div>
 
       <q-tab-panels v-model="tab" animated>
+        <!-- TANKGEGEVENS TAB -->
         <q-tab-panel name="tankgegevens" v-if="machine.tank_transactions.length > 0">
           <div>
             <TankDataTable />

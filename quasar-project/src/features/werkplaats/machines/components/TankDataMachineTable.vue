@@ -59,31 +59,28 @@ const defaultColDef = {
   sortable: true,
   filter: true,
   cellStyle: { textAlign: "left" },
-  // floatingFilter: true,
+  floatingFilter: true,
 };
 
-// const onGridReady = (params) => {
-//     params.api.sizeColumnsToFit();
-// }
 const onGridReady = (params) => {
-      const allColumnIds = [];
-      params.columnApi.getColumns().forEach((column) => {
-        allColumnIds.push(column.getId());
-      });
-      params.columnApi.autoSizeColumns(allColumnIds, false);
-    }
+  params.api.sizeColumnsToFit();
+  window.addEventListener('resize', function () {
+    setTimeout(function () {
+      params.api.sizeColumnsToFit();
+    });
+  });
+  params.api.sizeColumnsToFit();
+}
 </script>
 
 <template>
-  <AgGridVue
-  v-if="machine"
-    style="height: 600px"
-    class="ag-theme-material"
-    :column-defs="columnDefs"
-    :row-data="machine.tank_transactions"
-    :default-col-def="defaultColDef"
-    animate-rows="true"
-    :pagination="true"
-    @grid-ready="onGridReady"
-  />
+  <div class="row justify-center">
+    <div class="col-12 col-xl-8">
+      <div style=" overflow: hidden; flex-grow: 1;">
+        <AgGridVue v-if="machine" style="width: 100%; height: 100%;" class="ag-theme-material" :column-defs="columnDefs"
+          :row-data="machine.tank_transactions" :default-col-def="defaultColDef" animate-rows="true" :pagination="true"
+          paginationPageSize="20" domLayout="autoHeight" @grid-ready="onGridReady" />
+      </div>
+    </div>
+  </div>
 </template>

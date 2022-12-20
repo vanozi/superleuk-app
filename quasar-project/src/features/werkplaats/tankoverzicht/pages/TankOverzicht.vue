@@ -61,35 +61,46 @@ const defaultColDef = {
   sortable: true,
   filter: true,
   cellStyle: { textAlign: "left" },
-  // floatingFilter: true,
+  floatingFilter: true,
 };
 
 // const onGridReady = (params) => {
 //   console.log(params);
 //   params.api.sizeColumnsToFit();
 // };
+// const onGridReady = (params) => {
+//   const allColumnIds = [];
+//   params.columnApi.getColumns().forEach((column) => {
+//     allColumnIds.push(column.getId());
+//   });
+//   params.columnApi.autoSizeColumns(allColumnIds, false);
+// }
+
 const onGridReady = (params) => {
-      const allColumnIds = [];
-      params.columnApi.getColumns().forEach((column) => {
-        allColumnIds.push(column.getId());
-      });
-      params.columnApi.autoSizeColumns(allColumnIds, false);
-    }
+  params.api.sizeColumnsToFit();
+  window.addEventListener('resize', function () {
+    setTimeout(function () {
+      params.api.sizeColumnsToFit();
+    });
+  });
+  params.api.sizeColumnsToFit();
+}
 </script>
 
 <template>
-  <div class="row justify-center q-gutter-x-md">
+  <div class="row justify-center q-gutter-x-md" >
     <h6 class="col text-center">Tankoverzicht</h6>
   </div>
-  <AgGridVue
-  v-if="!loading"
-    style="width: 100%; height: 600px"
-    class="ag-theme-material q-ma-md"
-    :column-defs="columnDefs"
-    :row-data="tankGegevens"
-    :default-col-def="defaultColDef"
-    animate-rows="true"
-    :pagination="true"
-    @grid-ready="onGridReady"
-  />
+  <div class="row justify-center" >
+    <div class="col-12 col-xl-8">
+      <div style=" overflow: hidden; flex-grow: 1;" >
+      <AgGridVue v-if="!loading" style="width: 100%; height: 100%;" class="ag-theme-material q-ma-md"
+      :column-defs="columnDefs" :row-data="tankGegevens" :default-col-def="defaultColDef" animate-rows="true"
+      :pagination="true" paginationPageSize="20" domLayout="autoHeight" @grid-ready="onGridReady" />
+    </div>
+    </div>
+
+
+  </div>
+
 </template>
