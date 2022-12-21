@@ -1,6 +1,8 @@
 import { LocalStorage } from "quasar";
 import { route } from "quasar/wrappers";
 import { useUserStore } from "src/stores/user-store";
+import { routerToPath } from "src/boot/globalComputed";
+import { routerFromPath } from "src/boot/globalComputed";
 import {
   createRouter,
   createMemoryHistory,
@@ -41,6 +43,10 @@ export default route(function (/* { store, ssrContext } */) {
   // router guards
   Router.beforeEach((to, from) => {
     const userStore = useUserStore();
+      // Store to and from as global variables
+    routerToPath.value = to.path;
+    routerFromPath.value = from.path;
+
     // instead of having to check every route record with
     // to.matched.some(record => record.meta.requiresAuth)
     if (to.meta.requiresAuth && !LocalStorage.getItem("access_token")) {
@@ -53,6 +59,7 @@ export default route(function (/* { store, ssrContext } */) {
       };
     }
   });
+
 
   return Router;
 });
