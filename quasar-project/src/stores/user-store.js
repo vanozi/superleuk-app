@@ -24,7 +24,7 @@ export const useUserStore = defineStore("user", {
         })
         .then((response) => {
           LocalStorage.set("access_token", response.data["access_token"]);
-          setWithExpiry("refresh_token", response.data["refresh_token"], 120);
+          setWithExpiry("refresh_token", response.data["refresh_token"], 43800);
           api
             .get("/users/me")
             .then((response) => {

@@ -74,7 +74,7 @@ api.interceptors.response.use(
               setWithExpiry(
                 "refresh_token",
                 response.data["refresh_token"],
-                120
+                43800
               );
             }
             return api(originalConfig);

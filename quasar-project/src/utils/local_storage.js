@@ -8,7 +8,7 @@ export function setWithExpiry(key, value, ttl) {
   // as well as the time when it's supposed to expire
   const item = {
     value: value,
-    expiry: now.setSeconds(now.getSeconds() + ttl),
+    expiry: now.setMinutes(now.getMinutes() + ttl),
   };
   LocalStorage.set(key, JSON.stringify(item));
 }
