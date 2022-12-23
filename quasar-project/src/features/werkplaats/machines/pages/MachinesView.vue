@@ -17,8 +17,10 @@ fetchMachines()
     <div class="row justify-center q-gutter-x-md ">
       <h6 class="col text-center">Machinelijst</h6>
     </div>
-    <p v-if="loading">Loading posts...</p>
-    <p v-if="error">{{ error.message }}</p>
+    <div class="row justify-center q-gutter-x-md ">
+      <p v-if="loading">Machines worden opgehaald...</p>
+      <p v-if="error">{{ error.message }}</p>
+    </div> 
     <div v-if="!loading">
       <MachinesTable />
     </div>
