@@ -136,10 +136,12 @@ export default {
     substractYear() {
       this.today = moment(this.today).subtract(1, "years").format("YYYY-MM-DD");
       this.weekOverview();
+      this.getMonthTotalsForYear();
     },
     addYear() {
       this.today = moment(this.today).add(1, "years").format("YYYY-MM-DD");
       this.weekOverview();
+      this.getMonthTotalsForYear();
     },
 
     getArraySum(a) {
@@ -153,7 +155,7 @@ export default {
       try {
         let response = await this.$axios.get("/working_hours/month_overview_for_year/", {
           params: {
-            year: moment(this.today).year(),
+            year: this.computedSelectedYear,
           },
         });
         this.month_totals = response.data;
