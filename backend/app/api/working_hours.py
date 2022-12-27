@@ -1,5 +1,5 @@
 import datetime
-
+from collections import Counter
 from isoweek import Week
 from typing import List
 
@@ -15,6 +15,8 @@ from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
 from starlette.responses import JSONResponse
+
+
 
 router = APIRouter()
 
@@ -196,6 +198,20 @@ async def get_working_hours_between_dates(from_date:datetime.date, to_date:datet
     working_hours = user.working_hours
     return [x for x in working_hours if (x.date >= from_date and x.date <= to_date)]
 
+
+@router.get(
+    "/month_overview_for_year/",
+    dependencies=[Depends(get_current_active_user)]
+)
+async def get_month_overview_year(year : int,  current_user = Depends(get_current_active_user)
+):
+    user = await Users.get(id=current_user.id)
+    await user.fetch_related('working_hours')
+    working_hours = user.working_hours
+    return sum((Counter({x.date.month: x.hours}) for x in working_hours if (x.date.year == year) and (x.submitted is True)), Counter()) 
+
+
+
 # admin routes
 # Get weeks not submitted for all users in timerange
 @router.get(
@@ -258,16 +274,16 @@ async def get_week_overview_admin(from_date:datetime.date, to_date:datetime.date
 )
 async def get_weeks_not_submitted(user_id:int, from_date:datetime.date, to_date:datetime.date
 ):
-        # lookup the user for whom the hours are submitted
-        user = await Users.get_or_none(id=user_id)
-        if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="De gebruiker is niet bekend"
-            )
-        await user.fetch_related('working_hours')
-        working_hours = await user.working_hours.filter(date__range=[from_date, to_date])
-        for item in working_hours:
-            item.submitted = False
-            await item.save()
+    # lookup the user for whom the hours are submitted
+    user = await Users.get_or_none(id=user_id)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="De gebruiker is niet bekend"
+        )
+    await user.fetch_related('working_hours')
+    working_hours = await user.working_hours.filter(date__range=[from_date, to_date])
+    for item in working_hours:
+        item.submitted = False
+        await item.save()
 
 

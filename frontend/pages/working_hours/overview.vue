@@ -27,22 +27,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(item, i) in week_overview"
-                :key="i"
-                @click="showWeekOverview(item)"
-              >
+              <tr v-for="(item, i) in week_overview" :key="i" @click="showWeekOverview(item)">
                 <td>{{ item.week }}</td>
                 <td>
                   {{ formatDateforTemplate(item.week_start) }}/{{
-                    formatDateforTemplate(item.week_end)
-                  }}
+    formatDateforTemplate(item.week_end)
+}}
                 </td>
                 <td>{{ item.sum_hours }}</td>
                 <td>
                   <v-icon color="green" v-if="item.submitted">
-                    mdi-hand-okay</v-icon
-                  >
+                    mdi-hand-okay</v-icon>
                   <v-icon color="red" v-else> mdi-close-octagon-outline</v-icon>
                 </td>
               </tr>
@@ -73,10 +68,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="item in workingHoursPerMonthInSelectedYear"
-                :key="item.month"
-              >
+              <tr v-for="item in month_overview_totals" :key="item.month">
                 <td>{{ item.month }}</td>
                 <td>{{ item.sum }}</td>
               </tr>
@@ -85,9 +77,7 @@
         </v-simple-table>
         <br />
         <v-row>
-          <v-col class="justify-left ml-2"
-            >Totaal uren: &nbsp {{ yearTotal }}</v-col
-          >
+          <v-col class="justify-left ml-2">Totaal uren: &nbsp {{ yearTotal }}</v-col>
         </v-row>
       </v-tab-item>
     </v-tabs>
@@ -107,6 +97,7 @@ export default {
     title: "Overzicht",
     today: moment().format("YYYY-MM-DD"),
     week_overview: null,
+    month_totals: null,
     headers: [
       {
         text: "Datum",
@@ -158,6 +149,23 @@ export default {
       }
       return total;
     },
+    async getMonthTotalsForYear() {
+      try {
+        let response = await this.$axios.get("/working_hours/month_overview_for_year/", {
+          params: {
+            year: moment(this.today).year(),
+          },
+        });
+        this.month_totals = response.data;
+      } catch (err) {
+        if (err.response) {
+          this.$notifier.showMessage({
+            content: err.response.data.detail,
+            color: "error",
+          });
+        }
+      }
+    },
     async weekOverview() {
       // Login API call
       try {
@@ -183,6 +191,26 @@ export default {
     },
   },
   computed: {
+    month_overview_totals() {
+
+      if (this.month_totals != null) {
+        let month_sum = [];
+        for (const x of Array(13).keys()) {
+          if(x ==0 ) continue;
+          if(this.month_totals.hasOwnProperty(x)){
+            month_sum.push({ month: moment(x, 'MM').locale("nl").format('MMMM'), sum: this.month_totals[x] })
+          }
+          else{
+            month_sum.push({ month: moment(x, 'MM').locale("nl").format('MMMM'), sum: 0 })
+          }
+        }
+
+        return month_sum;
+      }
+      else {
+        return;
+      }
+    },
     // Getters from the store
     // mix the getters into computed with object spread operator
     ...mapGetters({
@@ -269,11 +297,13 @@ export default {
   },
   created() {
     this.getAllWorkingHoursForUser(this.$auth.user.id);
+    this.getMonthTotalsForYear();
     this.weekOverview();
   },
 };
 </script>
 
 <style>
+
 </style>
 
