@@ -285,16 +285,17 @@ export default {
       }
     },
     yearTotal() {
-      var total = 0;
-
-      for (
-        var i = 0, n = this.workingHoursPerMonthInSelectedYear.length;
-        i < n;
-        ++i
-      ) {
-        total += this.workingHoursPerMonthInSelectedYear[i].sum;
+      if(this.month_totals!= null) {
+        const values = Object.values(this.month_totals);
+      const jaarTotaal = values.reduce((accumulator, value) => {
+        return accumulator + value;
+      }, 0);
+      return jaarTotaal;
       }
-      return total;
+      else {
+        return 0
+      }
+
     },
   },
   created() {
