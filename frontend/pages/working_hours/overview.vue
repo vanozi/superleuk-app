@@ -83,6 +83,9 @@
         <v-row>
           <v-col class="justify-left ml-2">Totaal uren: &nbsp {{ yearTotal }}</v-col>
         </v-row>
+        <v-row v-if="userHasRole(['melker'])">
+          <v-col class="justify-left ml-2">Totaal melkbeurten: &nbsp {{ milkingTotal }}</v-col>
+        </v-row>
       </v-tab-item>
     </v-tabs>
   </v-container>
@@ -309,7 +312,20 @@ export default {
     },
     yearTotal() {
       if (this.month_totals != null) {
-        const values = Object.values(this.month_totals);
+        const values = Object.values(this.month_totals[0]);
+        const jaarTotaal = values.reduce((accumulator, value) => {
+          return accumulator + value;
+        }, 0);
+        return jaarTotaal;
+      }
+      else {
+        return 0
+      }
+
+    },
+    milkingTotal() {
+      if (this.month_totals != null) {
+        const values = Object.values(this.month_totals[1]);
         const jaarTotaal = values.reduce((accumulator, value) => {
           return accumulator + value;
         }, 0);
