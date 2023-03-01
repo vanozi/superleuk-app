@@ -103,6 +103,7 @@ class WorkingHoursCreateSchema(pydantic.BaseModel):
     user_id: int
     date: datetime.date
     hours: int
+    milkings : Optional[int]
     description: str
 
 
@@ -112,6 +113,7 @@ class WorkingHoursUpdateSchema(pydantic.BaseModel):
     user_id: Optional[int]
     date: Optional[datetime.date]
     hours: Optional[float]
+    milkings : Optional[float]
     description: Optional[str]
     submitted: Optional[bool] = False
 
@@ -145,6 +147,7 @@ class WeekData(pydantic.BaseModel):
     week_end: datetime.date
     working_hours: List[WorkingHoursResponseSchema]
     sum_hours: float
+    sum_milkings : float
     submitted: bool
 
 

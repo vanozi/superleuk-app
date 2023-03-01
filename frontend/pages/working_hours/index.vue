@@ -24,37 +24,29 @@
     <!-- Toolbar om naar andere week te springen -->
     <v-toolbar flat>
       <v-card class="d-flex justify-left" flat tile>
-        <v-card class="pa-2" flat tile >
+        <v-card class="pa-2" flat tile>
           <v-btn-toggle tile v-model="toggle_year">
             <v-icon v-if="lastYearAllowed" @click="substractYear">mdi-chevron-triple-left</v-icon>
 
             <b class="mx-2">{{ computedSelectedYear }}</b>
-            <v-icon @click="addYear" v-if="nextYearAllowed"
-              >mdi-chevron-triple-right</v-icon
-            >
+            <v-icon @click="addYear" v-if="nextYearAllowed">mdi-chevron-triple-right</v-icon>
           </v-btn-toggle>
         </v-card>
-        <v-card class="pa-2" flat tile >
+        <v-card class="pa-2" flat tile>
           <v-btn-toggle tile v-model="toggle_month">
             <v-icon v-if="lastMonthAllowed" @click="substractMonth">mdi-chevron-double-left</v-icon>
 
             <b class="mx-2">{{ computedSelectedMonth }}</b>
 
-            <v-icon @click="addMonth" v-if="nextMonthAllowed"
-              >mdi-chevron-double-right</v-icon
-            >
+            <v-icon @click="addMonth" v-if="nextMonthAllowed">mdi-chevron-double-right</v-icon>
           </v-btn-toggle>
         </v-card>
         <v-card class="pa-2" flat tile>
           <v-btn-toggle tile v-model="toggle_week">
-            <v-icon v-if="lastWeekAllowed"  @click="substractWeek"
-              >mdi-chevron-left</v-icon
-            >
+            <v-icon v-if="lastWeekAllowed" @click="substractWeek">mdi-chevron-left</v-icon>
             <b class="mx-2">{{ computedSelectedWeek }}</b>
 
-            <v-icon v-if="nextWeekAllowed" @click="addWeek"
-              >mdi-chevron-right</v-icon
-            >
+            <v-icon v-if="nextWeekAllowed" @click="addWeek">mdi-chevron-right</v-icon>
           </v-btn-toggle>
         </v-card>
       </v-card>
@@ -65,21 +57,21 @@
         <tr>
           <th class="text-left">Datum</th>
           <th class="text-left">Uren</th>
+          <th v-if="userHasRole(['melker'])">Melkbeurten</th>
           <th class="text-left">Omschrijving</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(item, i) in workingHoursOfCurrentWeek"
-          :key="i"
-          :class="{ grey: (item.submitted == true) | itemRowBackground(item) }"
-          @click="openEditDialog(item)"
-        >
+        <tr v-for="(item, i) in workingHoursOfCurrentWeek" :key="i"
+          :class="{ grey: (item.submitted == true) | itemRowBackground(item) }" @click="openEditDialog(item)">
           <td style="white-space: nowrap; width: 75px">
             {{ formatDateforTemplate(item.date) }}
           </td>
           <td style="white-space: nowrap; width: 75px">
             {{ item.hours }}
+          </td>
+          <td style="white-space: nowrap; width: 75px" v-if="userHasRole(['melker'])">
+            {{ item.milkings }}
           </td>
           <td>
             {{ item.description }}
@@ -146,6 +138,14 @@ export default {
     };
   },
   methods: {
+    userHasRole(rolesToCheck) {
+      for (let i = 0; i < rolesToCheck.length; i++) {
+        if (this.$auth.user.roles.filter((e) => e.name === rolesToCheck[i]).length > 0) {
+          return true;
+        }
+      }
+      return false
+    },
     formatDateforTemplate(value) {
       return moment(value).locale("nl").format("dd DD MMM");
     },
@@ -228,7 +228,7 @@ export default {
       } else if (
         moment(item.date) < moment() &&
         moment(item.date).format(moment.HTML5_FMT.DATE) >=
-          moment(this.$auth.user.created_at).format(moment.HTML5_FMT.DATE)
+        moment(this.$auth.user.created_at).format(moment.HTML5_FMT.DATE)
       ) {
         return false;
       } else {
@@ -282,6 +282,7 @@ export default {
               : Math.floor(Math.random() * 99999999) + 1,
           date: now.locale("nl").format("YYYY-MM-DD"),
           hours: working_hours_day !== undefined ? working_hours_day.hours : 0,
+          milkings: working_hours_day !== undefined ? working_hours_day.milkings : 0,
           description:
             working_hours_day !== undefined
               ? working_hours_day.description
@@ -390,6 +391,7 @@ export default {
 .white {
   background-color: white;
 }
+
 .grey {
   background-color: yellow;
 }

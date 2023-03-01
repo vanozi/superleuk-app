@@ -44,6 +44,7 @@ async def post_working_hours(
     try:
         working_hours_item = await WorkingHours.create(
             hours=working_hour_payload.hours,
+            milkings=working_hour_payload.milkings,
             date=working_hour_payload.date,
             description=working_hour_payload.description,
             created_by=current_active_user.email,
@@ -127,6 +128,8 @@ async def update_working_hours_item(
             working_hours_item.description = working_hours_issue_to_update.description
         if working_hours_issue_to_update.hours is not None:
             working_hours_item.hours = working_hours_issue_to_update.hours
+        if working_hours_issue_to_update.milkings is not None:
+            working_hours_item.milkings = working_hours_issue_to_update.milkings
         if working_hours_issue_to_update.submitted is not None:
             working_hours_item.submitted = working_hours_issue_to_update.submitted
         await working_hours_item.save()
@@ -177,6 +180,7 @@ async def get_week_overview(from_date:datetime.date, to_date:datetime.date, user
         else:
             working_hours = await user.working_hours.filter(date__range=[week_start, week_end])
             sum_hours = sum([i.hours for i in working_hours])
+            sum_milkings = sum([i.milkings for i in working_hours])
             # check if after the user was created he did not register hours for a particular week
             submitted = False if working_hours == [] and user.created_at.date()<week_end else None
             # if any of the working items 
@@ -184,7 +188,7 @@ async def get_week_overview(from_date:datetime.date, to_date:datetime.date, user
                 submitted = False if i.submitted == False else True
                 if submitted == False:
                     break
-        result_list.append({'year':year, 'week':week_number, 'week_start':datetime.date.strftime(week_start, '%Y-%m-%d'), 'week_end':datetime.date.strftime(week_end, '%Y-%m-%d'), 'sum_hours':sum_hours, 'submitted':submitted, 'working_hours':working_hours})
+        result_list.append({'year':year, 'week':week_number, 'week_start':datetime.date.strftime(week_start, '%Y-%m-%d'), 'week_end':datetime.date.strftime(week_end, '%Y-%m-%d'), 'sum_hours':sum_hours,'sum_milkings':sum_milkings, 'submitted':submitted, 'working_hours':working_hours})
     return {'werknemer':user, 'week_data':result_list}
 
 @router.get(
@@ -208,7 +212,9 @@ async def get_month_overview_year(year : int,  current_user = Depends(get_curren
     user = await Users.get(id=current_user.id)
     await user.fetch_related('working_hours')
     working_hours = user.working_hours
-    return sum((Counter({x.date.month: x.hours}) for x in working_hours if (x.date.year == year) and (x.submitted is True)), Counter()) 
+    sum_hours = sum((Counter({x.date.month: x.hours}) for x in working_hours if (x.date.year == year) and (x.submitted is True)), Counter()) 
+    sum_milkings =  sum((Counter({x.date.month: x.milkings}) for x in working_hours if (x.date.year == year) and (x.submitted is True)), Counter()) 
+    return [sum_hours, sum_milkings]
 
 
 

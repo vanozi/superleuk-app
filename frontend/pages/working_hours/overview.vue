@@ -23,6 +23,7 @@
                 <th class="text-left">Week</th>
                 <th class="text-left">Van/Tot</th>
                 <th class="text-left">Uren</th>
+                <th v-if="userHasRole(['melker'])" class="text-left">Melkbeurten</th>
                 <th class="text-left">Ingediend?</th>
               </tr>
             </thead>
@@ -31,10 +32,11 @@
                 <td>{{ item.week }}</td>
                 <td>
                   {{ formatDateforTemplate(item.week_start) }}/{{
-    formatDateforTemplate(item.week_end)
-}}
+                    formatDateforTemplate(item.week_end)
+                  }}
                 </td>
                 <td>{{ item.sum_hours }}</td>
+                <td v-if="userHasRole(['melker'])">{{ item.sum_milkings }}</td>
                 <td>
                   <v-icon color="green" v-if="item.submitted">
                     mdi-hand-okay</v-icon>
@@ -65,12 +67,14 @@
               <tr>
                 <th class="text-left">Maand</th>
                 <th class="text-left">Totaal uren</th>
+                <th v-if="userHasRole(['melker'])" class="text-left">Totaal melkbeurten</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in month_overview_totals" :key="item.month">
                 <td>{{ item.month }}</td>
                 <td>{{ item.sum }}</td>
+                <td v-if="userHasRole(['melker'])">{{ item.sum_milkings }}</td>
               </tr>
             </tbody>
           </template>
@@ -119,6 +123,14 @@ export default {
     ],
   }),
   methods: {
+    userHasRole(rolesToCheck) {
+      for (let i = 0; i < rolesToCheck.length; i++) {
+        if (this.$auth.user.roles.filter((e) => e.name === rolesToCheck[i]).length > 0) {
+          return true;
+        }
+      }
+      return false
+    },
     async showWeekOverview(item) {
       await this.$refs.week_overview.open(
         item.week,
@@ -198,13 +210,24 @@ export default {
       if (this.month_totals != null) {
         let month_sum = [];
         for (const x of Array(13).keys()) {
-          if(x ==0 ) continue;
-          if(this.month_totals.hasOwnProperty(x)){
-            month_sum.push({ month: moment(x, 'MM').locale("nl").format('MMMM'), sum: this.month_totals[x] })
+          if (x == 0) continue;
+          let maand_totaal = {}
+          if (this.month_totals[0].hasOwnProperty(x)) {
+            maand_totaal['month'] = moment(x, 'MM').locale("nl").format('MMMM');
+            maand_totaal['sum'] = this.month_totals[0][x]
           }
-          else{
-            month_sum.push({ month: moment(x, 'MM').locale("nl").format('MMMM'), sum: 0 })
+          else {
+            maand_totaal['month'] = moment(x, 'MM').locale("nl").format('MMMM');
+            maand_totaal['sum'] = 0
           }
+
+          if (this.month_totals[1].hasOwnProperty(x)) {
+            maand_totaal['sum_milkings'] = this.month_totals[1][x]
+          }
+          else {
+            maand_totaal['sum_milkings'] = 0
+          }
+          month_sum.push(maand_totaal)
         }
 
         return month_sum;
@@ -285,12 +308,12 @@ export default {
       }
     },
     yearTotal() {
-      if(this.month_totals!= null) {
+      if (this.month_totals != null) {
         const values = Object.values(this.month_totals);
-      const jaarTotaal = values.reduce((accumulator, value) => {
-        return accumulator + value;
-      }, 0);
-      return jaarTotaal;
+        const jaarTotaal = values.reduce((accumulator, value) => {
+          return accumulator + value;
+        }, 0);
+        return jaarTotaal;
       }
       else {
         return 0
@@ -306,7 +329,5 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
 
