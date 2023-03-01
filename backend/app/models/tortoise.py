@@ -76,6 +76,7 @@ class WorkingHours(models.Model):
     last_modified_by = fields.CharField(null=True, max_length=255)
     date = fields.DateField(null=True)
     hours = fields.FloatField(null=True)
+    milkings = fields.IntField(null=True)
     description = fields.TextField(null=True)
     submitted = fields.BooleanField(null=False, default=False)
     # Foreign key
@@ -87,7 +88,7 @@ class WorkingHours(models.Model):
     class Meta:
         table = "working_hours"
 
- 
+
 class BouwPlan(models.Model):
     id = fields.IntField(pk=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -109,7 +110,7 @@ class BouwPlan(models.Model):
 
 
 class Machines(models.Model):
-    id =  fields.IntField(pk=True)
+    id = fields.IntField(pk=True)
     created_at = fields.DatetimeField(auto_now_add=True)
     created_by = fields.CharField(null=False, max_length=255)
     last_modified_at = fields.DatetimeField(auto_now=True)
@@ -122,11 +123,18 @@ class Machines(models.Model):
     type_name = fields.CharField(null=True, max_length=255)
     licence_number = fields.CharField(null=True, max_length=255)
     chassis_number = fields.CharField(null=True, max_length=255)
-    construction_year  = fields.IntField(null=True)
+    construction_year = fields.IntField(null=True)
     ascription_code = fields.CharField(null=True, max_length=255)
 
     class PydanticMeta:
-        exclude = ("created_at",'created_by','last_modified_at','last_modified_by', 'maintenance_issues')
+        exclude = (
+            "created_at",
+            "created_by",
+            "last_modified_at",
+            "last_modified_by",
+            "maintenance_issues",
+        )
+
 
 class MaintenanceMachines(models.Model):
     id = fields.IntField(pk=True)
@@ -138,9 +146,13 @@ class MaintenanceMachines(models.Model):
     status = fields.CharField(null=True, max_length=255)
     priority = fields.CharField(null=True, max_length=255)
     # Relations
-    machine = fields.ForeignKeyField('models.Machines', related_name='maintenance_issues')
-    user = fields.ForeignKeyField("models.Users", related_name="reported_maintenance_issues")
-    
+    machine = fields.ForeignKeyField(
+        "models.Machines", related_name="maintenance_issues"
+    )
+    user = fields.ForeignKeyField(
+        "models.Users", related_name="reported_maintenance_issues"
+    )
+
     class Meta:
         table = "machine_maintenance"
 
@@ -150,8 +162,8 @@ class TankTransactions(models.Model):
     vehicle = fields.CharField(null=True, max_length=255)
     driver = fields.CharField(null=True, max_length=255)
     transaction_type = fields.CharField(null=True, max_length=255)
-    acquisition_mode= fields.CharField(null=True, max_length=255)
-    transaction_status  = fields.CharField(null=True, max_length=255)
+    acquisition_mode = fields.CharField(null=True, max_length=255)
+    transaction_status = fields.CharField(null=True, max_length=255)
     start_date_time = fields.DatetimeField(null=True)
     transaction_number = fields.IntField(null=True)
     product = fields.CharField(null=True, max_length=255)
@@ -159,7 +171,6 @@ class TankTransactions(models.Model):
     transaction_duration = fields.CharField(null=True, max_length=255)
     meter = fields.IntField(null=True)
     meter_type = fields.CharField(null=True, max_length=255)
-
 
     class Meta:
         table = "tank_transactions"
@@ -171,10 +182,9 @@ class LoginStatusDevices(models.Model):
     last_modified_at = fields.DatetimeField(auto_now=True)
     device_id = fields.CharField(null=True, max_length=500)
     logged_in = fields.BooleanField(null=False, default=False)
-    last_provided_access_token = fields.CharField(null=True,max_length=500)
+    last_provided_access_token = fields.CharField(null=True, max_length=500)
     # Relations
-    user = fields.ForeignKeyField('models.Users', related_name='device_login_statusses')
-
+    user = fields.ForeignKeyField("models.Users", related_name="device_login_statusses")
 
     class Meta:
         table = "login_status_device"
