@@ -33,7 +33,7 @@
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <nuxt-link class="link" style="color: black" to="/">{{
-          title
+        title
       }}</nuxt-link>
       <v-spacer />
 
@@ -133,7 +133,7 @@ export default {
         {
           title: "Bouwplan",
           action: "mdi-sprout-outline",
-          items: [{ title: "2022", route: "/bouwplan", roles: ["werknemer", "monteur", "admin"] }],
+          items: [{ title: "2022", route: "/bouwplan/2022", roles: ["werknemer", "monteur", "admin"] }, { title: "2023", route: "/bouwplan/2023", roles: ["werknemer", "monteur", "admin"] }],
           roles: ["werknemer", "monteur", "admin"]
         },
 
