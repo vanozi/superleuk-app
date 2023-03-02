@@ -1,17 +1,10 @@
 // https://techformist.com/reusable-confirmation-dialog-vuetify/
 
 <template>
-  <v-dialog
-    v-model="dialog"
-    :max-width="options.width"
-    :style="{ zIndex: options.zIndex }"
-    @keydown.esc="cancel"
-  >
+  <v-dialog v-model="dialog" :max-width="options.width" :style="{ zIndex: options.zIndex }" @keydown.esc="cancel">
     <v-card>
       <v-toolbar dark :color="options.color" dense flat>
-        <v-toolbar-title
-          class="text-body-1 font-weight-bold grey--text text--darken-2"
-        >
+        <v-toolbar-title class="text-body-1 font-weight-bold grey--text text--darken-2">
           Week: {{ week_number }} ({{ formatDateforTemplate(week_start) }}/{{
             formatDateforTemplate(week_end)
           }})
@@ -23,6 +16,7 @@
             <tr>
               <th class="text-left">Datum</th>
               <th class="text-left">Uren</th>
+              <th class="text-left">Melkbeurten</th>
               <th class="text-left">Omschrijving</th>
             </tr>
           </thead>
@@ -30,6 +24,7 @@
             <tr v-for="(x, i) in working_hours" :key="i">
               <td width="120px">{{ formatDateforTemplate(x.date) }}</td>
               <td width="80px ">{{ x.hours }}</td>
+              <td width="80px ">{{ x.milkings }}</td>
               <td>
                 {{ x.description }}
               </td>
@@ -39,13 +34,7 @@
       </v-card-text>
       <v-card-actions class="pt-3">
         <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          class="body-2 font-weight-bold"
-          outlined
-          @click.native="agree"
-          >OK</v-btn
-        >
+        <v-btn color="primary" class="body-2 font-weight-bold" outlined @click.native="agree">OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

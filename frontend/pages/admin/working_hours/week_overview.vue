@@ -4,40 +4,21 @@
     <SubmittedWeekDlg ref="week_overview" />
     <v-container>
       <v-row>
-        <v-col
-          :cols="$vuetify.breakpoint.mdAndUp ? 4 : 12"
-          class="justify-left"
-        >
-          <v-dialog
-            ref="dialog"
-            v-model="modal"
-            :return-value.sync="date"
-            persistent
-            width="290px"
-          >
+        <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : 12" class="justify-left">
+          <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                label="Selecteer data"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                v-model="dateRangeText"
-              ></v-text-field>
+              <v-text-field label="Selecteer data" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"
+                v-model="dateRangeText"></v-text-field>
             </template>
             <v-date-picker locale="nl-nl" v-model="dates" range>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="modal = false">
                 Annuleer
               </v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="
-                  modal = false;
-                  notSubmittedWeeks();
-                "
-              >
+              <v-btn text color="primary" @click="
+                modal = false;
+              notSubmittedWeeks();
+                                ">
                 OK
               </v-btn>
             </v-date-picker>
@@ -46,20 +27,12 @@
       </v-row>
 
       <v-expansion-panels focusable>
-        <v-expansion-panel
-          @click.native="setWeekDates(item)"
-          v-for="(item, i) in weeks_not_submitted"
-          :key="i"
-        >
-          <v-expansion-panel-header class="subtitle-1"
-            >Week {{ item.week }}:&nbsp;<span
-              class="subtitle-2 font-weight-light font-italic"
-            >
+        <v-expansion-panel @click.native="setWeekDates(item)" v-for="(item, i) in weeks_not_submitted" :key="i">
+          <v-expansion-panel-header class="subtitle-1">Week {{ item.week }}:&nbsp;<span
+              class="subtitle-2 font-weight-light font-italic">
               ( {{ formatDateforTemplate(item.week_start) }}/{{
                 formatDateforTemplate(item.week_end)
-              }})</span
-            ></v-expansion-panel-header
-          >
+              }})</span></v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-simple-table dense class="mt-3">
               <template v-slot:default>
@@ -67,15 +40,12 @@
                   <tr>
                     <th class="text-left">Naam</th>
                     <th class="text-left">Uren</th>
+                    <th class="text-left">Melkbeurten</th>
                     <th class="text-left">Ingediend?</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="(x, i) in item.employee_info"
-                    :key="i"
-                    @click="showWeekOverview(x.working_hours)"
-                  >
+                  <tr v-for="(x, i) in item.employee_info" :key="i" @click="showWeekOverview(x.working_hours)">
                     <!-- <td>{{ x.name }}</td> -->
                     <td>
                       <a v-bind:href="'/admin/working_hours/user/' + x.user_id">
@@ -83,6 +53,7 @@
                       </a>
                     </td>
                     <td>{{ x.sum_hours }}</td>
+                    <td>{{ x.sum_milkings }}</td>
                     <td>
                       <div v-if="x.submitted">
                         <v-icon color="green"> mdi-hand-okay</v-icon>
@@ -92,8 +63,7 @@
                       </div>
 
                       <v-icon color="red" v-else>
-                        mdi-close-octagon-outline</v-icon
-                      >
+                        mdi-close-octagon-outline</v-icon>
                     </td>
                   </tr>
                 </tbody>
@@ -290,5 +260,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

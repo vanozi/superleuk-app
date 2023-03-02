@@ -11,18 +11,13 @@
       <v-tab-item value="week_overview">
         <v-row class="mt-3 ml-1">
           <v-col v-if="werknemer != null">
-            <span class="font-weight-bold">Naam: </span
-            >{{ werknemer.first_name }} {{ werknemer.last_name }}
+            <span class="font-weight-bold">Naam: </span>{{ werknemer.first_name }} {{ werknemer.last_name }}
           </v-col>
         </v-row>
         <v-row class="ml-1">
           <v-col>
             <!-- jaar aanpassen -->
-            <v-btn
-              icon
-              @click="substractYear"
-              v-if="werknemer != null && previousYearAllowed"
-            >
+            <v-btn icon @click="substractYear" v-if="werknemer != null && previousYearAllowed">
               <v-icon>mdi-chevron-triple-left</v-icon>
             </v-btn>
             <b>{{ computedSelectedYear }}</b>
@@ -38,15 +33,12 @@
                 <th class="text-left">Week</th>
                 <th class="text-left">Van/Tot</th>
                 <th class="text-left">Uren</th>
+                <th class="text-left">Melkbeurten</th>
                 <th class="text-left">Ingediend?</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(item, i) in week_overview"
-                :key="i"
-                @click="showWeekOverview(item)"
-              >
+              <tr v-for="(item, i) in week_overview" :key="i" @click="showWeekOverview(item)">
                 <td>{{ item.week }}</td>
                 <td>
                   {{ formatDateforTemplate(item.week_start) }}/{{
@@ -54,6 +46,7 @@
                   }}
                 </td>
                 <td>{{ item.sum_hours }}</td>
+                <td>{{ item.sum_milkings }}</td>
                 <td>
                   <div v-if="item.submitted">
                     <v-icon color="green"> mdi-hand-okay</v-icon>
@@ -74,18 +67,13 @@
       <v-tab-item value="month_overview">
         <v-row class="mt-3 ml-1">
           <v-col v-if="werknemer != null">
-            <span class="font-weight-bold">Naam: </span
-            >{{ werknemer.first_name }} {{ werknemer.last_name }}
+            <span class="font-weight-bold">Naam: </span>{{ werknemer.first_name }} {{ werknemer.last_name }}
           </v-col>
         </v-row>
         <v-row class="ml-1">
           <v-col>
             <!-- jaar aanpassen -->
-            <v-btn
-              icon
-              @click="substractYear"
-              v-if="werknemer != null && previousYearAllowed"
-            >
+            <v-btn icon @click="substractYear" v-if="werknemer != null && previousYearAllowed">
               <v-icon>mdi-chevron-triple-left</v-icon>
             </v-btn>
             <b>{{ computedSelectedYear }}</b>
@@ -100,24 +88,24 @@
               <tr>
                 <th class="text-left">Maand</th>
                 <th class="text-left">Totaal uren</th>
+                <th class="text-left">Totaal melkbeurten</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="item in workingHoursPerMonthInSelectedYear"
-                :key="item.month"
-              >
+              <tr v-for="item in workingHoursPerMonthInSelectedYear" :key="item.month">
                 <td>{{ item.month }}</td>
                 <td>{{ item.sum }}</td>
+                <td>{{ item.sum_milkings }}</td>
               </tr>
             </tbody>
           </template>
         </v-simple-table>
         <br />
         <v-row>
-          <v-col class="justify-left ml-2"
-            >Totaal uren: &nbsp {{ yearTotal }}</v-col
-          >
+          <v-col class="justify-left ml-2">Totaal uren: &nbsp {{ yearTotal }}</v-col>
+        </v-row>
+        <v-row>
+          <v-col class="justify-left ml-2">Totaal melkbeurten: &nbsp {{ yearMilkingsTotal }}</v-col>
         </v-row>
       </v-tab-item>
     </v-tabs>
@@ -179,10 +167,12 @@ export default {
     },
     getArraySum(a) {
       var total = 0;
+      var total_milkings = 0;
       for (var i in a) {
         total += a[i].hours;
+        total_milkings += a[i].milkings
       }
-      return total;
+      return [total, total_milkings];
     },
     async weekOverview() {
       // Login API call
@@ -292,6 +282,18 @@ export default {
       }
       return total;
     },
+    yearMilkingsTotal() {
+      var total = 0;
+
+      for (
+        var i = 0, n = this.workingHoursPerMonthInSelectedYear.length;
+        i < n;
+        ++i
+      ) {
+        total += this.workingHoursPerMonthInSelectedYear[i].sum_milkings;
+      }
+      return total;
+    },
     workingHoursPerMonthInSelectedYear() {
       var hourSumsForYear = [];
       for (let i = 0; i < 12; i++) {
@@ -309,7 +311,8 @@ export default {
         var total = this.getArraySum(hoursMonth);
         hourSumsForYear.push({
           month: moment().month(i).locale("nl").format("MMMM"),
-          sum: total,
+          sum: total[0],
+          sum_milkings: total[1]
         });
       }
       return hourSumsForYear;
@@ -399,5 +402,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
