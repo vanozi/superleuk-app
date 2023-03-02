@@ -258,6 +258,7 @@ async def get_week_overview_admin(from_date:datetime.date, to_date:datetime.date
                 working_hours = await werknemer.working_hours.filter(date__range=[week_start, week_end])
                 werknemer_info['working_hours'] = working_hours
                 werknemer_info['sum_hours'] = sum([i.hours for i in working_hours])
+                werknemer_info['sum_milkings'] = sum([i.milkings for i in working_hours])
                 # check if after the user was created he did not register hours for a particular week
                 werknemer_info['submitted'] = False if working_hours == [] and werknemer.created_at.date()<week_end else None
                 # if any of the working items 

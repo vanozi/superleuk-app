@@ -128,6 +128,7 @@ class WeekResult(pydantic.BaseModel):
     user_id: int
     name: str
     sum_hours: float
+    sum_milkings: float
     submitted: bool
     working_hours: List[WorkingHoursResponseSchema]
 
