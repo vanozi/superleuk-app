@@ -35,14 +35,10 @@ async def post_machine_maintenance_issue(
                 **incoming_issue.dict(),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
-                machine=machine,
+                user=current_active_user,
+                
             )
-            user = await Users.get_or_none(email=maintenace_issue.created_by)
-            await user.fetch_related("roles")
-            maintenace_issue.user = user
-            await maintenace_issue.save()
-            return maintenace_issue
-        except:
+        except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",

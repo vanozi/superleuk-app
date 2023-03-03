@@ -10,12 +10,12 @@
             <v-toolbar-title>Machinepark</v-toolbar-title>
             <v-spacer></v-spacer>
             <!-- Toevoegen en wijzigen dialoog: Only if user is admin -->
-            <v-dialog  v-if="userIsAdmin" v-model="dialog" max-width="500px" @click:outside="close">
-              <template v-slot:activator="{ on, attrs }" >
-                <v-btn  color="primary" dark class="mb-2 hidden-xs-only" v-bind="attrs" v-on="on">
+            <v-dialog v-if="userIsAdmin" v-model="dialog" max-width="500px" @click:outside="close">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="primary" dark class="mb-2 hidden-xs-only" v-bind="attrs" v-on="on">
                   Machine toevoegen
                 </v-btn>
-                <v-btn  color="primary" outlined class="mb-2 hidden-sm-and-up" v-bind="attrs" v-on="on">
+                <v-btn color="primary" outlined class="mb-2 hidden-sm-and-up" v-bind="attrs" v-on="on">
                   <v-icon class="mr-2">mdi-plus-circle-outline</v-icon><v-icon>mdi-tractor-variant</v-icon>
                 </v-btn>
               </template>
@@ -32,7 +32,8 @@
                         label="Werknummer"></v-text-field>
                       <v-text-field v-model="machine.work_name" label="Werknaam"></v-text-field>
                       <v-select v-model="machine.group" :items="groups" label="Groep"></v-select>
-                      <v-select v-model="machine.category" v-bind:items="getCategories(machine.group)" label="Soort"></v-select>
+                      <v-select v-model="machine.category" v-bind:items="getCategories(machine.group)"
+                        label="Soort"></v-select>
                       <v-text-field v-model="machine.brand_name" label="Merk"></v-text-field>
                       <v-text-field v-model="machine.type_name" label="Type"></v-text-field>
                       <v-text-field v-model="machine.licence_number" label="Kenteken"></v-text-field>
@@ -58,11 +59,11 @@
             </v-text-field>
           </v-toolbar>
         </template>
-  <template v-slot:[`item.work_number`]="{ item }">
-    <router-link :to="{ name: 'machines-slug', params: { slug: item.id } }">
-      {{ item.work_number }}
-    </router-link>
-  </template>
+        <template v-slot:[`item.work_number`]="{ item }">
+          <router-link :to="{ name: 'machines-slug', params: { slug: item.id } }">
+            {{ item.work_number }}
+          </router-link>
+        </template>
         <!-- Actions column only if user is admin -->
         <template v-if="userIsAdmin" v-slot:[`item.actions`]="{ item }">
           <v-icon color="warning" outlined class="mr-3" @click="editItem(item)">
@@ -87,7 +88,7 @@ export default {
     machine_edited: false,
     machine: {},
     search: "",
-    groups: ["Gemotoriseerd", "Getrokken machine", "Overig"],
+    groups: ["Gemotoriseerd", "Getrokken machine", "Gedragen machine", "Overig"],
     categories_motorised: ["Hakselaar", "Auto", "Graafmachine", "Trekker", "Vrachtwagen", "Overig"],
     categories_pulled_machines: ["Container", "Dieplader", "Dumper", "Hark", "Kilverbak", "Kipper", "Meststrooier", "Mesttank", "Pers", "Silagekar", "Veewagen", "Veldspuit", "Voerkar", "Overig"],
     headersAdmin: [
@@ -292,5 +293,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
