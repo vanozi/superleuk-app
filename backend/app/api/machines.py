@@ -19,7 +19,7 @@ router = APIRouter()
 
 @router.post(
     "/",
-    dependencies=[Depends(RoleChecker(["admin"]))],
+    dependencies=[Depends(RoleChecker(["admin", "monteur"]))],
     status_code=201,
     response_model=MachineResponseSchema,
 )
@@ -52,7 +52,7 @@ async def post_machine(
 
 @router.put(
     "/",
-    dependencies=[Depends(RoleChecker(["admin"]))],
+    dependencies=[Depends(RoleChecker(["admin", "monteur"]))],
     status_code=200,
     response_model=MachineResponseSchema,
 )
@@ -96,7 +96,7 @@ async def get_single_machines(
     return {"info" : machine, "maintenance_issues" : maintenance_issues, "tank_transactions": tank_transactions}
 
 
-@router.delete("/{id}", status_code=200, dependencies=[Depends(RoleChecker(["admin"]))])
+@router.delete("/{id}", status_code=200, dependencies=[Depends(RoleChecker(["admin", "monteur"]))])
 async def delete_single_machine(id: int):
     machine = await Machines.get_or_none(id=id)
     if machine is not None:

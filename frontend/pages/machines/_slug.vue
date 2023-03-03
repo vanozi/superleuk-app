@@ -61,7 +61,8 @@
       <v-tabs-items v-model="tab">
         <!-- Onderhoud -->
         <v-tab-item :key="onderhoud">
-          <v-data-table :search="searchOnderhoud" :headers="userHasRole(['admin','monteur']) ? headersOnderhoudAdmin : headersOnderhoud"
+          <v-data-table :search="searchOnderhoud"
+            :headers="userHasRole(['admin', 'monteur']) ? headersOnderhoudAdmin : headersOnderhoud"
             :sort-by="['created_at']" show-expand :sort-desc="[true]" :items="filteredMaintenanceIssues"
             class="elevation-1">
             <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
@@ -80,8 +81,7 @@
             </v-toolbar> -->
               <!-- Toolbar voor snel zoeken -->
               <v-toolbar flat>
-                <v-text-field v-model="searchOnderhoud" append-icon="mdi-magnify" label="Zoeken" single-line
-                  hide-details>
+                <v-text-field v-model="searchOnderhoud" append-icon="mdi-magnify" label="Zoeken" single-line hide-details>
                 </v-text-field>
               </v-toolbar>
             </template>
@@ -155,8 +155,7 @@
         </v-tab-item>
         <!-- Tankbeurten -->
         <v-tab-item :key="tankbeurten">
-          <v-data-table :search="searchTankBeurten" :headers="headersTankBeurten"
-            :items="machineData.tank_transactions">
+          <v-data-table :search="searchTankBeurten" :headers="headersTankBeurten" :items="machineData.tank_transactions">
             <!-- Toolbar met titel en knop om een nieuw onderhouds item toe te voegen -->
             <template v-slot:top>
 
@@ -184,7 +183,6 @@
 
     </v-container>
   </div>
-
 </template>
 
 <script>
@@ -394,40 +392,48 @@ export default {
       }
     }
   },
+  userHasRole(rolesToCheck) {
+    for (let i = 0; i < rolesToCheck.length; i++) {
+      if (this.$auth.user.roles.filter((e) => e.name === rolesToCheck[i]).length > 0) {
+        return true;
+      }
+    }
+    return false
+  },
   computed: {
-        userIsAdmin() {
+    userIsAdmin() {
       if (this.$auth.user.roles.filter((e) => e.name === "admin").length > 0) {
         return true;
       } else {
         return false;
       }
     },
-            // Filter de maintenance issues op basis van de filters in de columns
-        filteredMaintenanceIssues() {
-            this.conditions = [];
-            if (this.werkNaamMachine) {
-                this.conditions.push(this.filterWerkNaamMachine);
-            }
-            if (this.statusFilterWaarde) {
-                this.conditions.push(this.filterStatus);
-            }
-            if (this.descriptionFilter) {
-                this.conditions.push(this.filterDescription);
-            }
-            if (this.priorityFilter) {
-                this.conditions.push(this.filterPriority);
-            }
+    // Filter de maintenance issues op basis van de filters in de columns
+    filteredMaintenanceIssues() {
+      this.conditions = [];
+      if (this.werkNaamMachine) {
+        this.conditions.push(this.filterWerkNaamMachine);
+      }
+      if (this.statusFilterWaarde) {
+        this.conditions.push(this.filterStatus);
+      }
+      if (this.descriptionFilter) {
+        this.conditions.push(this.filterDescription);
+      }
+      if (this.priorityFilter) {
+        this.conditions.push(this.filterPriority);
+      }
 
-            if (this.conditions.length > 0) {
-              console.log(this.machineData.maintenance_issues)
-                return this.machineData.maintenance_issues.filter((maintenance_issue) => {
-                    return this.conditions.every((condition) => {
-                        return condition(maintenance_issue);
-                    })
-                })
-            }
-            return this.machineData.maintenance_issues
-        },
+      if (this.conditions.length > 0) {
+        console.log(this.machineData.maintenance_issues)
+        return this.machineData.maintenance_issues.filter((maintenance_issue) => {
+          return this.conditions.every((condition) => {
+            return condition(maintenance_issue);
+          })
+        })
+      }
+      return this.machineData.maintenance_issues
+    },
     ...mapGetters({
       machineData: "machines/getCurrentMachine",
     }),
@@ -439,5 +445,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

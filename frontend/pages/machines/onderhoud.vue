@@ -125,7 +125,6 @@
         </template>
       </v-data-table>
     </section>
-    {{ filteredMaintenanceIssues }}
   </v-container>
 </template>
 
