@@ -74,7 +74,10 @@ async def register(
             await user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
+            detail=(
+                f"Er is een onverwachte fout opgetreden, neem contact op met de"
+                f" beheerder"
+            ),
         )
 
     await user.fetch_related("roles")
@@ -112,7 +115,9 @@ async def activate_account(
     except:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Er is een onverwachte fout opgetreden bij het opslaan in de database",
+            detail=(
+                "Er is een onverwachte fout opgetreden bij het opslaan in de database"
+            ),
         )
 
 
@@ -153,7 +158,9 @@ async def resent_activation_code(
         await user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een onverwachte fout opgetreden bij het versturen van de email",
+            detail=(
+                f"Er is een onverwachte fout opgetreden bij het versturen van de email"
+            ),
         )
 
 
@@ -187,6 +194,41 @@ async def get_login_token(
         status_code=200,
     )
 
+
+@router.post("/new-login")
+async def get_login_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    user = await Auth.authenticate_user(
+        email=form_data.username.lower(), password=form_data.password
+    )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email en/of wachtwoord onjuist",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    if user.is_active is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Gebruiker is nog niet geactiveerd!",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = Auth.get_access_token(email=user.email)
+    refresh_token = Auth.get_refresh_token(email=user.email)
+    response = JSONResponse(
+        {
+            "access_token": f"{access_token['token']}",
+        },
+        status_code=200,
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token["token"],
+        httponly=True,
+        samesite=None,
+    )
+    return response
 
 
 @router.post("/refresh")
@@ -252,14 +294,18 @@ async def forgot_password(
         )
         return JSONResponse(
             {
-                "message": "Er is een link verstuurd waarmee je je wachtwoord kunt resetten"
+                "message": (
+                    "Er is een link verstuurd waarmee je je wachtwoord kunt resetten"
+                )
             },
             status_code=200,
         )
     except:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een onverwachte fout opgetreden bij het versturen van de email",
+            detail=(
+                f"Er is een onverwachte fout opgetreden bij het versturen van de email"
+            ),
         )
 
 
@@ -290,3 +336,10 @@ async def reset_password(
     await user.save()
     # Create a success respons
     return JSONResponse({"detail": "Wachtwoord succesvol gereset"}, status_code=200)
+
+
+@router.post("/logout")
+async def logout():
+    response = JSONResponse({"detail": "Uitgelogd"}, status_code=200)
+    response.delete_cookie(key="refresh_token")
+    return response
