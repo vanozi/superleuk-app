@@ -199,6 +199,7 @@ class MachineCreateSchema(pydantic.BaseModel):
     chassis_number: Optional[str]
     construction_year: Optional[str]
     ascription_code: Optional[str]
+    insurance_type: Optional[str]="Niet verzekerd"
 
 class MachineBaseInfo(pydantic.BaseModel):
     id : Optional[int]
@@ -212,6 +213,7 @@ class MachineBaseInfo(pydantic.BaseModel):
     chassis_number: Optional[str]
     construction_year: Optional[str]
     ascription_code: Optional[str]
+    insurance_type: Optional[str]
 
 class MainetenanceIssueInfo(pydantic.BaseModel):
     id: int
