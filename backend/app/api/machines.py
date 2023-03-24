@@ -37,8 +37,7 @@ async def post_machine(
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
             )
-        except Exception as e:
-            print(e)
+        except:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Er is een onverwachte fout opgetreden, neem contact op met de beheerder",
