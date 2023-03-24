@@ -4,7 +4,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      { path: '', component: () => import('src/views/IndexView.vue') },
+    ],
     meta: { requiresAuth: true },
   },
   // auth
@@ -12,7 +14,10 @@ const routes: RouteRecordRaw[] = [
     path: '/auth',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'login', component: () => import('pages/auth/LoginPage.vue') },
+      {
+        path: 'login',
+        component: () => import('src/views/auth/LoginPage.vue'),
+      },
     ],
   },
   // werkplaats
@@ -20,10 +25,41 @@ const routes: RouteRecordRaw[] = [
     path: '/werkplaats',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/werkplaats/IndexPage.vue') },
+      {
+        path: '',
+        component: () => import('src/views/werkplaats/IndexPage.vue'),
+      },
       {
         path: 'machines',
-        component: () => import('pages/werkplaats/MachinesPage.vue'),
+        component: () => import('src/views/werkplaats/MachinesPage.vue'),
+      },
+    ],
+  },
+  // uren registratie
+  {
+    path: '/uren',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'invoeren',
+        component: () =>
+          import('src/views/uren-registratie/HourRegistrationView.vue'),
+      },
+      {
+        path: 'invoeren2',
+        component: () =>
+          import('src/views/uren-registratie/HourRegistrationContainer.vue'),
+      },
+    ],
+  },
+  // design pattersn
+  {
+    path: '/patterns',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'builder',
+        component: () => import('src/views/BuilderPatternView.vue'),
       },
     ],
   },
@@ -32,7 +68,7 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: () => import('src/views/ErrorNotFound.vue'),
   },
 ];
 

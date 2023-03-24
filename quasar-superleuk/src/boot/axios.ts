@@ -71,6 +71,9 @@ api.interceptors.response.use(
     }
   }
 );
+// write an axios interceptor to refresh the tokens when they expire
+// https://stackoverflow.com/questions/51563821/axios-interceptors-retry-original-request-and-access-original-promise
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 

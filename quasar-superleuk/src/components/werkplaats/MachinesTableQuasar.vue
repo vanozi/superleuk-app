@@ -44,6 +44,12 @@ const filter = ref('');
 
 // rows
 const rows: any = inject('rows');
+
+// table functions
+const rowDoubleClick = function (e: Event, row: any) {
+  console.log(e);
+  console.log(row);
+};
 </script>
 
 <template>
@@ -54,11 +60,34 @@ const rows: any = inject('rows');
     row-key="name"
     :pagination="initialPagination"
     :filter="filter"
-    :card-class="$q.screen.xs ? 'bg-grey-1 ' : ''"
+    :card-class="$q.screen.xs ? 'grid-card' : ''"
     :visible-columns="visibleColumns"
+    @row-dblclick="rowDoubleClick"
   >
     <template v-slot:top>
-      <q-list style="width: 100%">
+      <q-card flat class="header-card">
+        <q-card-section>
+          <div class="text-h6">Machinelijst</div>
+        </q-card-section>
+        <q-card-section>
+          <MachineFilters @filter-data="$emit('filter-data', $event)" />
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            dense
+            debounce="300"
+            color="primary"
+            v-model="filter"
+            style="width: 350px"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </q-card-section>
+      </q-card>
+
+      <!-- <q-list style="width: 100%">
         <q-item style="justify-content: start">
           <p class="text-h5">Machinelijst</p>
         </q-item>
@@ -80,6 +109,7 @@ const rows: any = inject('rows');
             option-value="name"
             options-cover
             style="min-width: 150px"
+            class="q-pa-xs"
           />
         </q-item>
         <q-item style="justify-content: start">
@@ -95,7 +125,17 @@ const rows: any = inject('rows');
             </template>
           </q-input>
         </q-item>
-      </q-list>
+      </q-list> -->
     </template>
   </q-table>
 </template>
+
+<style>
+.grid-card {
+  border: solid;
+  border-color: grey;
+}
+.header-card {
+  width: 100%;
+}
+</style>
