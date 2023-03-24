@@ -46,6 +46,9 @@
             <v-list-item>
               <span class="font-weight-bold">Bouwjaar: </span>&nbsp; {{ machineData.info.construction_year }}
             </v-list-item>
+            <v-list-item>
+              <span class="font-weight-bold">Verzekeringstype: </span>&nbsp; {{ machineData.info.insurance_type }}
+            </v-list-item>
 
           </v-list>
 

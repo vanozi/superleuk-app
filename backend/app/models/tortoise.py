@@ -125,6 +125,7 @@ class Machines(models.Model):
     chassis_number = fields.CharField(null=True, max_length=255)
     construction_year = fields.IntField(null=True)
     ascription_code = fields.CharField(null=True, max_length=255)
+    insurance_type = fields.CharField(null=True, max_length=255)
 
     class PydanticMeta:
         exclude = (

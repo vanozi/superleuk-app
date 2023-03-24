@@ -40,6 +40,7 @@
                       <v-text-field v-model="machine.chassis_number" label="Chassis nr."></v-text-field>
                       <v-text-field v-model="machine.construction_year" label="Bouwjaar"></v-text-field>
                       <v-text-field v-model="machine.ascription_code" label="Tenaamstellingscode"></v-text-field>
+                      <v-select v-model="machine.insurance_type" :items="insurance_types" label="Type verzerkering"></v-select>
                     </v-form>
                   </v-container>
                 </v-card-text>
@@ -91,6 +92,7 @@ export default {
     groups: ["Gemotoriseerd", "Getrokken machine", "Gedragen machine", "Overig"],
     categories_motorised: ["Hakselaar", "Auto", "Graafmachine", "Trekker", "Vrachtwagen", "Overig"],
     categories_pulled_machines: ["Container", "Dieplader", "Dumper", "Hark", "Kilverbak", "Kipper", "Meststrooier", "Mesttank", "Pers", "Silagekar", "Veewagen", "Veldspuit", "Voerkar", "Overig"],
+    insurance_types: ["Casco + Eigengebrek", "Casco", "Wa + Brandverzekering", "WA", "Niet Verzekerd", "Niet van Toepassing", "Onbekend"],
     headersAdmin: [
       //   text: string,
       //   value: string,
@@ -156,6 +158,11 @@ export default {
         value: "ascription_code",
         sortable: true
       },
+      {
+        text: "Verzekeringstype",
+        value: "insurance_type",
+        sortable: true
+      },
 
       { text: 'Acties', value: 'actions', sortable: false },
     ],
@@ -215,6 +222,11 @@ export default {
       {
         text: "Chassis nr.",
         value: "chassis_number",
+        sortable: true
+      },
+      {
+        text: "Verzekeringstype",
+        value: "insurance_type",
         sortable: true
       },
 
