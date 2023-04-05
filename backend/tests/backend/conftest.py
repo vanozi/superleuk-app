@@ -10,7 +10,7 @@ from tortoise.exceptions import OperationalError
 
 from app.config import Settings, get_settings
 from app.main import create_application
-from app.models.pydantic import AllowedUsersCreateSchema
+from app.models.pydantic import AllowedUsersCreateSchema, MachineCreateSchema
 from app.models.tortoise import Roles, Users
 from app.services.mail import fm
 
@@ -102,6 +102,33 @@ async def invite_new_user_fixture(test_client, admin_token: str):
         return response.status_code
 
     return _send_invitation
+
+
+@pytest.fixture(scope="function")
+async def insert_new_machine_fixture(test_client, admin_token: str):
+    async def _add_new_machine(work_number: str):
+        headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "Content-Type": "application/json",
+        }
+        payload = MachineCreateSchema(
+            work_number=work_number,
+            work_name="Test Machine 3",
+            category="Trekker 3",
+            group="Gemotoriseerd 3",
+            brand_name="John Deere 3",
+            type_name="7810 3",
+            licence_number="MM-11-XX 3",
+            chassis_number="123456789 3",
+            construction_year="2012",
+            ascription_code="1234567801",
+        ).json()
+        response = await test_client.post(
+            "/machines/", headers=headers, content=payload
+        )
+        return response.status_code
+
+    return _add_new_machine
 
 
 # HTML REPORT HOOKS

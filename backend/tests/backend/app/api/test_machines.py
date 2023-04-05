@@ -44,13 +44,16 @@ async def test_add_machine(test_client: TestClient, admin_token: str):
 
 @pytest.mark.apitest
 @pytest.mark.dev
-async def test_update_machine(test_client: TestClient, admin_token: str):
+async def test_update_machine(
+    test_client: TestClient, admin_token: str, insert_new_machine_fixture: str
+):
+    await insert_new_machine_fixture("M101")
     headers = {
         "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json",
     }
     payload = MachineCreateSchema(
-        work_number="M24",
+        work_number="M101",
         work_name="Test Machine 2",
         category="Trekker 2",
         group="Gemotoriseerd 2",
@@ -64,7 +67,7 @@ async def test_update_machine(test_client: TestClient, admin_token: str):
     response = await test_client.put("/machines/", headers=headers, content=payload)
     assert response.status_code == 200
     assert response.json()["id"]
-    assert response.json()["work_number"] == "M24"
+    assert response.json()["work_number"] == "M101"
     assert response.json()["work_name"] == "Test Machine 2"
     assert response.json()["category"] == "Trekker 2"
     assert response.json()["group"] == "Gemotoriseerd 2"
@@ -83,8 +86,18 @@ async def test_get_single_machine(test_client: TestClient, werknemer_token: str)
         "Authorization": f"Bearer {werknemer_token}",
         "Content-Type": "application/json",
     }
-    response = await test_client.get("/machines/1", headers=headers)
+    response = await test_client.get("/machines/1000", headers=headers)
     assert response.status_code == 200
+    assert response.json()["info"]["work_number"] == "M09"
+    assert response.json()["info"]["work_name"] == "7710 Hardloper"
+    assert response.json()["info"]["category"] == "Trekker"
+    assert response.json()["info"]["group"] == "Gemotoriseerd"
+    assert response.json()["info"]["brand_name"] == "John Deere"
+    assert response.json()["info"]["type_name"] == "7710"
+    assert response.json()["info"]["licence_number"] == "TPG-51-R"
+    assert response.json()["info"]["chassis_number"] == "RW7710A076489"
+    assert response.json()["info"]["construction_year"] == "2002"
+    assert response.json()["info"]["ascription_code"] == "0164-66695"
 
 
 @pytest.mark.apitest
