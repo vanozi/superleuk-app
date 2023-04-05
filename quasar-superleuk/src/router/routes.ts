@@ -45,11 +45,6 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('src/views/uren-registratie/HourRegistrationView.vue'),
       },
-      {
-        path: 'invoeren2',
-        component: () =>
-          import('src/views/uren-registratie/HourRegistrationContainer.vue'),
-      },
     ],
   },
   // design pattersn

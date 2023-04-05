@@ -1,87 +1,89 @@
-<script setup>
-import { ref, provide } from 'vue';
-import VueCal from 'vue-cal';
-import 'vue-cal/dist/vuecal.css';
-import { useWorkingHoursStore } from 'stores/workinghours-store';
-import UrenInvoerDialog from 'components/uren-registratie/UrenInvoerDialog.vue';
+<script setup lang="ts">
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import nlLocale from '@fullcalendar/core/locales/nl';
+import interactionPlugin from '@fullcalendar/interaction';
+import { ref, onMounted, reactive } from 'vue';
 
-// initialize stores
-const workingHoursStore = useWorkingHoursStore();
+const calendar1 = ref(null);
+const calendar1Api = ref(null);
+const showModal = ref(false);
+const weekRange = reactive({});
 
-const selectedEvent = ref();
-const activeView = ref();
-const selectedDate = ref();
-const showDialog = ref(false);
-const eventCreateDate = ref();
-
-provide('showDialog', showDialog);
-provide('eventCreateDate', eventCreateDate);
-
-const fetchEvents = function ({ view, startDate, endDate, week }) {
-  workingHoursStore.getWorkingHoursBetweenDates(
-    startDate.toISOString().split('T')[0],
-    endDate.toISOString().split('T')[0]
-  );
+const calendarOptions1 = {
+  headerToolbar: {
+    start: 'title', // will normally be on the left. if RTL, will be on the right
+    center: '',
+    end: 'customprev,customnext', // will normally be on the right. if RTL, will be on the left
+  },
+  plugins: [dayGridPlugin, interactionPlugin],
+  initialView: 'dayGridWeek',
+  editable: true, // important for activating event interactions!
+  selectable: true, // important for activating date selectability!
+  selectHelper: true,
+  select: function (start, end) {
+    console.log(start, end);
+    showModal.value = true;
+  },
+  locale: nlLocale,
+  resources: [
+    // your resource list
+  ],
+  events: [
+    {
+      allDay: true,
+      title: 'BCH237',
+      start: '2023-03-21',
+      extendedProps: {
+        department: 'BioChemistry',
+      },
+      description: 'Lecture',
+    },
+    // more events ...
+  ],
+  customButtons: {
+    customprev: {
+      text: '',
+      icon: 'chevron-left',
+      click: function () {
+        calendar1Api.value.prev();
+        calendar1Api.value.render();
+        weekRange.start = calendar1Api.value.view.activeStart;
+        weekRange.end = calendar1Api.value.view.activeEnd;
+      },
+    },
+    customnext: {
+      text: '',
+      icon: 'chevron-right',
+      click: function () {
+        calendar1Api.value.next();
+        calendar1Api.value.render();
+        weekRange.start = calendar1Api.value.view.activeStart;
+        weekRange.end = calendar1Api.value.view.activeEnd;
+      },
+    },
+  },
 };
 
-const onEventCreate = function (event) {
-  eventCreateDate.value = event.start.toISOString().split('T')[0];
-  showDialog.value = true;
-};
+onMounted(() => {
+  if (calendar1.value) {
+    calendar1Api.value = calendar1.value.getApi();
+    weekRange.start = calendar1Api.value.view.activeStart;
+    weekRange.end = calendar1Api.value.view.activeEnd;
+  }
+});
 </script>
+
 <template>
-  <q-page padding>
-    <vue-cal
-      ref="vuecal"
-      v-model:active-view="activeView"
-      v-model:selected-date="selectedDate"
-      show-week-numbers
-      today-button
-      hideViewSelector
-      :time="false"
-      locale="nl"
-      :disable-views="['years', 'day']"
-      :drag-to-create-event="false"
-      :editable-events="{
-        title: false,
-        drag: false,
-        resize: false,
-        delete: false,
-        create: true,
-      }"
-      :on-event-create="onEventCreate"
-      :events="workingHoursStore.workingHoursEventsBetweenDates"
-      @ready="fetchEvents"
-      @view-change="fetchEvents"
-    >
-      <template #arrow-prev>
-        <i class="icon material-icons">arrow_back</i>
-      </template>
-      <template #arrow-next>
-        <i class="icon material-icons">arrow_forward</i>
-      </template>
-      <template v-slot:no-event>
-        <div></div>
-      </template>
-      <!-- Optional slot for the custom button. -->
-      <template #today-button>
-        <q-btn size="sm" round flat icon="my_location" />
-      </template>
-    </vue-cal>
-    <!-- Uren invoer dialoog -->
-    <UrenInvoerDialog />
-  </q-page>
+  <main>
+    {{ weekRange.start }}
+    {{ weekRange.end }}
+    <FullCalendar ref="calendar1" :options="calendarOptions1" />
+  </main>
 </template>
 
 <style>
-.vuecal__event.leisure {
-  /* background-color: rgba(253, 156, 66, 0.9); */
-  border: 1px solid;
-  /* color: #fff; */
-}
-.vuecal__event.sport {
-  background-color: rgba(255, 102, 102, 0.9);
-  border: 1px solid rgb(235, 82, 82);
-  /* color: #fff; */
+.fc .fc-toolbar-title {
+  font-size: 15px;
 }
 </style>

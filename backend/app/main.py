@@ -14,7 +14,7 @@ from app.api import (
     machines,
     machine_onderhoud,
     tank_transactions,
-    ionic
+    ionic,
 )
 from app.db import init_db
 

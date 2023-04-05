@@ -6,6 +6,7 @@ from httpx import AsyncClient
 from starlette.testclient import TestClient
 from tortoise import Tortoise
 from tortoise.contrib.fastapi import register_tortoise
+from tortoise.exceptions import OperationalError
 
 from app.config import Settings, get_settings
 from app.main import create_application
@@ -15,51 +16,35 @@ from app.services.mail import fm
 
 
 def get_settings_override():
-    """Form a complex number.
-
-    Keyword arguments:
-    real -- the real part (default 0.0)
-    imag -- the imaginary part (default 0.0)
-    """
-    return Settings(testing=1, database_url=os.environ.get("DATABASE_TEST_BACKEND_URL"))
+    return Settings(testing=1, database_url=os.environ.get("DATABASE_URL_TEST_BACKEND"))
 
 
-async def init_db(db_url, create_db: bool = False, schemas: bool = False) -> None:
+async def init_db(
+    db_url,
+    create_db: bool = False,
+    create_schemas: bool = False,
+    create_test_data: bool = False,
+) -> None:
     """Initial database connection"""
     await Tortoise.init(
-        db_url=db_url, modules={"models": ["app.models.tortoise"]}, _create_db=create_db
+        db_url=db_url,
+        modules={"models": ["app.models.tortoise"]},
+        _create_db=create_db,
     )
-    if create_db:
-        print(f"Database created! {db_url}")
-    if schemas:
+    if create_schemas:
         await Tortoise.generate_schemas()
-        print("Success created database schema")
+    if create_test_data:
+        # Insert testdata into the database
+        # load testdata script
+        conn = Tortoise.get_connection("default")
+        with open("db/sql_files/setup_testdata.sql") as file:
+            lines = [line.rstrip() for line in file]
+            for line in lines:
+                await conn.execute_query(line)
 
 
-async def init(db_url: str = os.environ.get("DATABASE_TEST_BACKEND_URL")):
-    await init_db(db_url, True, True)
-    # Insert testdata into the database
-    # Roles
-    admin_role = await Roles.create(name="admin", description="User met admin rechten")
-    werknemer_role = await Roles.create(
-        name="werknemer", description="User met algemene werknemers rechten"
-    )
-    # Users
-    admin_user = await Users.create(
-        email="test_admin@test.com",
-        hashed_password="$2b$12$UKv6whbIteBbIsION9igLef5qOS6yzLn1MczUCST7X6RDn18afzZ2",
-        is_active=True,
-        confirmation=None,
-    )
-    werknemer_user = await Users.create(
-        email="test_werknemer@test.com",
-        hashed_password="$2b$12$X6OGY1eXztIH2rYDwyVFO.nmrPYq98kla4JmweOu4N/oMgoe3yaKK",
-        is_active=True,
-        confirmation=None,
-    )
-    # Userroles
-    await admin_user.roles.add(admin_role)
-    await werknemer_user.roles.add(werknemer_role)
+async def init(db_url: str = os.environ.get("DATABASE_URL_TEST_BACKEND")):
+    await init_db(db_url, True, True, True)
 
 
 @pytest.fixture(scope="session")
@@ -73,9 +58,9 @@ async def test_client(anyio_backend):
     await init()
     async with AsyncClient(app=app, base_url=os.getenv("BASE_URL_API")) as client:
         yield client
+    await client.aclose()
     await Tortoise._drop_databases()
     print("Database dropped")
-    await client.aclose()
 
 
 @pytest.fixture(scope="function")
@@ -84,10 +69,10 @@ async def admin_token(test_client):
     response = await test_client.post(
         url="/auth/login",
         headers={},
-        data={"username": "test_admin@test.com", "password": "admin"},
+        data={"username": "admin@admin.com", "password": "admin"},
         files=[],
     )
-    yield response.json()['access_token']
+    yield response.json()["access_token"]
 
 
 @pytest.fixture(scope="function")
@@ -96,25 +81,26 @@ async def werknemer_token(test_client):
     response = await test_client.post(
         url="/auth/login",
         headers={},
-        data={"username": "test_werknemer@test.com", "password": "werknemer"},
+        data={"username": "werknemer@werknemer.com", "password": "werknemer"},
         files=[],
     )
-    yield response.json()['access_token']
+    yield response.json()["access_token"]
 
 
 @pytest.fixture(scope="function")
-async def invite_new_user_fixture(test_client, admin_token:str):
+async def invite_new_user_fixture(test_client, admin_token: str):
     async def _send_invitation(email_adress: str):
         fm.config.SUPPRESS_SEND = 1
         headers = {
-        "Authorization": f"Bearer {admin_token}",
-        "Content-Type": "application/json",
+            "Authorization": f"Bearer {admin_token}",
+            "Content-Type": "application/json",
         }
         payload = AllowedUsersCreateSchema(email=email_adress).json()
         response = await test_client.post(
             "/allowed_users/", headers=headers, content=payload
         )
         return response.status_code
+
     return _send_invitation
 
 

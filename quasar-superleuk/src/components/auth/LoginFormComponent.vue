@@ -1,5 +1,10 @@
 <template>
-  <form @submit="onSubmit" class="q-gutter-md" data-test="login-form">
+  <form
+    @submit="onSubmit"
+    class="q-gutter-md"
+    data-test="login-form"
+    ref="LoginForm"
+  >
     <QInputWithValidation
       v-model="formValues.email"
       name="email"
@@ -65,7 +70,7 @@ const { handleSubmit, isSubmitting, meta } = useForm({
 });
 
 // submit handler
-const onSubmit = handleSubmit((values: LoginFormInterface): void => {
+const onSubmit: any = handleSubmit((values: LoginFormInterface): void => {
   accountStore.loginUser(values, function () {
     router.push('/');
   });

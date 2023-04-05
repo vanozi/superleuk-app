@@ -1,7 +1,6 @@
-version: '3.8'
+version: "3.8"
 
 services:
-
   fastapi:
     build:
       context: ./backend
@@ -29,13 +28,12 @@ services:
       - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
     volumes:
       - ./backend:/app
-    command:
-      [
+    command: [
         "sh",
         "-c",
         "pip install debugpy && python -m debugpy --wait-for-client --listen
-          0.0.0.0:5678 -m uvicorn app.main:app --reload --host 0.0.0.0 --port
-          8004"
+        0.0.0.0:5678 -m uvicorn app.main:app --reload --host 0.0.0.0 --port
+        8004",
       ]
     depends_on:
       - database

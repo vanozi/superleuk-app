@@ -19,7 +19,7 @@ export const useAccountStore = defineStore('account-store', () => {
   async function logoutUser(_callback?: CallbackNOParam) {
     api
       .post('/auth/logout')
-      .then((response) => {
+      .then(() => {
         LocalStorage.remove('access_token');
         loggedInUser.value = null;
         Notify.create({
@@ -99,7 +99,7 @@ export const useAccountStore = defineStore('account-store', () => {
           _callback();
         }
       })
-      .catch((error) => {
+      .catch(() => {
         if (typeof _errorcallback !== 'undefined') {
           _errorcallback();
         }
