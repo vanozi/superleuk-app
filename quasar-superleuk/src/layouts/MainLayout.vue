@@ -3,6 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
+          v-if="accountStore.isLoggedIn"
           flat
           dense
           round
@@ -24,7 +25,12 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      v-if="accountStore.isLoggedIn"
+    >
       <q-list>
         <q-item-label header> Navigatie Links </q-item-label>
         <q-expansion-item expand-separator>
