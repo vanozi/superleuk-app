@@ -1,19 +1,29 @@
 <template>
-  <q-form action="" @submit.prevent="submit" class="form q-pa-md">
-    <div v-for="(field, index) in fields" :key="field.name">
+  <q-form
+    action=""
+    @submit.prevent="submit"
+    class="form q-pa-md"
+    :data-testId="testIdForm"
+  >
+    <div v-for="field in fields" :key="field.name">
       <component
         :id="field.name"
         :is="field.component"
         v-bind="{ ...field.props, ...field.attrs }"
-        @update:modelValue="onChangeHandler($event, field.name, index)"
+        @update:modelValue="onChangeHandler($event, field.name)"
       />
       <div class="error" v-if="errors[field.name]">
         {{ errors[field.name] }}
       </div>
     </div>
     <br />
-    <q-btn type="submit" color="primary" outline :disabled="!submitable"
-      >Verstuur</q-btn
+    <q-btn
+      type="submit"
+      color="primary"
+      outline
+      :disabled="!submitable"
+      :data-testId="`${testIdForm}-submit-button`"
+      >{{ nameSubmitButton }}</q-btn
     >
   </q-form>
 </template>
@@ -31,6 +41,7 @@ export interface ValidationResult {
 export interface DataStructure {
   values: ObjectGeneric;
   errors: ObjectGeneric;
+  errorsForm: ObjectGeneric;
 }
 
 const props = defineProps({
@@ -41,6 +52,18 @@ const props = defineProps({
   fields: {
     type: Array as PropType<Field[]>,
     default: () => [],
+  },
+  validator: {
+    type: Object as PropType<ObjectGeneric>,
+    default: () => ({}),
+  },
+  nameSubmitButton: {
+    type: String,
+    default: 'Verstuur',
+  },
+  testIdForm: {
+    type: String,
+    default: 'form',
   },
 });
 
@@ -70,28 +93,24 @@ onMounted(() => {
   // values.value = values;
 });
 
-// functions
-const validate = function (value: string, validator: any): ValidationResult {
+const validateForm = function () {
   try {
-    validator.parse(value);
+    errors.value = {};
+    props.validator.parse(values.value);
   } catch (error) {
     if (error instanceof ZodError) {
-      return {
-        valid: false,
-        message: error.issues[0].message,
-      };
+      console.log(error.issues);
+      for (const issue of error.issues) {
+        if (!errors.value.hasOwnProperty(issue.path[0])) {
+          throwErrors(String(issue.path[0]), false, issue.message);
+        }
+      }
     }
   }
-  return {
-    valid: true,
-  };
 };
 
 const submit = async function () {
-  for (const { name, validation } of props.fields) {
-    const { valid, message } = validate(values.value[name], validation);
-    throwErrors(name, valid, message);
-  }
+  validateForm();
   if (submitable.value) {
     emit('submitForm', values.value);
   }
@@ -115,15 +134,9 @@ const throwErrors = function (
   }
 };
 
-const onChangeHandler = function (
-  payload: any,
-  fieldName: string,
-  fieldNumber: number
-) {
-  const validator = props.fields[fieldNumber].validation;
-  const { valid, message } = validate(payload, validator);
-  throwErrors(fieldName, valid, message);
+const onChangeHandler = function (payload: any, fieldName: string) {
   values.value[fieldName] = payload;
+  validateForm();
 };
 </script>
 

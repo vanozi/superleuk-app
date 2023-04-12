@@ -15,12 +15,9 @@ export default class FormDirector {
         props: {
           value: '',
           type: 'email',
-          label: 'email',
+          label: 'E-mailadres',
+          testId: 'login-email',
         },
-        validation: z
-          .string()
-          .nonempty('Veld is verplicht')
-          .email('Vul een geldig email adres in'),
       })
       .addField({
         component: VInput,
@@ -29,13 +26,77 @@ export default class FormDirector {
         props: {
           value: '',
           type: 'password',
-          label: 'wachtwoord',
+          label: 'Wachtwoord',
+          testId: 'login-password',
         },
-        validation: z.string().nonempty('Veld is verplicht'),
       })
+      .addValidator(
+        z.object({
+          email: z
+            .string()
+            .nonempty('Veld is verplicht')
+            .email('Vul een geldig email adres in'),
+          password: z.string().nonempty('Veld is verplicht'),
+        })
+      )
       .build();
   }
+  makeForgotPasswordForm() {
+    return this.builder
+      .addField({
+        component: VInput,
+        name: 'email',
+        props: {
+          value: '',
+          type: 'email',
+          label: 'E-mailadres',
+        },
+      })
+      .addValidator(
+        z.object({
+          email: z
+            .string()
+            .nonempty('Veld is verplicht')
+            .email('Vul een geldig email adres in'),
+        })
+      )
+      .build();
+  }
+  makeResetPasswordForm() {
+    return this.builder
+      .addField({
+        component: VInput,
+        name: 'password',
 
+        props: {
+          value: '',
+          type: 'password',
+          label: 'Nieuw wachtwoord',
+        },
+      })
+      .addField({
+        component: VInput,
+        name: 'confirmPassword',
+
+        props: {
+          value: '',
+          type: 'password',
+          label: 'Herhaal wachtwoord',
+        },
+      })
+      .addValidator(
+        z
+          .object({
+            password: z.string().nonempty('Veld is verplicht'),
+            confirmPassword: z.string().nonempty('Veld is verplicht'),
+          })
+          .refine((data) => data.password === data.confirmPassword, {
+            message: 'Wachtwoorden komen niet overeen',
+            path: ['confirmPassword'],
+          })
+      )
+      .build();
+  }
   makeHoursEditForm(event: any) {
     console.log(event.value);
     return this.builder

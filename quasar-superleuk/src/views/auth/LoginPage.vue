@@ -6,6 +6,13 @@
         :class="[$q.screen.gt.md ? 'col-4' : 'col-11']"
       />
     </div>
+    <div class="fit row wrap justify-center items-start content-start">
+      <router-link
+        :class="[$q.screen.gt.md ? 'col-4' : 'col-11']"
+        to="/auth/forgot-password"
+        >Wachtwoord vergeten?
+      </router-link>
+    </div>
   </q-page>
 </template>
 
@@ -19,9 +26,10 @@ import { useRouter } from 'vue-router';
 const accountStore = useAccountStore();
 const router = useRouter();
 
-const LoginForm = new FormDirector(new FormBuilder()).makeLoginForm();
+const LoginForm = new FormDirector(
+  new FormBuilder('login', 'login-form')
+).makeLoginForm();
 const submitLogin = (formValues: any) => {
-  console.log(formValues);
   accountStore.loginUser(formValues, function () {
     router.push('/');
   });

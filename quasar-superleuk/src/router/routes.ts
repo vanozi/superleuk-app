@@ -18,6 +18,14 @@ const routes: RouteRecordRaw[] = [
         path: 'login',
         component: () => import('src/views/auth/LoginPage.vue'),
       },
+      {
+        path: 'forgot-password',
+        component: () => import('src/views/auth/ForgotPasswordPage.vue'),
+      },
+      {
+        path: 'reset_password/:token',
+        component: () => import('src/views/auth/ResetPasswordPAge.vue'),
+      },
     ],
   },
   // werkplaats

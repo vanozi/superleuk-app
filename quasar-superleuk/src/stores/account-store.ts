@@ -105,6 +105,52 @@ export const useAccountStore = defineStore('account-store', () => {
         }
       });
   }
+  async function forgotPassword(email: string, _callback?: any) {
+    api
+      .get(`/auth/forgot_password/${email}`)
+      .then(() => {
+        Notify.create({
+          type: 'positive',
+          message: 'Er is een e-mail verstuurd',
+          icon: 'done',
+        });
+        if (typeof _callback !== 'undefined') {
+          _callback();
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          Notify.create({
+            type: 'negative',
+            message: error.response.data.detail,
+            icon: 'error',
+          });
+        }
+      });
+  }
+  async function resetPassword(password: string, token: any, _callback?: any) {
+    api
+      .post(`/auth/reset_password`, { token: token, password: password })
+      .then(() => {
+        Notify.create({
+          type: 'positive',
+          message: 'Wachtwoord succesvol gewijzigd',
+          icon: 'done',
+        });
+        if (typeof _callback !== 'undefined') {
+          _callback();
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          Notify.create({
+            type: 'negative',
+            message: error.response.data.detail,
+            icon: 'error',
+          });
+        }
+      });
+  }
   return {
     loggedInUser,
     isLoggedIn,
@@ -112,5 +158,7 @@ export const useAccountStore = defineStore('account-store', () => {
     logoutUser,
     fetchLoggedInUserData,
     refreshTokens,
+    forgotPassword,
+    resetPassword,
   };
 });

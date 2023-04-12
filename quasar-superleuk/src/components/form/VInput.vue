@@ -5,6 +5,7 @@
     v-model="inputValue"
     :label="props.label"
     @update:model-value="onChangeHandler"
+    :data-testId="props.testId"
   />
 </template>
 
@@ -16,6 +17,7 @@ const props = defineProps<{
   type: QInputProps['type'];
   value: QInputProps['modelValue'];
   label: string;
+  testId?: string;
 }>();
 
 const inputValue = ref(props.value);

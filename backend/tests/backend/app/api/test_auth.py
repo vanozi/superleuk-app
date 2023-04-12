@@ -8,6 +8,7 @@ from app.services.mail import fm
 pytestmark = pytest.mark.anyio
 
 
+# Add allowed user
 async def test_registration_success(
     test_client: TestClient, invite_new_user_fixture: int
 ):
@@ -108,3 +109,19 @@ async def test_registration_user_not_invited(
         response.json()["detail"]
         == "Dit email adres is niet bevoegd om zich te registeren"
     )
+
+
+# Login
+async def test_login_success(test_client: TestClient):
+    payload = json.dumps(
+        {
+            "email": "admin@admin.com",
+            "password": "admin",
+        }
+    )
+    headers = {"Content-Type": "application/json"}
+    response = await test_client.post("/auth/login", headers=headers, data=payload)
+    # check response code is 200 and response text as expected
+    assert response.status_code == 200
+    assert response.json()["access_token"] is not None
+    assert response.json()["token_type"] == "bearer"
