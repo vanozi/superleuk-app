@@ -76,6 +76,38 @@
             </q-item>
           </q-list>
         </q-expansion-item>
+        <q-expansion-item expand-separator>
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-icon name="schedule" />
+            </q-item-section>
+            <q-item-section>Uren</q-item-section>
+          </template>
+          <q-list dense bordered>
+            <q-item
+              clickable
+              v-ripple
+              to="/uren/invoeren"
+              :active="selectedLink === 'overzicht'"
+              @click="selectedLink = 'overzicht'"
+            >
+              <q-item-section class="text-left q-pl-md"
+                >Overzicht</q-item-section
+              >
+            </q-item>
+            <q-item
+              clickable
+              v-ripple
+              to="/uren/invoeren"
+              :active="selectedLink === 'invoeren'"
+              @click="selectedLink = 'invoeren'"
+            >
+              <q-item-section class="text-left q-pl-md"
+                >Invoeren</q-item-section
+              >
+            </q-item>
+          </q-list>
+        </q-expansion-item>
         <!-- <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" /> -->
       </q-list>
     </q-drawer>

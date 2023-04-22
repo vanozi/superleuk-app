@@ -17,7 +17,7 @@ export const useWorkingHoursStore = defineStore('workinghours-store', () => {
         params: { from_date: from, to_date: to },
       })
       .then((response) => {
-        workingHoursBetweenDates.value = response.data;
+        response.data;
       })
       .catch((error) => {
         console.log(error);

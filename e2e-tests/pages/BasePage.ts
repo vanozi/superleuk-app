@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { config } from "dotenv";
 config();
 
@@ -9,5 +9,13 @@ export class BasePage {
   }
   async navigate(path: string) {
     await this.page.goto(process.env.BASE_URL + path);
+  }
+
+  async checkNotification(locator: Locator, message: string) {
+    expect(locator).toContainText(message);
+  }
+
+  async closeBrowser() {
+    await this.page.close();
   }
 }
