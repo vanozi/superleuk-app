@@ -53,6 +53,11 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('src/views/uren-registratie/HourRegistrationView.vue'),
       },
+      {
+        path: 'overzicht',
+        component: () =>
+          import('src/views/uren-registratie/HoursOverviewView.vue'),
+      },
     ],
   },
   // design pattersn

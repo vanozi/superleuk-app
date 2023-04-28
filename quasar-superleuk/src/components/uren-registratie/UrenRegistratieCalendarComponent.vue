@@ -13,11 +13,10 @@ import {
   EventSourceFuncArg,
   EventSourceInput,
 } from '@fullcalendar/core';
-import { useWorkingHoursStore } from 'src/stores/workinghours-store';
 import { api } from 'src/boot/axios';
-const workingHoursStore = useWorkingHoursStore();
 const showModal = ref(false);
 const workingHoursCalendar = ref();
+const emit = defineEmits(['addHours']);
 const calendarOptions: CalendarOptions = {
   buttonText: {
     listWeek: 'Week',
@@ -81,7 +80,7 @@ const calendarOptions: CalendarOptions = {
     addHours: {
       text: 'Toevoegen',
       click: function () {
-        showModal.value = true;
+        emit('addHours');
       },
     },
     submitHours: {

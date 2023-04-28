@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import UrenRegistratieCalendarComponent from 'src/components/uren-registratie/UrenRegistratieCalendarComponent.vue';
-import { onBeforeMount, provide } from 'vue';
+import { onBeforeMount, provide, ref } from 'vue';
 import { useWorkingHoursStore } from 'src/stores/workinghours-store';
+import InvoerenDialogComponent from 'src/components/uren-registratie/InvoerenDialogComponent.vue';
 const workingHoursStore = useWorkingHoursStore();
+const showHourEditDialog = ref(false);
+provide('showHourEditDialog', showHourEditDialog);
 
 onBeforeMount(() => {
   workingHoursStore.fetchWorkingHoursLoggedInUser();
@@ -14,8 +17,10 @@ onBeforeMount(() => {
     <div class="q-mx-sm">
       <UrenRegistratieCalendarComponent
         :workingHoursUser="workingHoursStore.allWorkingHours"
+        @addHours="showHourEditDialog = true"
       />
     </div>
+    <InvoerenDialogComponent />
   </main>
 </template>
 

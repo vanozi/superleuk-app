@@ -24,6 +24,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 # Initialise the relationships between Models. This does not initialise any database connection.
 Tortoise.init_models(["app.models.tortoise"], "models")
 
+
 # Response model
 class ResponseMessage(pydantic.BaseModel):
     detail: str
@@ -36,13 +37,21 @@ class CreateUser(pydantic.BaseModel):
     email: EmailStr
     password: pydantic.SecretStr
 
+
 class LogoutRequest(pydantic.BaseModel):
-    device_id : str
+    device_id: str
+
 
 User_Pydantic = pydantic_model_creator(
     Users,
     name="User",
-    exclude=("hashed_password", "confirmation", "working_hours", "device_login_statusses", "reported_maintenance_issues"),
+    exclude=(
+        "hashed_password",
+        "confirmation",
+        "working_hours",
+        "device_login_statusses",
+        "reported_maintenance_issues",
+    ),
 )
 
 
@@ -83,6 +92,8 @@ AllowedUsersResponseSchema = pydantic_model_creator(AllowedUsers)
 # General maintenance
 # GET
 GeneralMaintenanceResponseSchema = pydantic_model_creator(GeneralMaintenance)
+
+
 # CREATE
 class GeneralMaintenanceCreateSchema(pydantic.BaseModel):
     description: str
@@ -98,22 +109,14 @@ class GeneralMaintenanceUpdateSchema(pydantic.BaseModel):
 WorkingHoursResponseSchema = pydantic_model_creator(WorkingHours, exclude=["user"])
 WorkingHoursResponseSchemaComplete = pydantic_model_creator(WorkingHours)
 
-# CREATE
-class WorkingHoursCreateSchema(pydantic.BaseModel):
-    user_id: int
-    date: datetime.date
-    hours: int
-    milkings : Optional[int]
-    description: str
 
-
-# UPDATE
+# CREATE OR UPDATE
 class WorkingHoursUpdateSchema(pydantic.BaseModel):
     id: Optional[int]
     user_id: Optional[int]
     date: Optional[datetime.date]
     hours: Optional[float]
-    milkings : Optional[float]
+    milkings: Optional[float]
     description: Optional[str]
     submitted: Optional[bool] = False
 
@@ -148,12 +151,11 @@ class WeekData(pydantic.BaseModel):
     week_end: datetime.date
     working_hours: List[WorkingHoursResponseSchema]
     sum_hours: float
-    sum_milkings : float
+    sum_milkings: float
     submitted: bool
 
 
 class WeeksNotSubmittedSingleUsersResponseSchema(pydantic.BaseModel):
-
     week_data: List[WeekData]
     werknemer: User_Pydantic
 
@@ -199,10 +201,11 @@ class MachineCreateSchema(pydantic.BaseModel):
     chassis_number: Optional[str]
     construction_year: Optional[str]
     ascription_code: Optional[str]
-    insurance_type: Optional[str]="Niet verzekerd"
+    insurance_type: Optional[str] = "Niet verzekerd"
+
 
 class MachineBaseInfo(pydantic.BaseModel):
-    id : Optional[int]
+    id: Optional[int]
     work_number: Optional[str]
     work_name: Optional[str]
     category: Optional[str]
@@ -215,13 +218,15 @@ class MachineBaseInfo(pydantic.BaseModel):
     ascription_code: Optional[str]
     insurance_type: Optional[str]
 
+
 class MainetenanceIssueInfo(pydantic.BaseModel):
     id: int
-    created_at : Optional[datetime.datetime]
-    created_by : Optional[str]
+    created_at: Optional[datetime.datetime]
+    created_by: Optional[str]
     issue_description: Optional[str]
     status: Optional[str]
     priority: Optional[str]
+
 
 class TankTransactionInfo(pydantic.BaseModel):
     id: int
@@ -238,12 +243,15 @@ class TankTransactionInfo(pydantic.BaseModel):
     meter: Optional[str]
     meter_type: Optional[str]
 
+
 MachineResponseSchema = pydantic_model_creator(Machines)
 
+
 class SingleMachineDataReponse(pydantic.BaseModel):
-    info : MachineBaseInfo
-    maintenance_issues : Optional[List[MainetenanceIssueInfo]]
-    tank_transactions : Optional[List[TankTransactionInfo]]
+    info: MachineBaseInfo
+    maintenance_issues: Optional[List[MainetenanceIssueInfo]]
+    tank_transactions: Optional[List[TankTransactionInfo]]
+
 
 # Machine maintenance
 class MachineMaintenanceCreate(pydantic.BaseModel):
@@ -263,9 +271,11 @@ class MachineMaintenanceUpdate(pydantic.BaseModel):
 MachineMaintenanceResponseSchema = pydantic_model_creator(MaintenanceMachines)
 
 
-def datetime_converter(v:str) -> datetime.datetime:
+def datetime_converter(v: str) -> datetime.datetime:
     print(v)
-    return datetime.datetime.strptime(v,'%d/%m/%Y %H:%M:%S')
+    return datetime.datetime.strptime(v, "%d/%m/%Y %H:%M:%S")
+
+
 class TankTransactionCreate(pydantic.BaseModel):
     vehicle: Optional[str]
     driver: Optional[str]
@@ -279,9 +289,9 @@ class TankTransactionCreate(pydantic.BaseModel):
     transaction_duration: Optional[str]
     meter: Optional[str]
     meter_type: Optional[str]
-    _transform_start_date_Time = validator('start_date_time', pre=True, allow_reuse=True)(datetime_converter)
-
+    _transform_start_date_Time = validator(
+        "start_date_time", pre=True, allow_reuse=True
+    )(datetime_converter)
 
 
 TankTransactionResponseSchema = pydantic_model_creator(TankTransactions)
-

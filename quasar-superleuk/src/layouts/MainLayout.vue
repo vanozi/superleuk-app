@@ -12,7 +12,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Gebroeders Vroege </q-toolbar-title>
+        <q-toolbar-title> Gebroeders Vroege</q-toolbar-title>
 
         <q-btn
           v-if="accountStore.isLoggedIn"
@@ -87,7 +87,7 @@
             <q-item
               clickable
               v-ripple
-              to="/uren/invoeren"
+              to="/uren/overzicht"
               :active="selectedLink === 'overzicht'"
               @click="selectedLink = 'overzicht'"
             >

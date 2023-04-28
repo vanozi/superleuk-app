@@ -1,4 +1,4 @@
-import logging, os
+import logging, os, json
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -54,11 +54,12 @@ def create_application() -> FastAPI:
     )
     application.include_router(ionic.router, prefix="/api/ionic", tags=["ionic-test"])
 
-    origins = os.environ["ALLOWED_ORIGINS"]
+    origins_str = os.getenv("ALLOWED_ORIGINS")
+    origins = json.loads(origins_str) if origins_str else ["*"]
 
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=[origins],
+        allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
