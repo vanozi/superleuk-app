@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { QInputProps } from 'quasar';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 const props = defineProps<{
   name: string;
   type: QInputProps['type'];
@@ -23,6 +23,11 @@ const props = defineProps<{
 const inputValue = ref(props.value);
 
 const emit = defineEmits(['update:modelValue']);
+
+onMounted(()=>{
+  console.log(props)
+})
+
 
 function onChangeHandler(event: any) {
   emit('update:modelValue', event);

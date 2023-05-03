@@ -29,12 +29,12 @@ async def update_working_hours_item(
     current_active_user=Depends(get_current_active_user),
 ):
     working_hours_item = await WorkingHours.get_or_none(
-        id=working_hours_issue_to_update.id
+        date=working_hours_issue_to_update.date
     )
     # if the working item cannot be found then we assume the user want to create a new one
     if working_hours_item is None:
         # lookup the user for whom the hours are submitted
-        user = await Users.get_or_none(id=working_hours_issue_to_update.user_id)
+        user = await Users.get_or_none(id=current_active_user.id)
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -43,7 +43,7 @@ async def update_working_hours_item(
         # Add working hour to the database
         try:
             working_hours_item = await WorkingHours.create(
-                **working_hours_issue_to_update.dict(),
+                **working_hours_issue_to_update.dict(exclude_none=True),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
                 user=user,
@@ -59,16 +59,23 @@ async def update_working_hours_item(
             )
         return working_hours_item
     else:
-        if working_hours_issue_to_update.description is not None:
-            working_hours_item.description = working_hours_issue_to_update.description
-        if working_hours_issue_to_update.hours is not None:
-            working_hours_item.hours = working_hours_issue_to_update.hours
-        if working_hours_issue_to_update.milkings is not None:
-            working_hours_item.milkings = working_hours_issue_to_update.milkings
-        if working_hours_issue_to_update.submitted is not None:
-            working_hours_item.submitted = working_hours_issue_to_update.submitted
-        await working_hours_item.save()
+        try:
+            data = working_hours_issue_to_update.dict(exclude_none=True)
+            await working_hours_item.update_from_dict(data)
+            await working_hours_item.save()
+        except Exception as e:
+            print(e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=(
+                    "Er is een onverwachte fout opgetreden, neem contact op met de"
+                    " beheerder"
+                ),
+            )
         return working_hours_item
+
+
+
 
 
 # All working hours

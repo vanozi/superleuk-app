@@ -1,26 +1,53 @@
 <script setup lang="ts">
 import UrenRegistratieCalendarComponent from 'src/components/uren-registratie/UrenRegistratieCalendarComponent.vue';
-import { onBeforeMount, provide, ref } from 'vue';
+import { computed, onBeforeMount, provide, ref, shallowRef } from 'vue';
 import { useWorkingHoursStore } from 'src/stores/workinghours-store';
 import InvoerenDialogComponent from 'src/components/uren-registratie/InvoerenDialogComponent.vue';
+import FormBuilder from 'src/builders/FormBuilder';
+import WorkinghoursFormDirector from 'src/builders/WorkinghoursFormDirector';
 const workingHoursStore = useWorkingHoursStore();
 const showHourEditDialog = ref(false);
+const options = ref()
+const startDateView = ref('')
+const AddWorkingHoursForm = shallowRef()
+const computedOptions =computed(()=>{
+  if(options.value == undefined){
+    return []
+  }
+  else{
+    return options.value
+  }
+})
 provide('showHourEditDialog', showHourEditDialog);
+provide('options', computedOptions)
 
 onBeforeMount(() => {
   workingHoursStore.fetchWorkingHoursLoggedInUser();
 });
+
+function openAddHoursDialog(){
+  showHourEditDialog.value = true
+  AddWorkingHoursForm.value =  new WorkinghoursFormDirector(
+  new FormBuilder('opslaan', 'add-working-hours-form')
+).addWorkingHoursForm(options, startDateView.value);
+}
+
+
+
 </script>
 
 <template>
   <main>
+
     <div class="q-mx-sm">
       <UrenRegistratieCalendarComponent
         :workingHoursUser="workingHoursStore.allWorkingHours"
-        @addHours="showHourEditDialog = true"
+        @addHours="openAddHoursDialog"
+        @optionsChanged="(changedOptions)=>options=changedOptions"
+        @startDateChanged="(newStartDate)=>startDateView=newStartDate"
       />
     </div>
-    <InvoerenDialogComponent />
+    <InvoerenDialogComponent :startDateView="startDateView" :addWorkingHoursForm="AddWorkingHoursForm" />
   </main>
 </template>
 

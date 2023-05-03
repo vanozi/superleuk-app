@@ -4,19 +4,18 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import nlLocale from '@fullcalendar/core/locales/nl';
 import interactionPlugin from '@fullcalendar/interaction';
-import { ref, computed } from 'vue';
+import { ref, computed, provide } from 'vue';
 import {
   CalendarOptions,
   DatesSetArg,
   EventContentArg,
-  EventMountArg,
   EventSourceFuncArg,
-  EventSourceInput,
 } from '@fullcalendar/core';
 import { api } from 'src/boot/axios';
+
 const showModal = ref(false);
 const workingHoursCalendar = ref();
-const emit = defineEmits(['addHours']);
+const emit = defineEmits(['addHours', 'optionsChanged', 'startDateChanged']);
 const calendarOptions: CalendarOptions = {
   buttonText: {
     listWeek: 'Week',
@@ -36,6 +35,7 @@ const calendarOptions: CalendarOptions = {
   datesSet: handleDatesSet,
   locale: nlLocale,
   events: handleFetchEvents,
+  showNonCurrentDates : false,
   eventContent: function (arg: EventContentArg) {
     if (arg.view.type == 'listWeek') {
       let uren = document.createElement('div');
@@ -93,8 +93,9 @@ const calendarOptions: CalendarOptions = {
 };
 
 function handleDatesSet(dateInfo: DatesSetArg) {
-  console.log(dateInfo.startStr, dateInfo.endStr);
+  emit('startDateChanged',dateInfo.startStr)
 }
+
 async function handleFetchEvents(
   fetchInfo: EventSourceFuncArg,
   successCallback: any,
@@ -108,6 +109,11 @@ async function handleFetchEvents(
       },
     })
     .then((response) => {
+      // Een array met datums voor de dagen waarvoor nog geen uren zijn ingevuld om te laten zien in de datepicker
+      emit(
+        'optionsChanged',
+        filterDates(fetchInfo.start, fetchInfo.end, extractDates(response.data))
+      );
       successCallback(response.data);
     })
     .catch((error) => {
@@ -118,6 +124,29 @@ async function handleFetchEvents(
 const workingHoursCalendarApi = computed(() => {
   return workingHoursCalendar.value.getApi();
 });
+
+function extractDates(arr) {
+  const dates = arr.map((obj) => obj.date);
+  return dates;
+}
+
+function getDatesArray(startDate, endDate) {
+  const dates = [];
+  const currentDate = new Date(startDate);
+  currentDate.setDate(currentDate.getDate() + 1);
+  while (currentDate <= endDate) {
+    const dateString = currentDate.toISOString().substring(0, 10);
+    dates.push(dateString);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+}
+
+function filterDates(startDate, endDate, arr) {
+  const allDates = getDatesArray(startDate, endDate);
+  const filteredDates = allDates.filter((date) => !arr.includes(date));
+  return filteredDates;
+}
 </script>
 
 <template>

@@ -1,27 +1,24 @@
 <script setup lang="ts">
-import FormBuilder from 'src/builders/FormBuilder';
-import WorkinghoursFormDirector from 'src/builders/WorkinghoursFormDirector';
-import { ref, inject } from 'vue';
+
+import { inject } from 'vue';
 
 const showHourEditDialog = inject('showHourEditDialog');
 
-const LoginForm = new WorkinghoursFormDirector(
-  new FormBuilder('opslaan', 'add-working-hours-form')
-).addWorkingHoursForm();
-
-const submitLogin = () => {
-  console.log('hello');
+const submitWorkingHours = (formValues: any) => {
+  console.log(formValues);
 };
 
-const showDialog = ref(false);
+const props = defineProps<{
+  startDateView? : string
+  addWorkingHoursForm : any
+}>();
+
 </script>
 <template>
   <q-dialog v-model="showHourEditDialog">
     <q-card style="width: 500px">
-      <LoginForm
-        @submit-form="submitLogin"
-        :class="[$q.screen.gt.md ? 'col-4' : 'col-11']"
-      />
+      <!-- <addWorkingHoursForm @submit-form="submitWorkingHours" /> -->
+      <component v-bind:is="props.addWorkingHoursForm" @submit-form="submitWorkingHours"></component>
     </q-card>
   </q-dialog>
 </template>
