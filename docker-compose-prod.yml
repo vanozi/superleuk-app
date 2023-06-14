@@ -98,17 +98,7 @@ services:
       - "traefik.http.routers.pgadmin.entrypoints=websecure"
       - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
 
-  quasar:
-    container_name: quasar
-    build:
-      context: ./quasar-superleuk
-      dockerfile: Dockerfile
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`app.gebroedersvroege.nl`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+
 
 volumes:
   db-data:
