@@ -1,7 +1,6 @@
-version: '3.8'
+version: "3.8"
 
 services:
-
   fastapi:
     build:
       context: ./backend
@@ -27,15 +26,15 @@ services:
       - MAIL_SSL=${MAIL_SSL}
       - BASE_URL_API=${BASE_URL_API}
       - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
     volumes:
       - ./backend:/app
-    command:
-      [
+    command: [
         "sh",
         "-c",
         "pip install debugpy && python -m debugpy --wait-for-client --listen
-          0.0.0.0:5678 -m uvicorn app.main:app --reload --host 0.0.0.0 --port
-          8004"
+        0.0.0.0:5678 -m uvicorn app.main:app --reload --host 0.0.0.0 --port
+        8004",
       ]
     depends_on:
       - database

@@ -35,8 +35,6 @@ const categories = ref();
 const groups = ref();
 const models = ref();
 
-const model = ref('');
-
 function updateFilteredMachines() {
   emit('filterData', machinesFilter);
 }
@@ -57,7 +55,7 @@ onMounted(() => emit('filterData', machinesFilter));
       options-dense
       dense
       outlined
-      class="q-"
+      class="q-pa-xs"
     />
     <q-select
       clearable
@@ -70,6 +68,7 @@ onMounted(() => emit('filterData', machinesFilter));
       options-dense
       dense
       outlined
+      class="q-pa-xs"
     />
     <q-select
       clearable
@@ -82,6 +81,7 @@ onMounted(() => emit('filterData', machinesFilter));
       options-dense
       dense
       outlined
+      class="q-pa-xs"
     />
     <q-select
       clearable
@@ -94,6 +94,7 @@ onMounted(() => emit('filterData', machinesFilter));
       options-dense
       dense
       outlined
+      class="q-pa-xs"
     />
   </div>
 </template>

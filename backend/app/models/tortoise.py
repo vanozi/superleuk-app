@@ -85,8 +85,17 @@ class WorkingHours(models.Model):
     def __str__(self):
         return self.description
 
+    def hours_formatted_for_frontend(self) -> str:
+        hours_int = int(self.hours)  # get the integer part of the hours
+        minutes = int((self.hours - hours_int) * 60)  # get the remaining minutes
+        return f"{hours_int}:{minutes:02d}" 
+
     class Meta:
         table = "working_hours"
+
+    class PydanticMeta:
+        # Let's include two callables as computed columns
+        computed = ["hours_formatted_for_frontend"]
 
 
 class BouwPlan(models.Model):
@@ -189,3 +198,15 @@ class LoginStatusDevices(models.Model):
 
     class Meta:
         table = "login_status_device"
+
+class Vakanties(models.Model):
+    id = fields.IntField(pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    last_modified_at = fields.DatetimeField(auto_now=True)
+    start_date = fields.DateField(null=True)
+    end_date = fields.DateField(null=True)
+    # Relations
+    user = fields.ForeignKeyField("models.Users", related_name="vakanties")
+
+    class Meta:
+        table = "vakanties"

@@ -2,6 +2,15 @@ export interface LoginFormInterface {
   email: string;
   password: string;
 }
+
+export interface CallbackOneParam<T1, T2 = void> {
+  (param1: T1): T2;
+}
+
+export interface CallbackNOParam<T2 = void> {
+  (): T2;
+}
+
 export const AppFacingValidations = {
   incorrectEmail: 'Email adres incorrect',
   required: 'Dit veld is verplicht',

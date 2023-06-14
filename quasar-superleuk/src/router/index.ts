@@ -40,7 +40,7 @@ export default route(function (/* { store, ssrContext } */) {
   router = Router;
 
   // router guards
-  Router.beforeEach((to, from) => {
+  Router.beforeEach((to) => {
     if (to.meta.requiresAuth && !LocalStorage.getItem('access_token')) {
       return {
         path: '/auth/login',
