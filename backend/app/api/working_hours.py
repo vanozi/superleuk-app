@@ -29,7 +29,7 @@ async def update_working_hours_item(
     current_active_user=Depends(get_current_active_user),
 ):
     working_hours_item = await WorkingHours.get_or_none(
-        date=working_hours_issue_to_update.date
+        date=working_hours_issue_to_update.date, user=current_active_user.id
     )
     # if the working item cannot be found then we assume the user want to create a new one
     if working_hours_item is None:
