@@ -5,7 +5,7 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: "vakanties",
   data: () => ({
-
+    toggle : null,
     type: 'month',
     mode: 'stack',
     modes: ['stack', 'column'],
@@ -21,8 +21,8 @@ export default {
     events: [],
     colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-    nameColorMap : {},
-    colorIndex : 0
+    nameColorMap: {},
+    colorIndex: 0
   }),
   methods: {
     ...mapActions({
@@ -70,7 +70,6 @@ export default {
     }),
 
 
-
   },
   async created() {
     // await this.fetchVakanties('2023-01-01', '2023-12-31')
@@ -81,34 +80,40 @@ export default {
 <template>
   <div>
     <v-toolbar v-if="$refs.calendar">
-      <v-toolbar-title>
+      <v-toolbar-items >
+        <v-btn-toggle v-model="toggle" class="mt-1">
         <v-btn
           icon
-          class="ma-2"
           @click="$refs.calendar.prev()"
         >
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
-        {{ $refs.calendar.title }}
+          <v-btn>
+                {{ $refs.calendar.title }}
+          </v-btn>
+
         <v-btn
           icon
-          class="ma-2"
           @click="$refs.calendar.next()"
         >
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
-      </v-toolbar-title>
-      <v-toolbar-items>
+        </v-btn-toggle>
+
+      </v-toolbar-items>
+              <v-spacer></v-spacer>
+      <v-toolbar-items >
         <v-select
           v-model="type"
           :items="types"
           dense
           outlined
           hide-details
-          class="ma-2"
-          label="type"
+          class="mt-2"
+          label="aanzicht"
+          style="max-width: 200px"
         ></v-select>
-        <v-spacer></v-spacer>
+
 
       </v-toolbar-items>
     </v-toolbar>
