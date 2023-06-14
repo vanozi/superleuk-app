@@ -268,7 +268,20 @@ class MachineMaintenanceUpdate(pydantic.BaseModel):
     priority: Optional[str]
 
 
-MachineMaintenanceResponseSchema = pydantic_model_creator(MaintenanceMachines)
+# MachineMaintenanceResponseSchema = pydantic_model_creator(MaintenanceMachines)
+class MachineMaintenanceResponseSchema(pydantic.BaseModel):
+    id: int
+    created_at: datetime.datetime
+    created_by: str
+    last_modified_at: datetime.datetime
+    last_modified_by: Optional[str]
+    issue_description: Optional[str]
+    status: Optional[str]
+    priority: Optional[str]
+    machine: MachineBaseInfo
+    user: User_Pydantic
+    class Config:
+        orm_mode = True
 
 
 def datetime_converter(v: str) -> datetime.datetime:
