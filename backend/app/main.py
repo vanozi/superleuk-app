@@ -15,6 +15,7 @@ from app.api import (
     machine_onderhoud,
     tank_transactions,
     ionic,
+    vakanties
 )
 from app.db import init_db
 
@@ -53,7 +54,7 @@ def create_application() -> FastAPI:
         working_hours.router, prefix="/api/working_hours", tags=["working_hours"]
     )
     application.include_router(ionic.router, prefix="/api/ionic", tags=["ionic-test"])
-
+    application.include_router(vakanties.router, prefix="/api/vakanties", tags=["vakanties"])
     origins_str = os.getenv("ALLOWED_ORIGINS")
     origins = json.loads(origins_str) if origins_str else ["*"]
 

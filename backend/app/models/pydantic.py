@@ -8,7 +8,7 @@ from app.models.tortoise import (
     WorkingHours,
     Machines,
     MaintenanceMachines,
-    TankTransactions,
+    TankTransactions, Vakanties,
 )
 
 from app.models.enums import MaintenanceIssueStatus
@@ -51,9 +51,9 @@ User_Pydantic = pydantic_model_creator(
         "working_hours",
         "device_login_statusses",
         "reported_maintenance_issues",
+        "vakanties"
     ),
 )
-
 
 # Roles
 
@@ -295,3 +295,26 @@ class TankTransactionCreate(pydantic.BaseModel):
 
 
 TankTransactionResponseSchema = pydantic_model_creator(TankTransactions)
+
+
+class VakantieCreateSchema(pydantic.BaseModel):
+    start_date: datetime.date
+    end_date: datetime.date
+
+    @validator('end_date')
+    def end_date_must_be_greater_than_start_date(cls, v, values):
+        if 'start_date' in values and v < values['start_date']:
+            raise ValueError('eind datum moet groter zijn dan start datum')
+        return v
+
+VakantiesResponseSchema = pydantic_model_creator(Vakanties, exclude=("user",))
+class VakantiesAllResponseSchema(pydantic.BaseModel):
+    id: int
+    created_at: Optional[datetime.datetime]
+    last_modified_at: Optional[datetime.datetime]
+    start_date: Optional[datetime.date]
+    end_date: Optional[datetime.date]
+    user: User_Pydantic
+
+    class Config:
+        orm_mode = True

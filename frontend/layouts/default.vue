@@ -124,8 +124,14 @@ export default {
               route: "/admin/working_hours/employee_overview",
               roles: ["admin"]
             },
+                        {
+              title: "Vakantie overzicht",
+              route: "/admin/working_hours/vakanties",
+              roles: ["admin"]
+            },
             { title: "Overzicht", route: "/working_hours/overview", roles: ["werknemer"] },
             { title: "Invoeren", route: "/working_hours/", roles: ["werknemer"] },
+            { title: "Vakanties", route: "/working_hours/vakanties", roles: ["werknemer"] },
           ],
           title: "Uren",
           roles: ["admin", "werknemer"]
