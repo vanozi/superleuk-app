@@ -280,6 +280,7 @@ class MachineMaintenanceResponseSchema(pydantic.BaseModel):
     priority: Optional[str]
     machine: MachineBaseInfo
     user: User_Pydantic
+
     class Config:
         orm_mode = True
 
@@ -320,7 +321,22 @@ class VakantieCreateSchema(pydantic.BaseModel):
             raise ValueError('eind datum moet groter zijn dan start datum')
         return v
 
+
+class VakantieCreateSchemaForUserAsAdmin(pydantic.BaseModel):
+    start_date: datetime.date
+    end_date: datetime.date
+    user_id: int
+
+    @validator('end_date')
+    def end_date_must_be_greater_than_start_date(cls, v, values):
+        if 'start_date' in values and v < values['start_date']:
+            raise ValueError('eind datum moet groter zijn dan start datum')
+        return v
+
+
 VakantiesResponseSchema = pydantic_model_creator(Vakanties, exclude=("user",))
+
+
 class VakantiesAllResponseSchema(pydantic.BaseModel):
     id: int
     created_at: Optional[datetime.datetime]

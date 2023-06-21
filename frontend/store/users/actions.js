@@ -3,11 +3,12 @@ export default {
         try {
           let response = await this.$axios.get("/users/");
           commit("GETUSERS", response.data)
+          return response.data;
         } catch (err) {
           console.log(err.response);
         }
       },
-    
+
       async addUser({commit}, payload) {
         try {
           let response = await this.$axios.post("/auth/register", payload);

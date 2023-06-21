@@ -57,6 +57,20 @@ export default {
     }
   },
 
+  async addVakantieForUser({commit}, vakantie) {
+    try {
+      let response = await this.$axios.post("/vakanties/admin/add_vakantie_for_user", vakantie);
+      commit("ADDVAKANTIE", response.data)
+    } catch (err) {
+      if (err.response) {
+        this.$notifier.showMessage({
+          content: err.response.data.detail,
+          color: "error",
+        });
+      }
+    }
+  },
+
   async deleteVakantie({commit}, id) {
     try {
       let response = await this.$axios.delete("/vakanties/" + id);
