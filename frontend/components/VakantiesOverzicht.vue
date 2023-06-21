@@ -103,21 +103,6 @@ export default {
         </v-btn-toggle>
 
       </v-toolbar-items>
-              <v-spacer></v-spacer>
-      <v-toolbar-items >
-        <v-select
-          v-model="type"
-          :items="types"
-          dense
-          outlined
-          hide-details
-          class="mt-2"
-          label="aanzicht"
-          style="max-width: 200px"
-        ></v-select>
-
-
-      </v-toolbar-items>
     </v-toolbar>
     <v-sheet height="600">
       <v-calendar
@@ -137,5 +122,17 @@ export default {
   </div>
 </template>
 <style scoped>
+.v-calendar-weekly {
+display: table;
+table-layout: fixed;
+}
+.v-calendar-weekly__week {
+height: auto;
+display: table-row;
+}
+.v-calendar-weekly__day {
+display: table-cell;
+width: calc(100% / 7)
+}
 
 </style>
