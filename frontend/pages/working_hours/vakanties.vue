@@ -5,6 +5,9 @@ import {mapActions, mapGetters} from "vuex";
 
 export default ({
   name: "vakanties",
+    components: {
+    VakantiesOverzicht: () => import("~/components/VakantiesOverzicht.vue")
+  },
   data: () => ({
     dialog: false,
     menu2: false,
@@ -63,102 +66,114 @@ export default ({
 </script>
 
 <template>
-  <v-container>
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          outlined
-          v-bind="attrs"
-          v-on="on"
-          class="ma-2"
+  <div>
+    <!--  eigen vakantie beheren  -->
+    <v-tabs centered>
+      <v-tab href="#eigen_vakanties">eigen vakanties</v-tab>
+      <v-tab-item value="eigen_vakanties">
+        <v-dialog
+          v-model="dialog"
+          width="500"
         >
-          Vakantie Toevoegen
-        </v-btn>
-      </template>
-
-      <v-card>
-        <v-card-title class="grey lighten-2">
-          Vakantie toevoegen
-        </v-card-title>
-
-        <v-card-text>
-          <v-menu
-            v-model="menu2"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="computedDateFormatted"
-                label="Datums"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="dates"
-              no-title
-              range
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              outlined
+              v-bind="attrs"
+              v-on="on"
+              class="ma-2"
             >
+              Vakantie Toevoegen
+            </v-btn>
+          </template>
+
+          <v-card>
+            <v-card-title class="grey lighten-2">
+              Vakantie toevoegen
+            </v-card-title>
+
+            <v-card-text>
+              <v-menu
+                v-model="menu2"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="computedDateFormatted"
+                    label="Datums"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dates"
+                  no-title
+                  range
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="error"
+                    @click="menu2 = false"
+                  >
+                    Annuleren
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="toevoegenVakantie"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                text
                 color="error"
-                @click="menu2 = false"
+                text
+                @click="dialog = false"
               >
                 Annuleren
               </v-btn>
               <v-btn
-                text
                 color="primary"
-                @click="toevoegenVakantie"
+                text
+                @click="dialog = false"
               >
-                OK
+                Toevoegen
               </v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-card-text>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-data-table
+          :headers="this.headers"
+          :items="this.vakanties"
+          :items-per-page="5"
+          class="elevation-1">
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+      </v-tab-item>
+      <v-tab href="#alle_vakanties">alle vakanties</v-tab>
+      <v-tab-item value="alle_vakanties">
+      <VakantiesOverzicht/>
+      </v-tab-item>
+    </v-tabs>
 
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            text
-            @click="dialog = false"
-          >
-            Annuleren
-          </v-btn>
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false"
-          >
-            Toevoegen
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-data-table
-      :headers="this.headers"
-      :items="this.vakanties"
-      :items-per-page="5"
-      class="elevation-1">
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
-      </template>
-    </v-data-table>
-  </v-container>
+    <!--  Vakanties alle medewerkers inzien  -->
+  </div>
 </template>
 
 <style scoped>
