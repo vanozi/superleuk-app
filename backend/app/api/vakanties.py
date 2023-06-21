@@ -77,7 +77,7 @@ async def get_all_vakanties():
     vakanties = await Vakanties.all().prefetch_related("user__roles")
 
     return vakanties
-@router.get("/all_between_dates", dependencies=[Depends(RoleChecker(["admin"]))], response_model=List[VakantiesAllResponseSchema])
+@router.get("/all_between_dates", dependencies=[Depends(RoleChecker(["admin", "werknemer", "monteur"]))], response_model=List[VakantiesAllResponseSchema])
 async def get_all_vakanties_between_dates(start_date: date, end_date: date):
     vakanties = await Vakanties.filter(
         Q(start_date__lte=end_date) & Q(end_date__gte=start_date)
