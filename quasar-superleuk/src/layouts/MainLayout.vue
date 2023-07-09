@@ -11,7 +11,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <img style="height: 27px;" src="/src/assets/cow_logo_2.png">
+        <img style="height: 27px;" src="~assets/cow_logo_2.png">
         <q-toolbar-title>Superleuk</q-toolbar-title>
 
         <!-- <q-btn
@@ -49,7 +49,7 @@
         >Navigatie</q-item-label
       >
       <!-- Uren navigatie menu -->
-      <q-expansion-item :header-class="{'expansion-header-style':currentRoute.includes('/uren')}"> 
+      <q-expansion-item :header-class="{'expansion-header-style':currentRoute.includes('/uren')}">
         <template v-slot:header >
           <q-item-section avatar >
             <q-icon name="schedule" />
