@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: 'login',
-        component: () => import('src/views/auth/LoginPage.vue'),
+        component: () => import('src/views/auth/LoginView.vue'),
       },
       {
         path: 'forgot-password',
@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'reset_password/:token',
-        component: () => import('src/views/auth/ResetPasswordPAge.vue'),
+        component: () => import('src/views/auth/ResetPasswordPage.vue'),
       },
     ],
   },
@@ -60,23 +60,13 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  // design pattersn
-  {
-    path: '/patterns',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {
-        path: 'builder',
-        component: () => import('src/views/BuilderPatternView.vue'),
-      },
-    ],
-  },
+
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('src/views/ErrorNotFound.vue'),
+    component: () => import('src/views/error-pages/ErrorNotFound.vue'),
   },
 ];
 

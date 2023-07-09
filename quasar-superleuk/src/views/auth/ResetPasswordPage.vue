@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import FormBuilder from 'src/builders/FormBuilder';
-import FormDirector from 'src/builders/FormDirector';
+import FormBuilder from 'src/forms/form-builder';
+import AuthForms from 'src/forms/auth-forms';
 import { useAccountStore } from 'src/stores/account-store';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
@@ -10,7 +10,7 @@ const accountStore = useAccountStore();
 const router = useRouter();
 const route = useRoute();
 
-const ResetPasswordForm = new FormDirector(
+const ResetPasswordForm = new AuthForms(
   new FormBuilder()
 ).makeResetPasswordForm();
 

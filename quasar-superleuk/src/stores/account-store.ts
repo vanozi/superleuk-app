@@ -1,13 +1,13 @@
 import {
   LoginFormInterface,
   CallbackNOParam,
-} from 'src/models/typescipt-models';
-import { defineStore } from 'pinia';
-import { api } from 'src/boot/axios';
-import { LocalStorage } from 'quasar';
-import { Notify } from 'quasar';
-import { computed, ref } from 'vue';
-import { AxiosResponse } from 'axios';
+} from 'src/types/typescipt-models';
+import {defineStore} from 'pinia';
+import {api} from 'src/boot/axios';
+import {LocalStorage} from 'quasar';
+import {Notify} from 'quasar';
+import {computed, ref} from 'vue';
+import {AxiosResponse} from 'axios';
 
 export const useAccountStore = defineStore('account-store', () => {
   const loggedInUser = ref(null);
@@ -16,10 +16,10 @@ export const useAccountStore = defineStore('account-store', () => {
     return loggedInUser.value !== null;
   });
 
-  async function logoutUser(_callback?: CallbackNOParam) {
+  async function logoutUser(_callback?: CallbackNOParam): Promise<void> {
     api
       .post('/auth/logout')
-      .then(() => {
+      .then((): void => {
         LocalStorage.remove('access_token');
         loggedInUser.value = null;
         Notify.create({
@@ -31,7 +31,7 @@ export const useAccountStore = defineStore('account-store', () => {
           _callback();
         }
       })
-      .catch((error) => {
+      .catch((error): void => {
         if (error.response) {
           Notify.create({
             type: 'negative',
@@ -41,21 +41,22 @@ export const useAccountStore = defineStore('account-store', () => {
         }
       });
   }
+
   async function loginUser(
     payload: LoginFormInterface,
     _callback?: CallbackNOParam,
     _errorcallback?: CallbackNOParam
-  ) {
-    const form = new FormData();
+  ): Promise<void> {
+    const form: FormData = new FormData();
     form.append('username', payload.email);
     form.append('password', payload.password);
     await api
       .post('/auth/new-login', form, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/custom-quasar-data',
         },
       })
-      .then((response: AxiosResponse) => {
+      .then((response: AxiosResponse): void => {
         LocalStorage.set('access_token', response.data['access_token']);
         Notify.create({
           type: 'positive',
@@ -67,7 +68,7 @@ export const useAccountStore = defineStore('account-store', () => {
           _callback();
         }
       })
-      .catch((error) => {
+      .catch((error): void => {
         if (error.response) {
           Notify.create({
             type: 'negative',
@@ -80,35 +81,38 @@ export const useAccountStore = defineStore('account-store', () => {
         }
       });
   }
-  async function fetchLoggedInUserData() {
+
+  async function fetchLoggedInUserData(): Promise<void> {
     api
       .get('/users/me')
-      .then((response) => {
+      .then((response: AxiosResponse<any>): void => {
         loggedInUser.value = response.data;
       })
       .catch((error) => console.log(error));
   }
-  async function refreshTokens(_callback?: any, _errorcallback?: any) {
+
+  async function refreshTokens(_callback?: any, _errorcallback?: any): Promise<void> {
     api
-      .get('/auth/refresh', {
+      .get('/auth/new-refresh', {
         withCredentials: true,
       })
-      .then((response) => {
+      .then((response: AxiosResponse<any>): void => {
         LocalStorage.set('access_token', response.data['access_token']);
         if (typeof _callback !== 'undefined') {
           _callback();
         }
       })
-      .catch(() => {
+      .catch((): void => {
         if (typeof _errorcallback !== 'undefined') {
           _errorcallback();
         }
       });
   }
-  async function forgotPassword(email: string, _callback?: any) {
+
+  async function forgotPassword(email: string, _callback?: any): Promise<void> {
     api
       .get(`/auth/forgot_password/${email}`)
-      .then(() => {
+      .then((): void => {
         Notify.create({
           type: 'positive',
           message: 'Er is een e-mail verstuurd',
@@ -118,7 +122,7 @@ export const useAccountStore = defineStore('account-store', () => {
           _callback();
         }
       })
-      .catch((error) => {
+      .catch((error): void => {
         if (error.response) {
           Notify.create({
             type: 'negative',
@@ -128,10 +132,11 @@ export const useAccountStore = defineStore('account-store', () => {
         }
       });
   }
-  async function resetPassword(password: string, token: any, _callback?: any) {
+
+  async function resetPassword(password: string, token: any, _callback?: any): Promise<void> {
     api
-      .post(`/auth/reset_password`, { token: token, password: password })
-      .then(() => {
+      .post(`/auth/reset_password`, {token: token, password: password})
+      .then((): void => {
         Notify.create({
           type: 'positive',
           message: 'Wachtwoord succesvol gewijzigd',
@@ -141,7 +146,7 @@ export const useAccountStore = defineStore('account-store', () => {
           _callback();
         }
       })
-      .catch((error) => {
+      .catch((error): void => {
         if (error.response) {
           Notify.create({
             type: 'negative',
@@ -151,6 +156,7 @@ export const useAccountStore = defineStore('account-store', () => {
         }
       });
   }
+
   return {
     loggedInUser,
     isLoggedIn,

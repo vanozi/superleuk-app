@@ -1,4 +1,4 @@
-import { LoginFormInterface } from 'src/models/typescipt-models';
+import { LoginFormInterface } from 'src/types/typescipt-models';
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/axios';
 import { Loading, Notify } from 'quasar';
@@ -6,7 +6,7 @@ import {
   IMachineState,
   IMachine,
   IFilterMachine,
-} from 'src/models/typescipt-models';
+} from 'src/types/typescipt-models';
 import { ref } from 'vue';
 
 export const useMachinesStore = defineStore('machines-store', {
@@ -83,8 +83,8 @@ export const useMachinesStore = defineStore('machines-store', {
     //     return true;
     //   }
     // }
-    // if (state.machineFilters.models != null) {
-    //   if (state.machineFilters.models.indexOf(el.type_name) > -1) {
+    // if (state.machineFilters.types != null) {
+    //   if (state.machineFilters.types.indexOf(el.type_name) > -1) {
     //     return true;
     //   }
     // }

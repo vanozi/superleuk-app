@@ -114,7 +114,7 @@ WorkingHoursResponseSchemaComplete = pydantic_model_creator(WorkingHours)
 class WorkingHoursUpdateSchema(pydantic.BaseModel):
     id: Optional[int]
     user_id: Optional[int]
-    date: Optional[datetime.date]
+    date: datetime.date
     hours: Optional[float] = 0
     milkings: Optional[float] = 0
     description: Optional[str]

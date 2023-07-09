@@ -1,8 +1,10 @@
 import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { LocalStorage } from 'quasar';
 import { useAccountStore } from 'stores/account-store';
-import { router } from 'src/router';
+import {router} from 'src/router'
+import { RouteLocationNormalizedLoaded } from 'vue-router';
+import { Ref } from 'vue';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -10,7 +12,7 @@ declare module '@vue/runtime-core' {
   }
 }
 
-console.log(process.env.API);
+
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -40,9 +42,9 @@ api.interceptors.request.use(
   }
 );
 
-// Request interceptor
+// Response interceptor
 api.interceptors.response.use(
-  (res) => {
+  (res : AxiosResponse) => {
     return res;
   },
   async (err) => {
@@ -59,12 +61,13 @@ api.interceptors.response.use(
       await accounStore.refreshTokens(
         // When the tokens are successfully refreshed repeat the original request
         function () {
+          router.go(0)
           return api(originalRequest);
         },
         function () {
           // if the token refresh returns an error then remove the access token from the local storage
           // and route back to the login page
-          LocalStorage.remove('acces_token');
+          LocalStorage.clear();
           router.push('/auth/login');
         }
       );
@@ -80,11 +83,11 @@ export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
+  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API custom-quasar)
   //       so you won't necessarily have to import axios in each vue file
 
   app.config.globalProperties.$api = api;
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
+  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API custom-quasar)
   //       so you can easily perform requests against your app's API
 });
 

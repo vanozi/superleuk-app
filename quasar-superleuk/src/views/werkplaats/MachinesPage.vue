@@ -5,8 +5,8 @@ import { useMachinesStore } from 'stores/machines-store';
 import { onBeforeMount, ref, watch, unref, provide } from 'vue';
 // import components
 import MachinesTableQuasar from 'src/components/werkplaats/MachinesTableQuasar.vue';
-// import typescript models
-import { IFilterMachine } from 'src/models/typescipt-models';
+// import typescript types
+import { IFilterMachine } from 'src/types/typescipt-models';
 
 // define stores
 const machineStore = useMachinesStore();

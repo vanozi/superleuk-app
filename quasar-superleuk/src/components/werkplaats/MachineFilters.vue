@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useMachinesStore } from 'stores/machines-store';
-import { IFilterMachine } from 'src/models/typescipt-models';
+import { IFilterMachine } from 'src/types/typescipt-models';
 
 // emits
 const emit = defineEmits(['filterData']);

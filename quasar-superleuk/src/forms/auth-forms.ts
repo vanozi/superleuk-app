@@ -1,34 +1,35 @@
-import VInput from 'components/form/VInput.vue';
-import type FormBuilder from './FormBuilder';
+import CInput from 'components/custom-quasar/CInput.vue';
+import type FormBuilder from './form-builder';
 import z from 'zod';
 
-export default class FormDirector {
+export default class AuthForms {
   builder: FormBuilder;
+
   constructor(builder: FormBuilder) {
     this.builder = builder;
   }
+
   makeLoginForm() {
     return this.builder
       .addField({
-        component: VInput,
         name: 'email',
-        props: {
-          value: '',
-          type: 'email',
-          label: 'E-mailadres',
-          testId: 'login-email',
-        },
+        component: CInput,
+        attrs: {
+          'name': 'email',
+          'type': 'email',
+          'label': 'E-mailadres',
+          'data-testid': 'login-email',
+        }
       })
       .addField({
-        component: VInput,
         name: 'password',
-
-        props: {
-          value: '',
-          type: 'password',
-          label: 'Wachtwoord',
-          testId: 'login-password',
-        },
+        component: CInput,
+        attrs: {
+          'name': 'password',
+          'type': 'password',
+          'label': 'Wachtwoord',
+          'data-testid': 'login-password'
+        }
       })
       .addValidator(
         z.object({
@@ -41,12 +42,14 @@ export default class FormDirector {
       )
       .build();
   }
+
   makeForgotPasswordForm() {
     return this.builder
       .addField({
-        component: VInput,
+        component: CInput,
         name: 'email',
         props: {
+          name: 'email',
           value: '',
           type: 'email',
           label: 'E-mailadres',
@@ -62,23 +65,24 @@ export default class FormDirector {
       )
       .build();
   }
+
   makeResetPasswordForm() {
     return this.builder
       .addField({
-        component: VInput,
+        component: CInput,
         name: 'password',
-
         props: {
+          name: 'password',
           value: '',
           type: 'password',
           label: 'Nieuw wachtwoord',
         },
       })
       .addField({
-        component: VInput,
+        component: CInput,
         name: 'confirmPassword',
-
         props: {
+          name: 'confirmPassword',
           value: '',
           type: 'password',
           label: 'Herhaal wachtwoord',
@@ -97,40 +101,5 @@ export default class FormDirector {
       )
       .build();
   }
-  makeHoursEditForm(event: any) {
-    console.log(event.value);
-    return this.builder
 
-      .addField({
-        component: VInput,
-        name: 'hours',
-        props: {
-          value: event.value.hours,
-          type: 'number',
-          label: 'Uren',
-        },
-        validation: z.string().nonempty('Veld is verplicht'),
-      })
-      .addField({
-        component: VInput,
-        name: 'milkings',
-        props: {
-          value: event.value.milkings,
-          type: 'number',
-          label: 'Melkbeurten',
-        },
-        validation: z.string().nonempty('Veld is verplicht'),
-      })
-      .addField({
-        component: VInput,
-        name: 'description',
-        props: {
-          value: event.value.description,
-          type: 'textarea',
-          label: 'Omschrijving',
-        },
-        validation: z.string().nonempty('Veld is verplicht'),
-      })
-      .build();
-  }
 }
