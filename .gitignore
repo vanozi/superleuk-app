@@ -177,13 +177,14 @@ cython_debug/
 
 
 
-
-
-
 # Eigen gitignore items
 backend/migrations/
+backend/app/migrations/
+backend/app/aerich.ini
 *report.html
 .DS*
+*.idea/
+
 
 # Environment files
 .env.*
