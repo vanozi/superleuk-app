@@ -3,14 +3,13 @@
     :name="props.name"
     v-model="inputValue"
     :label="props.label"
-    @update:model-value="onChangeHandler"
     :data-testId="props.testId"
     readonly
   >
     <template v-slot:append>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-          <q-date name="datepicker" v-model="inputValue" mask="YYYY-MM-DD" minimal :options="formattedDates">
+          <q-date @update:model-value="onChangeHandler" name="datepicker" v-model="inputValue" mask="YYYY-MM-DD" minimal :options="formattedDates">
             <div class="row items-center justify-end">
               <q-btn v-close-popup label="Ok" color="primary" flat />
             </div>
@@ -33,9 +32,6 @@ const props = defineProps<{
   options?: any;
 }>();
 
-onMounted(()=>{
-  console.log(props)
-})
 
 const formattedDates = unref(props.options).slice().map(date => {
   // Split the date string into an array of year, month, and day

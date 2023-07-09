@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts" setup>
-import FormBuilder from 'src/builders/FormBuilder';
-import FormDirector from 'src/builders/FormDirector';
+import FormBuilder from 'src/forms/form-builder';
+import AuthForms from 'src/forms/auth-forms';
 import { useAccountStore } from 'src/stores/account-store';
 import { useRouter } from 'vue-router';
 
@@ -26,8 +26,8 @@ import { useRouter } from 'vue-router';
 const accountStore = useAccountStore();
 const router = useRouter();
 
-const LoginForm = new FormDirector(
-  new FormBuilder('login', 'login-form')
+const LoginForm = new AuthForms(
+  new FormBuilder('login', 'login-custom-quasar')
 ).makeLoginForm();
 const submitLogin = (formValues: any) => {
   accountStore.loginUser(formValues, function () {

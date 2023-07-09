@@ -15,3 +15,6 @@ docker-compose -f docker-compose-test.yml --env-file .env.test restart
 # test report kopieren
 
 docker cp fastapi-test:/app/backend-test-report.html .
+
+# clean up docker
+docker system prune -a -f

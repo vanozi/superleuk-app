@@ -57,7 +57,7 @@ async def post_allowed_users(
         await allowed_user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Er is een onverwachte fout opgetreden bij het versturen van de email",
+            detail="Er is een onverwachte fout opgetreden bij het versturen van de email",
         )
     return allowed_user
 
@@ -119,7 +119,7 @@ async def update_allowed_user(
             await allowed_user.delete()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Er is een overwachte fout opgetreden bij het versturen van de email",
+                detail="Er is een overwachte fout opgetreden bij het versturen van de email",
             )
         return status.HTTP_200_OK
 

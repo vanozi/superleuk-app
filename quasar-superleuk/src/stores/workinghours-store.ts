@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
+import { Notify } from 'quasar';
 import { api } from 'src/boot/axios';
+import { CallbackNOParam, IWorkingHours } from 'src/types/typescipt-models';
 import { computed, ref } from 'vue';
 
 export const useWorkingHoursStore = defineStore('workinghours-store', () => {
@@ -46,6 +48,52 @@ export const useWorkingHoursStore = defineStore('workinghours-store', () => {
       });
   }
 
+  async function addOrUpdateWorkingHours(
+    payload: IWorkingHours,
+    _callback: CallbackNOParam
+  ) {
+    api
+      .put(`/working_hours/`, payload)
+      .then(() => {
+        Notify.create({
+          type: 'positive',
+          message: 'Uren succesvol aangepast',
+          icon: 'done',
+        });
+        _callback();
+      })
+      .catch((error) => {
+        if (error.response) {
+          Notify.create({
+            type: 'negative',
+            message: error.response.data.detail,
+            icon: 'error',
+          });
+        }
+      });
+  }
+
+  async function deleteWorkingHours(id:number, _callback:CallbackNOParam){
+    api
+      .delete(`/working_hours/${id}`)
+      .then(() => {
+        Notify.create({
+          type: 'positive',
+          message: 'Uren succesvol verwijderd',
+          icon: 'done',
+        });
+        _callback();
+      })
+      .catch((error) => {
+        if (error.response) {
+          Notify.create({
+            type: 'negative',
+            message: error.response.data.detail,
+            icon: 'error',
+          });
+        }
+      });
+  }
   return {
     fetchWorkingHoursBetweenDates,
     fetchWorkingHoursLoggedInUser,
@@ -54,5 +102,7 @@ export const useWorkingHoursStore = defineStore('workinghours-store', () => {
     allWorkingHours,
     workingHoursEventsLoggedInUser,
     workingHoursEventsLoggedInUserComputed,
+    addOrUpdateWorkingHours,
+    deleteWorkingHours
   };
 });

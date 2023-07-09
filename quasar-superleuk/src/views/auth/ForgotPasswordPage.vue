@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import FormBuilder from 'src/builders/FormBuilder';
-import FormDirector from 'src/builders/FormDirector';
+import FormBuilder from 'src/forms/form-builder';
+import AuthForms from 'src/forms/auth-forms';
 import { useAccountStore } from 'src/stores/account-store';
 import { useRouter } from 'vue-router';
 
@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 const accountStore = useAccountStore();
 const router = useRouter();
 
-const ForgotPasswordForm = new FormDirector(
+const ForgotPasswordForm = new AuthForms(
   new FormBuilder()
 ).makeForgotPasswordForm();
 

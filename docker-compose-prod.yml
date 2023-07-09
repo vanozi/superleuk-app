@@ -37,6 +37,20 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
+  quasar:
+    build:
+      context: ./quasar-superleuk
+      dockerfile: Dockerfile
+    container_name: "quasar"
+    depends_on:
+      - fastapi
+    restart: always
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.quasar.rule=Host(`app.gebroedersvroege.nl`)"
+        - "traefik.http.routers.quasar.entrypoints=websecure"
+        - "traefik.http.routers.quasar.tls.certresolver=myresolver"
+
   fastapi:
     build:
       context: ./backend
