@@ -1,17 +1,16 @@
-import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { LocalStorage } from 'quasar';
-import { useAccountStore } from 'stores/account-store';
+import {boot} from 'quasar/wrappers';
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import {LocalStorage} from 'quasar';
+import {useAccountStore} from 'stores/account-store';
 import {router} from 'src/router'
-import { RouteLocationNormalizedLoaded } from 'vue-router';
-import { Ref } from 'vue';
+import {RouteLocationNormalizedLoaded} from 'vue-router';
+import {Ref} from 'vue';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
   }
 }
-
 
 
 // Be careful when using SSR for cross-request state pollution
@@ -44,7 +43,7 @@ api.interceptors.request.use(
 
 // Response interceptor
 api.interceptors.response.use(
-  (res : AxiosResponse) => {
+  (res: AxiosResponse) => {
     return res;
   },
   async (err) => {
@@ -53,12 +52,12 @@ api.interceptors.response.use(
     // if access token has expired send a request to refresh the tokens
     if (
       err.response.status === 401 &&
-      err.response.data.detail === 'Could not validate credentials' &&
+      (err.response.data.detail === 'Not authenticated' || err.response.data.detail === 'Could not validate credentials') &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-      const accounStore = useAccountStore();
-      await accounStore.refreshTokens(
+      const accountStore = useAccountStore();
+      await accountStore.refreshTokens(
         // When the tokens are successfully refreshed repeat the original request
         function () {
           router.go(0)
@@ -67,8 +66,9 @@ api.interceptors.response.use(
         function () {
           // if the token refresh returns an error then remove the access token from the local storage
           // and route back to the login page
-          LocalStorage.clear();
-          router.push('/auth/login');
+          accountStore.logoutUser(function () {
+            router.push('/auth/login');
+          });
         }
       );
     } else {
@@ -79,7 +79,7 @@ api.interceptors.response.use(
 // write an axios interceptor to refresh the tokens when they expire
 // https://stackoverflow.com/questions/51563821/axios-interceptors-retry-original-request-and-access-original-promise
 
-export default boot(({ app }) => {
+export default boot(({app}) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
@@ -91,4 +91,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { api };
+export {api};
