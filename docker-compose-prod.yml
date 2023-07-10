@@ -42,8 +42,6 @@ services:
       context: ./quasar-superleuk
       dockerfile: Dockerfile
     container_name: "quasar"
-    env_file:
-      - ./.env.prod
     depends_on:
       - fastapi
     restart: always
@@ -72,6 +70,7 @@ services:
       - MAIL_SSL=${MAIL_SSL}
       - BASE_URL_API=${BASE_URL_API}
       - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
     # command: bash -c "while true; do sleep 1; done"  # Infinite loop to keep container live doing nothing
     depends_on:
       - database
