@@ -42,6 +42,8 @@ services:
       context: ./quasar-superleuk
       dockerfile: Dockerfile
     container_name: "quasar"
+    env_file:
+      - ./.env.prod
     depends_on:
       - fastapi
     restart: always
