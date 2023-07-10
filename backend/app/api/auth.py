@@ -194,7 +194,7 @@ async def get_login_token(
 
 
 @router.post("/new-login")
-async def get_login_token(
+async def get_new_login_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     user = await Auth.authenticate_user(
@@ -230,12 +230,12 @@ async def get_login_token(
 
 
 @router.post("/refresh")
-async def refresh(token: TokenSchema, settings: Settings = Depends(get_settings)):
+async def refresh(request: Request, settings: Settings = Depends(get_settings)):
     invalid_token_error = HTTPException(status_code=400, detail="Invalid token")
     # Check if token expiration date is reached
     try:
         payload = jwt.decode(
-            token.refresh_token,
+            request.cookies.get('refresh_token'),
             settings.secret_key,
             algorithms=settings.token_algorithm,
         )

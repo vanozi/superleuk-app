@@ -22,8 +22,7 @@
         unelevated
         outline
         color="negative"
-        :label="$q.screen.lt.md ? '' : 'verwijderen'"
-        icon="o_delete"
+        label="verwijderen"
         @click="onDeleteFormItemHandler"
       />
       <q-space/>
@@ -41,8 +40,7 @@
           outline
           :disabled="!submitable"
           :data-testId="`${testIdForm}-submit-button`"
-          icon="sym_o_save"
-          :label="$q.screen.lt.md ? '' : nameSubmitButton"
+          :label="nameSubmitButton"
         ></q-btn
         >
       </q-btn-group>

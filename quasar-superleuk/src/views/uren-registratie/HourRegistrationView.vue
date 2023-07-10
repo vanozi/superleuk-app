@@ -24,7 +24,7 @@ function openAddHoursDialog(){
   showHourEditDialog.value = true
   AddWorkingHoursForm.value =  new WorkingHoursForms(
   new FormBuilder('opslaan', 'add-working-hours-custom-quasar')
-).addWorkingHoursForm(options, startDateView.value);
+).addWorkingHoursForm(options);
 }
 
 
