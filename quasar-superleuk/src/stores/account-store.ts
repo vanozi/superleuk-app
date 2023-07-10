@@ -6,22 +6,34 @@ import {defineStore} from 'pinia';
 import {api} from 'src/boot/axios';
 import {LocalStorage} from 'quasar';
 import {Notify} from 'quasar';
-import {computed, ref} from 'vue';
+import {computed, ComputedRef, Ref, ref} from 'vue';
 import {AxiosResponse} from 'axios';
+import {IUser} from 'src/types/modules/user/interfaces';
 
 export const useAccountStore = defineStore('account-store', () => {
-  const loggedInUser = ref(null);
+  const loggedInUser: Ref<IUser | undefined> = ref();
 
   const isLoggedIn = computed(() => {
-    return loggedInUser.value !== null;
+    return loggedInUser.value !== undefined;
   });
+
+  const loggedInUserRoles: ComputedRef<string[]> = computed(() => {
+    if (loggedInUser.value) {
+      return loggedInUser.value.roles.map((role: { name: string }) => role.name);
+    }
+    return [];
+  });
+
+  const hasUserRole = (roleName: string): boolean => {
+    return loggedInUserRoles.value.includes(roleName);
+  };
 
   async function logoutUser(_callback?: CallbackNOParam): Promise<void> {
     api
       .post('/auth/logout')
       .then((): void => {
         LocalStorage.remove('access_token');
-        loggedInUser.value = null;
+        loggedInUser.value = undefined;
         Notify.create({
           type: 'positive',
           message: 'Je bent uitgelogd',
@@ -158,8 +170,10 @@ export const useAccountStore = defineStore('account-store', () => {
   }
 
   return {
+    loggedInUserRoles,
     loggedInUser,
     isLoggedIn,
+    hasUserRole,
     loginUser,
     logoutUser,
     fetchLoggedInUserData,
