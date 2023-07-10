@@ -14,21 +14,25 @@
         <img style="height: 27px;" src="~assets/cow_logo_2.png">
         <q-toolbar-title>Superleuk</q-toolbar-title>
 
-        <!-- <q-btn
-          v-if="accountStore.isLoggedIn"
-          outline
-          icon="logout"
-          label="Logout"
-          @click="logoutUser"
-          :size="$q.screen.lt.md ? 'xs' : ''"
-        />
-        <q-toggle
-        v-model="isDark"
-        checked-icon="dark_mode"
-        color="primary"
-        unchecked-icon="light_mode"
-        @update:model-value="toggleDarkMode"
-      /> -->
+
+        <q-btn round color="primary" icon="o_account_circle"  v-if="accountStore.isLoggedIn">
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup>
+                <q-item-section @click="logoutUser">Logout</q-item-section>
+              </q-item>
+            </q-list>
+            <!--                    <q-btn-->
+            <!--          v-if="accountStore.isLoggedIn"-->
+            <!--          outline-->
+            <!--          icon="logout"-->
+            <!--          label="Logout"-->
+            <!--          @click="logoutUser"-->
+            <!--          :size="$q.screen.lt.md ? 'xs' : ''"-->
+            <!--        />-->
+          </q-menu>
+        </q-btn>
+
       </q-toolbar>
     </q-header>
 
@@ -46,13 +50,14 @@
           font-weight: bold;
           font-size: medium;
         "
-        >Navigatie</q-item-label
+      >Navigatie
+      </q-item-label
       >
       <!-- Uren navigatie menu -->
       <q-expansion-item :header-class="{'expansion-header-style':currentRoute.includes('/uren')}">
-        <template v-slot:header >
-          <q-item-section avatar >
-            <q-icon name="schedule" />
+        <template v-slot:header>
+          <q-item-section avatar>
+            <q-icon name="schedule"/>
           </q-item-section>
           <q-item-section style="font-size: larger">Uren</q-item-section>
         </template>
@@ -66,7 +71,7 @@
               active-class="navigation-item-selected"
             >
               <q-item-section avatar>
-                <q-icon name="add_task" />
+                <q-icon name="add_task"/>
               </q-item-section>
               <q-item-section>Invoeren</q-item-section>
             </q-item>
@@ -78,7 +83,7 @@
               active-class="navigation-item-selected"
             >
               <q-item-section avatar>
-                <q-icon name="list_alt" />
+                <q-icon name="list_alt"/>
               </q-item-section>
               <q-item-section>Overzicht</q-item-section>
             </q-item>
@@ -89,7 +94,7 @@
       <q-expansion-item>
         <template v-slot:header>
           <q-item-section avatar>
-            <q-icon name="o_build" />
+            <q-icon name="o_build"/>
           </q-item-section>
 
           <q-item-section style="font-size: larger">Werkplaats</q-item-section>
@@ -104,7 +109,7 @@
               active-class="navigation-item-selected"
             >
               <q-item-section avatar>
-                <q-icon name="o_agriculture" />
+                <q-icon name="o_agriculture"/>
               </q-item-section>
               <q-item-section>Machinelijst</q-item-section>
             </q-item>
@@ -116,7 +121,7 @@
               active-class="navigation-item-selected"
             >
               <q-item-section avatar>
-                <q-icon name="sym_o_warning" />
+                <q-icon name="sym_o_warning"/>
               </q-item-section>
               <q-item-section>Storingen</q-item-section>
             </q-item>
@@ -128,7 +133,7 @@
               active-class="navigation-item-selected"
             >
               <q-item-section avatar>
-                <q-icon name="o_local_gas_station" />
+                <q-icon name="o_local_gas_station"/>
               </q-item-section>
               <q-item-section>Tankoverzicht</q-item-section>
             </q-item>
@@ -225,19 +230,20 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { ref, computed } from 'vue';
-import { useAccountStore } from 'stores/account-store';
-import { useRouter } from 'vue-router';
+import {useQuasar} from 'quasar';
+import {ref, computed} from 'vue';
+import {useAccountStore} from 'stores/account-store';
+import {useRouter} from 'vue-router';
 
 const $q = useQuasar();
 const isDark = ref(false);
+
 function toggleDarkMode() {
   $q.dark.toggle();
 }
