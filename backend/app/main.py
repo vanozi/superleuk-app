@@ -3,6 +3,8 @@ import logging, os, json
 from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
 from app.api import (
     allowed_users,
@@ -24,12 +26,12 @@ log = logging.getLogger("uvicorn")
 
 
 def create_application() -> FastAPI:
-    # middleware
-    origins_str = os.getenv("ALLOWED_ORIGINS")
-    origins = json.loads(origins_str) if origins_str else ["*"]
+    # # middleware
+    # origins_str = os.getenv("ALLOWED_ORIGINS")
+    # origins = json.loads(origins_str) if origins_str else ["*"]
     middleware = [Middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origin_regex=r"https?://(?:\w+\.)?gebroedersvroege\.nl",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -83,3 +85,4 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     log.info("Shutting down...")
+
