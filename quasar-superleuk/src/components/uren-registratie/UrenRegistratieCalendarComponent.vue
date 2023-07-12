@@ -5,13 +5,11 @@ import {
   Ref,
   provide,
   shallowRef,
-  defineComponent,
-  h,
 } from 'vue';
-import { api } from 'src/boot/axios';
+import {api} from 'src/boot/axios';
 import FormBuilder from 'src/forms/form-builder';
 import WorkingHoursForms from 'src/forms/working-hours-forms';
-import { IWorkingHours } from 'src/types/typescipt-models';
+import {IWorkingHours} from 'src/types/typescipt-models';
 import StandardButton from 'src/components/quasar/StandardButton.vue';
 
 
@@ -30,12 +28,17 @@ import {
   EventContentArg,
   EventSourceFuncArg,
 } from '@fullcalendar/core';
-import { EventImpl } from '@fullcalendar/core/internal';
+import {EventImpl} from '@fullcalendar/core/internal';
 import {useDatePickerDates} from 'src/composables/use-date-picker-dates';
 
 const workingHoursCalendar = ref();
 const listWeekView: Ref<boolean> = ref(false);
+const dayGridMonthView: Ref<boolean> = ref(false);
+const totalWorkingHoursViewSubmitted: Ref<number> = ref(0);
+const totalWorkingHoursViewNotSubmitted: Ref<number> = ref(0);
+const totalWorkingHoursView: Ref<number> = ref(0);
 const firstDayInView: Ref<string> = ref('');
+const lastDayInView: Ref<string> = ref('');
 const showHourAddDialog: Ref<boolean> = ref(false);
 const showHourEditDialog: Ref<boolean> = ref(false);
 const EditWorkingHoursForm: any = shallowRef();
@@ -55,18 +58,13 @@ const {
   datePickerOptions,
 } = useDatePickerDates();
 
-function createEventContentDiv(content: string): HTMLDivElement {
-  let div = document.createElement('div');
-  div.innerHTML = content;
-  return div;
-}
 
 const calendarOptions: CalendarOptions = {
   views: {
-    listWeek: { buttonText: 'Week' },
-    dayGridMonth: { buttonText: 'Maand' },
+    listWeek: {buttonText: 'Week'},
+    dayGridMonth: {buttonText: 'Maand'},
   },
-  headerToolbar: { end: 'listWeek,dayGridMonth,customprev,customnext' },
+  headerToolbar: {end: 'listWeek,dayGridMonth,customprev,customnext'},
   plugins: [dayGridPlugin, interactionPlugin, listPlugin],
   initialView: 'listWeek',
   displayEventTime: false,
@@ -77,28 +75,10 @@ const calendarOptions: CalendarOptions = {
   locale: nlLocale,
   events: handleFetchEvents,
   showNonCurrentDates: false,
-  eventColor: '#F3A712',
-  eventClick: (eventInfo: EventClickArg) =>
-    openEditHoursDialog(eventInfo.event),
-  eventContent: function (arg: EventContentArg) {
-    if (arg.view.type == 'listWeek') {
-      let uren = document.createElement('div');
-      uren.innerHTML = `<strong>Uren: </strong><span style="float:right"> ${arg.event.extendedProps.hours_formatted_for_frontend}</span>`;
-      let melkbeurten = document.createElement('div');
-      melkbeurten.innerHTML = `<strong>Melkbeurten: </strong><span style="float:right;"> ${arg.event.extendedProps.milkings}</span>`;
-      let omschrijving = document.createElement('div');
-      omschrijving.innerHTML = `<strong>Omschrijving: </strong><em> ${arg.event.extendedProps.description}`;
-      let arrayOfDomNodes = [uren, melkbeurten, omschrijving];
-      return { domNodes: arrayOfDomNodes };
-    } else if (arg.view.type == 'dayGridMonth') {
-      let uren = document.createElement('div');
-      uren.innerHTML = `<strong> U: </strong><span style="float:right;"> ${arg.event.extendedProps.hours_formatted_for_frontend}</span>`;
-      let melkbeurten = document.createElement('div');
-      melkbeurten.innerHTML = `<strong>M: </strong><span style="float:right;"> ${arg.event.extendedProps.milkings}</span>`;
-      let arrayOfDomNodes = [uren, melkbeurten];
-      return { domNodes: arrayOfDomNodes };
-    }
-  },
+  eventClick: (eventInfo: EventClickArg) => openEditHoursDialog(eventInfo.event),
+  eventClassNames: (arg: EventContentArg) => eventClassNames(arg),
+  eventContent: (arg: EventContentArg) => eventContent(arg),
+
   customButtons: {
     customprev: {
       text: '',
@@ -131,17 +111,37 @@ async function handleFetchEvents(
   successCallback: any,
   failureCallback: any
 ) {
+  // de fetchInfo.endStr is een dag te laat, dus we moeten deze met 1 dag verlagen
+  const fetchInfoEndStr = fetchInfo.endStr.split('T')[0];
+  const date = new Date(fetchInfoEndStr);
+  date.setDate(date.getDate() - 1);
+  const newDateString = date.toISOString().split('T')[0];
   await api
     .get('/working_hours/between_dates/', {
+
       params: {
         from_date: fetchInfo.startStr.split('T')[0],
-        to_date: fetchInfo.endStr.split('T')[0],
+        to_date: newDateString,
       },
+
     })
     .then((response) => {
       datesToExcludeFromDatePicker.value = extractDatesFromResponse(
         response.data
       );
+      // van de response tellen we de ingediende en niet ingediende uren op, maar eerst resetten we de boel
+      totalWorkingHoursViewSubmitted.value = 0;
+      totalWorkingHoursViewNotSubmitted.value = 0;
+      totalWorkingHoursView.value = 0;
+      response.data.forEach((event: IWorkingHours) => {
+        if (event.submitted) {
+          totalWorkingHoursViewSubmitted.value += event.hours;
+        } else {
+          totalWorkingHoursViewNotSubmitted.value += event.hours;
+        }
+        totalWorkingHoursView.value += event.hours;
+      });
+      // stuur de data naar de calendar
       successCallback(response.data);
     })
     .catch((error) => {
@@ -153,7 +153,48 @@ function handleDatesSet(dateInfo: DatesSetArg) {
   datePickerStart.value = dateInfo.start;
   datePickerEnd.value = dateInfo.end;
   firstDayInView.value = dateInfo.startStr;
-  listWeekView.value = dateInfo.view.type == 'listWeek' ? true : false;
+  lastDayInView.value = dateInfo.endStr;
+  listWeekView.value = dateInfo.view.type == 'listWeek';
+  dayGridMonthView.value = dateInfo.view.type == 'dayGridMonth';
+  reFetchEvents();
+}
+
+function eventContent(arg: EventContentArg) {
+  const {view, event} = arg;
+  const uren = document.createElement('div');
+  const melkbeurten = document.createElement('div');
+  const omschrijving = document.createElement('div');
+  const arrayOfDomNodes = [uren, melkbeurten, omschrijving];
+
+  if (view.type === 'listWeek') {
+    uren.innerHTML = `<strong>Uren: </strong><span style="float:right"> ${event.extendedProps.hours_formatted_for_frontend}</span>`;
+    melkbeurten.innerHTML = `<strong>Melkbeurten: </strong><span style="float:right">${event.extendedProps.milkings}</span>`;
+    omschrijving.innerHTML = `<strong>Omschrijving: </strong><em>${event.extendedProps.description}`;
+  } else if (view.type === 'dayGridMonth') {
+    uren.innerHTML = `<strong> U: </strong><span style="float:right">${event.extendedProps.hours_formatted_for_frontend}</span>`;
+    melkbeurten.innerHTML = `<strong>M: </strong><span style="float:right">${event.extendedProps.milkings}</span>`;
+  }
+
+  return {domNodes: arrayOfDomNodes};
+}
+
+function eventClassNames(arg: EventContentArg) {
+  const {view, event} = arg;
+
+  if (view.type === 'dayGridMonth') {
+    if (event.extendedProps.submitted) {
+      return ['submitted'];
+    } else {
+      return ['not-submitted'];
+    }
+  }
+
+  if (view.type === 'listWeek') {
+    if (event.extendedProps.submitted) {
+      return ['submitted'];
+    }
+  }
+  return [];
 }
 
 function reFetchEvents() {
@@ -168,7 +209,6 @@ function openAddHoursDialog() {
 }
 
 function openEditHoursDialog(eventInfo: EventImpl) {
-  console.log(eventInfo)
   showHourEditDialog.value = true;
   let workingHoursItem: IWorkingHours = {
     id: Number(eventInfo.id),
@@ -177,7 +217,7 @@ function openEditHoursDialog(eventInfo: EventImpl) {
     description: eventInfo.extendedProps.description,
     submitted: eventInfo.extendedProps.submitted,
     hours_formatted_for_frontend:
-      eventInfo.extendedProps.hours_formatted_for_frontend,
+    eventInfo.extendedProps.hours_formatted_for_frontend,
   };
   EditWorkingHoursForm.value = new WorkingHoursForms(
     new FormBuilder('opslaan', 'edit-working-hours-custom-quasar')
@@ -190,7 +230,7 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
 </script>
 
 <template>
-  <FullCalendar ref="workingHoursCalendar" :options="calendarOptions" />
+  <FullCalendar ref="workingHoursCalendar" :options="calendarOptions"/>
   <InvoerenDialogComponent
     :add-working-hours-form="AddWorkingHoursForm"
     @re-fetch-events="reFetchEvents"
@@ -199,25 +239,78 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
     :edit-working-hours-form="EditWorkingHoursForm"
     @re-fetch-events="reFetchEvents"
   />
-  <div class="row">
-    <q-space />
+  <!--  Rij onder de calendar view voor de list week -->
+  <div class="row" v-if="listWeekView">
+    <q-space/>
     <q-btn-group unelevated class="q-mt-xs">
       <standard-button
-        v-if="listWeekView"
         color="primary"
         label="Toevoegen"
         @click="openAddHoursDialog"
       />
-      <standard-button v-if="listWeekView" color="positive" label="Indienen" />
+      <standard-button color="positive" label="Indienen"/>
     </q-btn-group>
+  </div>
+  <!--  Rij onder de calendar view voor day grid month -->
+  <div class="row">
+    <q-space/>
+    <div style="max-width: 350px">
+      <q-list separator>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline class="text-weight-bolder">UREN</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline>Open</q-item-label>
+            <q-item-label>{{ totalWorkingHoursViewNotSubmitted }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline>Ingediend</q-item-label>
+            <q-item-label>{{ totalWorkingHoursViewSubmitted }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline>Totaal</q-item-label>
+            <q-item-label>{{ totalWorkingHoursView }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
   </div>
 </template>
 
 <style>
+.submitted {
+  background-color: lightgreen !important;
+  border-color: lightgreen !important;
+}
+
+.submitted .fc-event {
+  color: black !important;
+}
+
+.not-submitted {
+  background-color: lightgrey !important;
+  border-color: lightgrey !important;
+}
+
+.fc-event-main {
+  color: black !important;
+}
+
+
 /* Mobile Styles */
 @media only screen and (max-width: 480px) {
   /* FullCalendar Styles for Mobile Here */
-
   .fc .fc-toolbar-title {
     font-size: 14px !important; /* Smaller font size */
     font-weight: 400;
@@ -235,7 +328,8 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
     font-size: 12px !important;
   }
 }
+
 .fc .fc-button-active {
-    background-color: #F3A712  !important;
-  }
+  background-color: #F3A712 !important;
+}
 </style>
