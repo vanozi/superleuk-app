@@ -5,8 +5,6 @@ import {
   Ref,
   provide,
   shallowRef,
-  defineComponent,
-  h,
 } from 'vue';
 import {api} from 'src/boot/axios';
 import FormBuilder from 'src/forms/form-builder';
@@ -35,7 +33,12 @@ import {useDatePickerDates} from 'src/composables/use-date-picker-dates';
 
 const workingHoursCalendar = ref();
 const listWeekView: Ref<boolean> = ref(false);
+const dayGridMonthView: Ref<boolean> = ref(false);
+const totalWorkingHoursViewSubmitted: Ref<number> = ref(0);
+const totalWorkingHoursViewNotSubmitted: Ref<number> = ref(0);
+const totalWorkingHoursView: Ref<number> = ref(0);
 const firstDayInView: Ref<string> = ref('');
+const lastDayInView: Ref<string> = ref('');
 const showHourAddDialog: Ref<boolean> = ref(false);
 const showHourEditDialog: Ref<boolean> = ref(false);
 const EditWorkingHoursForm: any = shallowRef();
@@ -72,8 +75,7 @@ const calendarOptions: CalendarOptions = {
   locale: nlLocale,
   events: handleFetchEvents,
   showNonCurrentDates: false,
-  eventClick: (eventInfo: EventClickArg) =>
-    openEditHoursDialog(eventInfo.event),
+  eventClick: (eventInfo: EventClickArg) => openEditHoursDialog(eventInfo.event),
   eventClassNames: (arg: EventContentArg) => eventClassNames(arg),
   eventContent: (arg: EventContentArg) => eventContent(arg),
 
@@ -109,27 +111,37 @@ async function handleFetchEvents(
   successCallback: any,
   failureCallback: any
 ) {
+  // de fetchInfo.endStr is een dag te laat, dus we moeten deze met 1 dag verlagen
+  const fetchInfoEndStr = fetchInfo.endStr.split('T')[0];
+  const date = new Date(fetchInfoEndStr);
+  date.setDate(date.getDate() - 1);
+  const newDateString = date.toISOString().split('T')[0];
   await api
     .get('/working_hours/between_dates/', {
+
       params: {
         from_date: fetchInfo.startStr.split('T')[0],
-        to_date: fetchInfo.endStr.split('T')[0],
+        to_date: newDateString,
       },
+
     })
     .then((response) => {
       datesToExcludeFromDatePicker.value = extractDatesFromResponse(
         response.data
       );
-      // loop over the response data and set an extra property backgroundColor based on the status of the submitted property
-      // #59A96A for true #c0c0c0 for false
-      response.data.forEach((event: any) => {
-        event.backgroundColor = event.submitted
-          ? '#59A96A'
-          : '#c0c0c0';
-        event.borderColor = event.submitted
-          ? '#59A96A'
-          : '#c0c0c0';
+      // van de response tellen we de ingediende en niet ingediende uren op, maar eerst resetten we de boel
+      totalWorkingHoursViewSubmitted.value = 0;
+      totalWorkingHoursViewNotSubmitted.value = 0;
+      totalWorkingHoursView.value = 0;
+      response.data.forEach((event: IWorkingHours) => {
+        if (event.submitted) {
+          totalWorkingHoursViewSubmitted.value += event.hours;
+        } else {
+          totalWorkingHoursViewNotSubmitted.value += event.hours;
+        }
+        totalWorkingHoursView.value += event.hours;
       });
+      // stuur de data naar de calendar
       successCallback(response.data);
     })
     .catch((error) => {
@@ -141,7 +153,10 @@ function handleDatesSet(dateInfo: DatesSetArg) {
   datePickerStart.value = dateInfo.start;
   datePickerEnd.value = dateInfo.end;
   firstDayInView.value = dateInfo.startStr;
+  lastDayInView.value = dateInfo.endStr;
   listWeekView.value = dateInfo.view.type == 'listWeek';
+  dayGridMonthView.value = dateInfo.view.type == 'dayGridMonth';
+  reFetchEvents();
 }
 
 function eventContent(arg: EventContentArg) {
@@ -150,10 +165,8 @@ function eventContent(arg: EventContentArg) {
   const melkbeurten = document.createElement('div');
   const omschrijving = document.createElement('div');
   const arrayOfDomNodes = [uren, melkbeurten, omschrijving];
-  console.log(event)
 
   if (view.type === 'listWeek') {
-    console.log(event)
     uren.innerHTML = `<strong>Uren: </strong><span style="float:right"> ${event.extendedProps.hours_formatted_for_frontend}</span>`;
     melkbeurten.innerHTML = `<strong>Melkbeurten: </strong><span style="float:right">${event.extendedProps.milkings}</span>`;
     omschrijving.innerHTML = `<strong>Omschrijving: </strong><em>${event.extendedProps.description}`;
@@ -166,22 +179,24 @@ function eventContent(arg: EventContentArg) {
 }
 
 function eventClassNames(arg: EventContentArg) {
-  const {view} = arg;
+  const {view, event} = arg;
+
   if (view.type === 'dayGridMonth') {
-    const {event} = arg;
     if (event.extendedProps.submitted) {
-      return ['submitted']
+      return ['submitted'];
     } else {
-      return ['not-submitted']
+      return ['not-submitted'];
     }
   }
-   if (view.type === 'listWeek') {
-    const {event} = arg;
+
+  if (view.type === 'listWeek') {
     if (event.extendedProps.submitted) {
-      return ['submitted']
+      return ['submitted'];
     }
   }
+  return [];
 }
+
 function reFetchEvents() {
   workingHoursCalendarApi.value.refetchEvents();
 }
@@ -194,7 +209,6 @@ function openAddHoursDialog() {
 }
 
 function openEditHoursDialog(eventInfo: EventImpl) {
-  console.log(eventInfo)
   showHourEditDialog.value = true;
   let workingHoursItem: IWorkingHours = {
     id: Number(eventInfo.id),
@@ -225,27 +239,63 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
     :edit-working-hours-form="EditWorkingHoursForm"
     @re-fetch-events="reFetchEvents"
   />
-  <div class="row">
+  <!--  Rij onder de calendar view voor de list week -->
+  <div class="row" v-if="listWeekView">
     <q-space/>
     <q-btn-group unelevated class="q-mt-xs">
       <standard-button
-        v-if="listWeekView"
         color="primary"
         label="Toevoegen"
         @click="openAddHoursDialog"
       />
-      <standard-button v-if="listWeekView" color="positive" label="Indienen"/>
+      <standard-button color="positive" label="Indienen"/>
     </q-btn-group>
+  </div>
+  <!--  Rij onder de calendar view voor day grid month -->
+  <div class="row">
+    <q-space/>
+    <div style="max-width: 350px">
+      <q-list separator>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline class="text-weight-bolder">UREN</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline>Open</q-item-label>
+            <q-item-label>{{ totalWorkingHoursViewNotSubmitted }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline>Ingediend</q-item-label>
+            <q-item-label>{{ totalWorkingHoursViewSubmitted }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section/>
+          <q-item-section side>
+            <q-item-label overline>Totaal</q-item-label>
+            <q-item-label>{{ totalWorkingHoursView }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
   </div>
 </template>
 
 <style>
 .submitted {
-  background-color: lightgreen!important;
+  background-color: lightgreen !important;
   border-color: lightgreen !important;
 }
-.submitted .fc-event{
-  color : black !important;
+
+.submitted .fc-event {
+  color: black !important;
 }
 
 .not-submitted {
