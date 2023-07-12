@@ -1,6 +1,7 @@
 import logging, os, json
 
 from fastapi import FastAPI
+from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api import (
@@ -23,7 +24,18 @@ log = logging.getLogger("uvicorn")
 
 
 def create_application() -> FastAPI:
-    application = FastAPI()
+    # middleware
+    origins_str = os.getenv("ALLOWED_ORIGINS")
+    origins = json.loads(origins_str) if origins_str else ["*"]
+    middleware = [Middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )]
+
+    application = FastAPI(middleware=middleware)
     # load router into application
     application.include_router(auth.router, prefix="/api/auth", tags=["auth"])
     application.include_router(users.router, prefix="/api/users", tags=["users"])
@@ -55,16 +67,6 @@ def create_application() -> FastAPI:
     )
     application.include_router(ionic.router, prefix="/api/ionic", tags=["ionic-test"])
     application.include_router(vakanties.router, prefix="/api/vakanties", tags=["vakanties"])
-    origins_str = os.getenv("ALLOWED_ORIGINS")
-    origins = json.loads(origins_str) if origins_str else ["*"]
-
-    application.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
     return application
 
