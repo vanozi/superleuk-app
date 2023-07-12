@@ -1,7 +1,7 @@
 import logging, os, json
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 from app.api import (
     allowed_users,
