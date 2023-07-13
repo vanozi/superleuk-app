@@ -301,8 +301,8 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
 
 <style>
 .submitted {
-  background-color: lightgreen !important;
-  border-color: lightgreen !important;
+  background-color: rgba(229, 255, 204, 0.99) !important;
+  border-color: #E6FFCBFF !important;
 }
 
 .submitted .fc-event {
