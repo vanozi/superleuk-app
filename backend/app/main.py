@@ -26,12 +26,12 @@ log = logging.getLogger("uvicorn")
 
 
 def create_application() -> FastAPI:
-    # # middleware
-    # origins_str = os.getenv("ALLOWED_ORIGINS")
-    # origins = json.loads(origins_str) if origins_str else ["*"]
+    # Toevoegen van middleware voor CORS op basis van een regular expression
+    # deze wordt gehaald uit de .env file en als die daar niet in staat mag alles
+    origin_regex = os.getenv("ORIGIN_REGEX", ".*")
     middleware = [Middleware(
         CORSMiddleware,
-        allow_origin_regex=r"https?://(?:\w+\.)?gebroedersvroege\.nl",
+        allow_origin_regex=rf"{origin_regex}",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
