@@ -13,43 +13,62 @@ export default class WorkingHoursForms {
     this.builder = builder;
   }
 
-  addWorkingHoursForm(datesToSelect: Ref<string[]>) {
-    return this.builder
-      .addField({
-        component: VDateInput,
+addWorkingHoursForm(datesToSelect?: Ref<string[]>, selectedDate?: string) {
+  const formBuilder = this.builder;
+    // DatePicker is readonly als je een selectedDate meegeeft en vrij verkiesbaar als je een datesToSelect meegeeft
+  if(datesToSelect!=undefined) {
+    formBuilder.addField({
+      component: VDateInput,
+      name: 'date',
+      props: {
+        value: datesToSelect.value[0],
         name: 'date',
-        props: {
-          value: datesToSelect.value[0],
-          name: 'date',
-          type: 'date',
-          label: 'Datum',
-          testId: 'workinghours-date',
-          options: datesToSelect,
-        },
-      })
-      .addField({
-        component: WorkingTimeInput,
-        name: 'hours',
-        props: {
-          name: 'hours',
-          value: '',
-          label: 'Uren',
-          testId: 'workinghours-hours',
-        },
-      })
-      .addField({
-        component: CInput,
-        name: 'description',
-        props: {
-          name: 'description',
-          value: '',
-          type: 'textarea',
-          label: 'Omschrijving',
-          testId: 'workinghours-description'
+        type: 'date',
+        label: 'Datum',
+        testId: 'workinghours-date',
+        options: datesToSelect,
+      },
+    })
+  }
+  else if(selectedDate) {
+    formBuilder.addField({
+            component: CInput,
+      name: 'date',
+        attrs: {
+          'value': selectedDate,
+          'name': 'date',
+          'type': 'text',
+          'label': 'Datum',
+          'testId': 'workinghours-date',
+          'readonly': true,
         }
       })
-      .build();
-  }
+    }
+  // overige velden in de form
+  formBuilder
+    .addField({
+      component: WorkingTimeInput,
+      name: 'hours',
+      props: {
+        name: 'hours',
+        value: '',
+        label: 'Uren',
+        testId: 'workinghours-hours',
+      },
+    })
+    .addField({
+      component: CInput,
+      name: 'description',
+      props: {
+        name: 'description',
+        value: '',
+        type: 'textarea',
+        label: 'Omschrijving',
+        testId: 'workinghours-description',
+      },
+    });
+    return formBuilder.build();
+}
 
   editWorkingHoursForm(workingHoursItem: IWorkingHours) {
     console.log(workingHoursItem)

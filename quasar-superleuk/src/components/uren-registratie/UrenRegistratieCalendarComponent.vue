@@ -72,6 +72,9 @@ const calendarOptions: CalendarOptions = {
   selectable: true,
   height: 'auto',
   datesSet: handleDatesSet,
+  dateClick: function (info) {
+    openAddHoursDialog(info.dateStr)
+  },
   locale: nlLocale,
   events: handleFetchEvents,
   showNonCurrentDates: false,
@@ -159,6 +162,7 @@ function handleDatesSet(dateInfo: DatesSetArg) {
   reFetchEvents();
 }
 
+
 function eventContent(arg: EventContentArg) {
   const {view, event} = arg;
   const uren = document.createElement('div');
@@ -167,11 +171,11 @@ function eventContent(arg: EventContentArg) {
   const arrayOfDomNodes = [uren, melkbeurten, omschrijving];
 
   if (view.type === 'listWeek') {
-    uren.innerHTML = `<strong>Uren: </strong><span style="float:right"> ${event.extendedProps.hours_formatted_for_frontend}</span>`;
+    uren.innerHTML = `<strong>Uren: </strong><span style="float:right"> ${event.extendedProps.hours}</span>`;
     melkbeurten.innerHTML = `<strong>Melkbeurten: </strong><span style="float:right">${event.extendedProps.milkings}</span>`;
     omschrijving.innerHTML = `<strong>Omschrijving: </strong><em>${event.extendedProps.description}`;
   } else if (view.type === 'dayGridMonth') {
-    uren.innerHTML = `<strong> U: </strong><span style="float:right">${event.extendedProps.hours_formatted_for_frontend}</span>`;
+    uren.innerHTML = `<strong> U: </strong><span style="float:right">${event.extendedProps.hours}</span>`;
     melkbeurten.innerHTML = `<strong>M: </strong><span style="float:right">${event.extendedProps.milkings}</span>`;
   }
 
@@ -201,11 +205,18 @@ function reFetchEvents() {
   workingHoursCalendarApi.value.refetchEvents();
 }
 
-function openAddHoursDialog() {
+function openAddHoursDialog(selectedDate?: string|undefined) {
   showHourAddDialog.value = true;
-  AddWorkingHoursForm.value = new WorkingHoursForms(
-    new FormBuilder('opslaan', 'add-working-hours-custom-quasar')
-  ).addWorkingHoursForm(datePickerOptions);
+  if (selectedDate) {
+    AddWorkingHoursForm.value = new WorkingHoursForms(
+      new FormBuilder('opslaan', 'add-working-hours-custom-quasar')
+    ).addWorkingHoursForm(undefined, selectedDate);
+  } else {
+    AddWorkingHoursForm.value = new WorkingHoursForms(
+      new FormBuilder('opslaan', 'add-working-hours-custom-quasar')
+    ).addWorkingHoursForm(datePickerOptions);
+  }
+
 }
 
 function openEditHoursDialog(eventInfo: EventImpl) {
@@ -246,7 +257,7 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
       <standard-button
         color="primary"
         label="Toevoegen"
-        @click="openAddHoursDialog"
+        @click="openAddHoursDialog(undefined)"
       />
       <standard-button color="positive" label="Indienen"/>
     </q-btn-group>
