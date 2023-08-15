@@ -183,7 +183,8 @@ backend/app/migrations/
 backend/app/aerich.ini
 *report.html
 .DS*
-*.idea/
+/.idea/*
+!/.idea/runConfigurations
 
 
 # Environment files
