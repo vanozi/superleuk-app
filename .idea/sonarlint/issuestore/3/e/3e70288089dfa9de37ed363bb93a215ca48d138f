@@ -1,0 +1,6 @@
+
+gpython:S1192"ODefine a constant instead of duplicating this literal "/auth/register" 3 times.(÷œ¢á
+spython:S1192&"[Define a constant instead of duplicating this literal "%Y-%m-%dT%H:%M:%S.%f+00:00" 4 times.(ÌñÊå
+ipython:S1192"QDefine a constant instead of duplicating this literal "application/json" 4 times.(Æâ¬°
+upython:S1192"XDefine a constant instead of duplicating this literal "test_gebruiker@test.com" 5 times.(Àµ÷Ðùÿÿÿÿ
+Œpython:S5864"oFix this call; Previous type checks suggest that "invite_new_user_fixture" has type int and it is not callable.(Àµ÷Ðùÿÿÿÿ

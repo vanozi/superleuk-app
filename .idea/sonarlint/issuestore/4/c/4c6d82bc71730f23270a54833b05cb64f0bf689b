@@ -1,0 +1,5 @@
+
+hpython:S1192"KDefine a constant instead of duplicating this literal "/machines/" 3 times.(®¡èÿÿÿÿÿ
+cpython:S1192"KDefine a constant instead of duplicating this literal "John Deere" 3 times.(í¤±”
+npython:S1192"QDefine a constant instead of duplicating this literal "application/json" 4 times.(¸Ãêåøÿÿÿÿ
+Špython:S58642"rFix this call; Previous type checks suggest that "insert_new_machine_fixture" has type str and it is not callable.(Îşíû

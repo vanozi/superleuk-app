@@ -1,0 +1,5 @@
+
+npython:S1192"QDefine a constant instead of duplicating this literal "application/json" 5 times.(¸Ãêåøÿÿÿÿ
+vpython:S1192"YDefine a constant instead of duplicating this literal "test_gebruiker1@test.com" 3 times.(ô«¸´þÿÿÿÿ
+mpython:S1192"PDefine a constant instead of duplicating this literal "/allowed_users/" 5 times.(Úºãºýÿÿÿÿ
+Œpython:S5864B"oFix this call; Previous type checks suggest that "invite_new_user_fixture" has type int and it is not callable.(®·Ùèøÿÿÿÿ

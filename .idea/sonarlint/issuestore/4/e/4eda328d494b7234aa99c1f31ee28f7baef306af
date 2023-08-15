@@ -1,0 +1,8 @@
+
+fpython:S11924"NDefine a constant instead of duplicating this literal "test@test.com" 3 times.(½‘΄λ
+Cpython:S1481"+Remove the unused local variable "excinfo".(Αίσ
+hpython:S5655"KChange this argument; Function "get_password_hash" expects a different type(ΫΛ‹‰ÿÿÿÿÿ
+cpython:S5655"KChange this argument; Function "get_password_hash" expects a different type(ÿΥ½­
+Cpython:S1481,"+Remove the unused local variable "excinfo".(Αίσ
+`python:S5655."IChange this argument; Function "verify_password" expects a different type(›Κ8
+6python:S125H"Remove this commented out code.(ύ ”έ
