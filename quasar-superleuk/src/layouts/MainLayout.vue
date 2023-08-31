@@ -22,14 +22,6 @@
                 <q-item-section @click="logoutUser">Logout</q-item-section>
               </q-item>
             </q-list>
-            <!--                    <q-btn-->
-            <!--          v-if="accountStore.isLoggedIn"-->
-            <!--          outline-->
-            <!--          icon="logout"-->
-            <!--          label="Logout"-->
-            <!--          @click="logoutUser"-->
-            <!--          :size="$q.screen.lt.md ? 'xs' : ''"-->
-            <!--        />-->
           </q-menu>
         </q-btn>
 
@@ -59,10 +51,10 @@
           <q-item-section avatar>
             <q-icon name="schedule"/>
           </q-item-section>
-          <q-item-section style="font-size: larger">Uren</q-item-section>
+          <q-item-section class="text-h6">Uren</q-item-section>
         </template>
         <template v-slot:default>
-          <q-list dense class="q-pl-md">
+          <q-list dense class="q-pl-md text-body1">
             <q-item
               clickable
               v-ripple
@@ -78,7 +70,7 @@
             <q-item
               clickable
               v-ripple
-              to="/uren/overizcht"
+              to="/uren/overzicht"
               :active="currentRoute === '/uren/overzicht'"
               active-class="navigation-item-selected"
             >
@@ -91,142 +83,55 @@
         </template>
       </q-expansion-item>
       <!-- Werkplaats navigatie menu -->
-      <q-expansion-item>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-icon name="o_build"/>
-          </q-item-section>
+<!--      <q-expansion-item>-->
+<!--        <template v-slot:header>-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="o_build"/>-->
+<!--          </q-item-section>-->
 
-          <q-item-section style="font-size: larger">Werkplaats</q-item-section>
-        </template>
-        <template v-slot:default>
-          <q-list dense class="q-pl-md">
-            <q-item
-              clickable
-              v-ripple
-              to="/werkplaats/machines"
-              :active="currentRoute === '/werkplaats/machines'"
-              active-class="navigation-item-selected"
-            >
-              <q-item-section avatar>
-                <q-icon name="o_agriculture"/>
-              </q-item-section>
-              <q-item-section>Machinelijst</q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              to="/werkplaats/storingen"
-              :active="currentRoute === '/werkplaats/storingen'"
-              active-class="navigation-item-selected"
-            >
-              <q-item-section avatar>
-                <q-icon name="sym_o_warning"/>
-              </q-item-section>
-              <q-item-section>Storingen</q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              to="/werkplaats/tankoverzicht"
-              :active="currentRoute === '/werkplaats/tankoverzicht'"
-              active-class="navigation-item-selected"
-            >
-              <q-item-section avatar>
-                <q-icon name="o_local_gas_station"/>
-              </q-item-section>
-              <q-item-section>Tankoverzicht</q-item-section>
-            </q-item>
-          </q-list>
-        </template>
-      </q-expansion-item>
-      <!-- <q-list>
-        <q-item-label
-          header
-          style="color: white; background-color: #173e43; font-size: medium"
-        >
-          Navigatie
-        </q-item-label>
-        <q-expansion-item class="expension-item" expand-separator>
-          <template v-slot:header>
-            <q-item>
-              <q-item-section avatar>
-                <q-icon name="agriculture" />
-              </q-item-section>
-              <q-item-section class="drawer-navigation-item"
-                >Werkplaats</q-item-section
-              >
-            </q-item>
-          </template> -->
-      <!-- <q-list dense bordered>
-            <q-item
-              clickable
-              v-ripple
-              to="/werkplaats/machines"
-              :active="selectedLink === 'machinelijst'"
-              @click="selectedLink = 'machinelijst'"
-            >
-              <q-item-section class="text-left q-pl-md"
-                >Machinelijst</q-item-section
-              >
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              to="/werkplaats/storingen"
-              :active="selectedLink === 'storingen'"
-              @click="selectedLink = 'storingen'"
-            >
-              <q-item-section class="text-left q-pl-md"
-                >Storingen</q-item-section
-              >
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              to="/werkplaats/tankoverzicht"
-              :active="selectedLink === 'tankoverzicht'"
-              @click="selectedLink = 'tankoverzicht'"
-            >
-              <q-item-section class="text-left q-pl-md"
-                >Tankoverzicht</q-item-section
-              >
-            </q-item>
-          </q-list>
-        </q-expansion-item>
-        <q-expansion-item expand-separator>
-          <template v-slot:header>
-            <q-item-section avatar>
-              <q-icon name="schedule" />
-            </q-item-section>
-            <q-item-section>Uren</q-item-section>
-          </template>
-          <q-list dense bordered>
-            <q-item
-              clickable
-              v-ripple
-              to="/uren/overzicht"
-              :active="selectedLink === 'overzicht'"
-              @click="selectedLink = 'overzicht'"
-            >
-              <q-item-section class="text-left q-pl-md"
-                >Overzicht</q-item-section
-              >
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              to="/uren/invoeren"
-              :active="selectedLink === 'invoeren'"
-              @click="selectedLink = 'invoeren'"
-            >
-              <q-item-section class="text-left q-pl-md"
-                >Invoeren</q-item-section
-              >
-            </q-item>
-          </q-list>
-        </q-expansion-item>
-      </q-list> -->
+<!--          <q-item-section style="font-size: larger">Werkplaats</q-item-section>-->
+<!--        </template>-->
+<!--        <template v-slot:default>-->
+<!--          <q-list dense class="q-pl-md">-->
+<!--            <q-item-->
+<!--              clickable-->
+<!--              v-ripple-->
+<!--              to="/werkplaats/machines"-->
+<!--              :active="currentRoute === '/werkplaats/machines'"-->
+<!--              active-class="navigation-item-selected"-->
+<!--            >-->
+<!--              <q-item-section avatar>-->
+<!--                <q-icon name="o_agriculture"/>-->
+<!--              </q-item-section>-->
+<!--              <q-item-section>Machinelijst</q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item-->
+<!--              clickable-->
+<!--              v-ripple-->
+<!--              to="/werkplaats/storingen"-->
+<!--              :active="currentRoute === '/werkplaats/storingen'"-->
+<!--              active-class="navigation-item-selected"-->
+<!--            >-->
+<!--              <q-item-section avatar>-->
+<!--                <q-icon name="sym_o_warning"/>-->
+<!--              </q-item-section>-->
+<!--              <q-item-section>Storingen</q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item-->
+<!--              clickable-->
+<!--              v-ripple-->
+<!--              to="/werkplaats/tankoverzicht"-->
+<!--              :active="currentRoute === '/werkplaats/tankoverzicht'"-->
+<!--              active-class="navigation-item-selected"-->
+<!--            >-->
+<!--              <q-item-section avatar>-->
+<!--                <q-icon name="o_local_gas_station"/>-->
+<!--              </q-item-section>-->
+<!--              <q-item-section>Tankoverzicht</q-item-section>-->
+<!--            </q-item>-->
+<!--          </q-list>-->
+<!--        </template>-->
+<!--      </q-expansion-item>-->
     </q-drawer>
 
     <q-page-container>
@@ -271,11 +176,13 @@ function logoutUser() {
 
 <style>
 .navigation-item-selected {
-  color: orange !important;
-  font-weight: 500 !important;
+  color: #431B17 !important;
+  font-weight: bolder !important;
+  font-style: italic;
 }
 
 .expansion-header-style {
-  background-color: antiquewhite !important;
+  background-color: #DDE3E4;
+  font-style: italic;
 }
 </style>

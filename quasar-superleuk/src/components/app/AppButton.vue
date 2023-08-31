@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 const $q = useQuasar()
 const props = defineProps<{
-  color: string;
+  color?: string;
   size?: string;
   icon?: string;
   label?: string;
@@ -14,7 +14,7 @@ const props = defineProps<{
 
 const buttonSize = computed(() => {
       return $q.screen.lt.sm
-        ? 'sm'
+        ? 'md'
         : 'md'
     })
 </script>
@@ -22,7 +22,6 @@ const buttonSize = computed(() => {
 <template>
   <q-btn
     unelevated
-    outline
     :color="props.color"
     :icon="props.icon"
     :label="props.label"

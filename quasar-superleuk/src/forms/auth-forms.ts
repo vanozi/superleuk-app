@@ -1,6 +1,7 @@
-import CInput from 'components/custom-quasar/CInput.vue';
+import CInput from 'components/app/AppInput.vue';
 import type FormBuilder from './form-builder';
 import z from 'zod';
+import AppInput from "components/app/AppInput.vue";
 
 export default class AuthForms {
   builder: FormBuilder;
@@ -13,7 +14,7 @@ export default class AuthForms {
     return this.builder
       .addField({
         name: 'email',
-        component: CInput,
+        component: AppInput,
         attrs: {
           'name': 'email',
           'type': 'email',
@@ -34,10 +35,10 @@ export default class AuthForms {
       .addValidator(
         z.object({
           email: z
-            .string()
+            .string({required_error: 'Veld is verplicht'})
             .nonempty('Veld is verplicht')
             .email('Vul een geldig email adres in'),
-          password: z.string().nonempty('Veld is verplicht'),
+          password: z.string({required_error: 'Veld is verplicht'}).nonempty('Veld is verplicht'),
         })
       )
       .build();

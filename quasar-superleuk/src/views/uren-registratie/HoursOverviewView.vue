@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import HourYearOverview from 'components/uren/presentational/PYearList.vue';
+import YearListContainer from "components/uren/container/YearListContainer.vue";
 
-const showDialog = ref(false);
 </script>
 <template>
-  <q-page>
-    <q-btn label="Alert" color="primary" @click="showDialog = true" />
-    <q-dialog v-model="showDialog">
-      <q-card>
-
-      </q-card>
-    </q-dialog>
+  <q-page >
+       <year-list-container/>
   </q-page>
+
 </template>

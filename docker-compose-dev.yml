@@ -10,23 +10,25 @@ services:
     ports:
       - 5678:5678
       - 8004:8004
-    environment:
-      - ENVIRONMENT=dev
-      - TESTING=0
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_TEST_URL=${DATABASE_TEST_URL}
-      - DATABASE_TEST_BACKEND_URL=${DATABASE_TEST_BACKEND_URL}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - MAIL_FROM=${MAIL_FROM}
-      - MAIL_PORT=${MAIL_PORT}
-      - MAIL_SERVER=${MAIL_SERVER}
-      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
-      - MAIL_TLS=${MAIL_TLS}
-      - MAIL_SSL=${MAIL_SSL}
-      - BASE_URL_API=${BASE_URL_API}
-      - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+    env_file:
+      - .env.dev
+#    environment:
+#      - ENVIRONMENT=dev
+#      - TESTING=0
+#      - DATABASE_URL=${DATABASE_URL}
+#      - DATABASE_TEST_URL=${DATABASE_TEST_URL}
+#      - DATABASE_TEST_BACKEND_URL=${DATABASE_TEST_BACKEND_URL}
+#      - MAIL_USERNAME=${MAIL_USERNAME}
+#      - MAIL_PASSWORD=${MAIL_PASSWORD}
+#      - MAIL_FROM=${MAIL_FROM}
+#      - MAIL_PORT=${MAIL_PORT}
+#      - MAIL_SERVER=${MAIL_SERVER}
+#      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
+#      - MAIL_TLS=${MAIL_TLS}
+#      - MAIL_SSL=${MAIL_SSL}
+#      - BASE_URL_API=${BASE_URL_API}
+#      - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
+#      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
     volumes:
       - ./backend:/app
 #    command: [
@@ -49,9 +51,8 @@ services:
     init: true
     expose:
       - 5432
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env.dev
     volumes:
       - db-data:/var/lib/postgresql/data/
 
@@ -59,9 +60,8 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     restart: always
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    env_file:
+      - .env.dev
     ports:
       - "5050:80"
     volumes:
