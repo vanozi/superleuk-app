@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { Ref, inject } from 'vue';
-import { useWorkingHoursStore } from 'src/stores/workinghours-store';
-import { IWorkingHours } from 'src/types/typescipt-models';
+import {IWorkingHours, useWorkingHours} from 'src/stores/workinghours-store';
 
 // emits
 const emit = defineEmits(['reFetchEvents']);
 
 // store initializations
-const workingHoursStore = useWorkingHoursStore();
+const workingHoursStore = useWorkingHours();
 const showHourEditDialog: Ref<boolean> = inject('showHourEditDialog')!;
 
 const submitWorkingHours = (formValues: IWorkingHours) => {
-  console.log(formValues)
-  workingHoursStore.addOrUpdateWorkingHours(formValues, function () {
+  workingHoursStore.addOrUpdate(formValues, function () {
     // Als de uren succesvol zijn toegevoegd aan de database dan het dialoog venster sluiten en een event emitten om de view te refreshen
     showHourEditDialog.value = false;
     emit('reFetchEvents');
@@ -20,7 +18,10 @@ const submitWorkingHours = (formValues: IWorkingHours) => {
 };
 
 function deleteWorkingHours(formValues : IWorkingHours) {
-  workingHoursStore.deleteWorkingHours(formValues.id, function () {
+  if(formValues.id == undefined){
+    return
+  }
+  workingHoursStore.deleteSingle(formValues.id, function () {
     // Als de uren succesvol zijn verwijdert dan het dialoog venster sluiten en een event emitten om de view te refreshen
     showHourEditDialog.value = false;
     emit('reFetchEvents');
@@ -55,6 +56,7 @@ const props = defineProps<{
         @clickButton="(clickFunction:string)=>{formButtonFunction[clickFunction]()}"
         @deleteFormItem="deleteWorkingHours"
       ></component>
+
     </q-card>
   </q-dialog>
 </template>

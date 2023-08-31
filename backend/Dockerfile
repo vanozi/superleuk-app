@@ -20,6 +20,7 @@ COPY ./requirements.txt .
 COPY ./tests/requirements-test.txt .
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-test.txt
-
+RUN pip install --upgrade httpcore
+RUN pip install --upgrade httpx
 # add app
 COPY . .

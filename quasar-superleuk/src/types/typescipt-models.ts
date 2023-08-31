@@ -41,14 +41,3 @@ export interface IMachineState {
   loading: boolean;
 }
 
-// Working hours
-export interface IWorkingHours {
-  id? : number,
-  date: string,
-  hours : number,
-  milkings ? : number,
-  description : string,
-  submitted : boolean,
-  user_id ? : number
-  hours_formatted_for_frontend ? :string
-}

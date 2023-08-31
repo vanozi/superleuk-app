@@ -19,14 +19,15 @@ from starlette.responses import JSONResponse
 
 router = APIRouter()
 
+
 # CRUD Implementation for general maintenace
 
 
 # Add or update a working hours item
 @router.put("/", dependencies=[Depends(get_current_active_user)])
 async def update_working_hours_item(
-    working_hours_issue_to_update: WorkingHoursUpdateSchema,
-    current_active_user=Depends(get_current_active_user),
+        working_hours_issue_to_update: WorkingHoursUpdateSchema,
+        current_active_user=Depends(get_current_active_user),
 ):
     working_hours_item = await WorkingHours.get_or_none(
         date=working_hours_issue_to_update.date, user=current_active_user.id
@@ -75,9 +76,6 @@ async def update_working_hours_item(
         return working_hours_item
 
 
-
-
-
 # All working hours
 @router.get(
     "/all_for_user/{user_id}",
@@ -103,7 +101,7 @@ async def get_working_hours_for_user(user_id: str):
     dependencies=[Depends(get_current_active_user)],
 )
 async def get_all_working_hours_for_logged_in_user(
-    current_active_user=Depends(get_current_active_user),
+        current_active_user=Depends(get_current_active_user),
 ):
     # lookup the user for whom the hours are submitted
     user = await Users.get_or_none(id=current_active_user.id)
@@ -156,7 +154,7 @@ async def delete_working_hours_item(id: int):
     dependencies=[Depends(get_current_active_user)],
 )
 async def get_week_overview(
-    from_date: datetime.date, to_date: datetime.date, user_id: int
+        from_date: datetime.date, to_date: datetime.date, user_id: int
 ):
     # Create a list of week numbers for the date range
     week_numbers_from_date_range = list(
@@ -219,9 +217,9 @@ async def get_week_overview(
 
 @router.get("/between_dates/", response_model=List[WorkingHoursResponseSchema])
 async def get_working_hours_between_dates(
-    from_date: datetime.date,
-    to_date: datetime.date,
-    current_user=Depends(get_current_active_user),
+        from_date: datetime.date,
+        to_date: datetime.date,
+        current_user=Depends(get_current_active_user),
 ):
     user = await Users.get(id=current_user.id)
     await user.fetch_related("working_hours")
@@ -229,11 +227,58 @@ async def get_working_hours_between_dates(
     return [x for x in working_hours if (x.date >= from_date and x.date <= to_date)]
 
 
+english_to_dutch_months = {
+    'January': 'januari',
+    'February': 'februari',
+    'March': 'maart',
+    'April': 'april',
+    'May': 'mei',
+    'June': 'juni',
+    'July': 'juli',
+    'August': 'augustus',
+    'September': 'september',
+    'October': 'oktober',
+    'November': 'november',
+    'December': 'december',
+}
+
+
+@router.get("/year_overview/", dependencies=[Depends(get_current_active_user)])
+async def get_year_overview(year: int, current_user=Depends(get_current_active_user)):
+    user = await Users.get(id=current_user.id)
+    await user.fetch_related("working_hours")
+
+    # Initialize a dictionary to store aggregated data
+    aggregated_data = {}
+
+    # Iterate through records and aggregate by month
+    for item in user.working_hours:
+        if item.date.year == year:
+            month = item.date.strftime('%B')  # Get month name
+            dutch_month = english_to_dutch_months.get(month, month)  # Translate to Dutch
+            if dutch_month not in aggregated_data:
+                aggregated_data[dutch_month] = {'month': dutch_month, 'hours': 0, 'milkings': 0}
+            aggregated_data[dutch_month]['hours'] += item.hours
+            aggregated_data[dutch_month]['milkings'] += item.milkings
+
+    # Fill in missing months with dictionaries containing 0 hours and 0 milkings
+    all_months = [datetime.datetime(year, month, 1).strftime('%B') for month in range(1, 13)]
+    for month in all_months:
+        dutch_month = english_to_dutch_months.get(month, month)  # Translate to Dutch
+        if dutch_month not in aggregated_data:
+            aggregated_data[dutch_month] = {'month': dutch_month, 'hours': 0, 'milkings': 0}
+
+    # Convert aggregated data to a list of dictionaries and sort by month index
+    result_list = sorted(list(aggregated_data.values()), key=lambda x: list(english_to_dutch_months.values()).index(
+        english_to_dutch_months.get(x['month'], x['month'])))
+    return result_list
+
+
 @router.get(
     "/month_overview_for_year/", dependencies=[Depends(get_current_active_user)]
 )
 async def get_month_overview_year(
-    year: int, current_user=Depends(get_current_active_user)
+        year: int, current_user=Depends(get_current_active_user)
 ):
     user = await Users.get(id=current_user.id)
     await user.fetch_related("working_hours")
@@ -339,7 +384,7 @@ async def get_week_overview_admin(from_date: datetime.date, to_date: datetime.da
 # Get weeks not submitted for all users in timerange
 @router.get("/admin/unlock_week", dependencies=[Depends(RoleChecker(["admin"]))])
 async def get_weeks_not_submitted(
-    user_id: int, from_date: datetime.date, to_date: datetime.date
+        user_id: int, from_date: datetime.date, to_date: datetime.date
 ):
     # lookup the user for whom the hours are submitted
     user = await Users.get_or_none(id=user_id)

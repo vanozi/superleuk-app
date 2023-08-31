@@ -1,6 +1,6 @@
 import {test, expect} from 'vitest';
 import FormBuilder from 'src/forms/form-builder';
-import VInput from 'components/custom-quasar/CInput.vue';
+import VInput from 'components/app/AppInput.vue';
 
 test('FormBuilder can add fields', () => {
   const formBuilder: FormBuilder = new FormBuilder();

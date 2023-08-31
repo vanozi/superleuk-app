@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UrenRegistratieCalendarComponent from 'src/components/uren-registratie/UrenRegistratieCalendarComponent.vue';
+import UrenRegistratieCalendarComponent from 'components/uren/HoursCalendar.vue';
 import { computed, provide, ref, shallowRef } from 'vue';
 import FormBuilder from 'src/forms/form-builder'
 import WorkingHoursForms from 'src/forms/working-hours-forms';

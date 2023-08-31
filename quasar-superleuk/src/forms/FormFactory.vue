@@ -1,46 +1,50 @@
 <template>
   <q-form
-    action=""
-    @submit.prevent="submit"
-    class="form q-pa-md"
-    :data-testId="testIdForm"
+      action=""
+      @submit.prevent="submit"
+      class="form q-pa-md"
+      :data-testId="testIdForm"
   >
     <div v-for="field in fields" :key="field.name">
       <component
-        :is="field.component"
-        v-bind="{ ...field.props, ...field.attrs }"
-        @update:modelValue="onChangeHandler($event, <string>field.name)"
+          :is="field.component"
+          v-bind="{ ...field.props, ...field.attrs }"
+          @update:modelValue="onChangeHandler($event, <string>field.name)"
       />
       <div class="error" v-if="errors[field.name]">
         {{ errors[field.name] }}
       </div>
     </div>
+<!--    Custom errors-->
+          <div class="error" v-if="errors['custom']">
+        {{ errors['custom'] }}
+      </div>
     <br/>
     <div class="row">
       <q-btn
-        v-if="deletable"
-        unelevated
-        outline
-        color="negative"
-        label="verwijderen"
-        @click="onDeleteFormItemHandler"
+          v-if="deletable"
+          unelevated
+          outline
+          color="negative"
+          label="verwijderen"
+          @click="onDeleteFormItemHandler"
       />
       <q-space/>
       <q-btn-group unelevated>
         <div v-for="button in buttons" :key="button.name">
           <component
-            :is="button.component"
-            v-bind="{ ...button.props }"
-            @clickButton="(clickFunction:string)=>onClickHandler(clickFunction)"
+              :is="button.component"
+              v-bind="{ ...button.props }"
+              @clickButton="(clickFunction:string)=>onClickHandler(clickFunction)"
           />
         </div>
         <q-btn
-          type="submit"
-          color="positive"
-          outline
-          :disabled="!submitable"
-          :data-testId="`${testIdForm}-submit-button`"
-          :label="nameSubmitButton"
+            type="submit"
+            color="positive"
+            outline
+            :disabled="!submitable"
+            :data-testId="`${testIdForm}-submit-button`"
+            :label="nameSubmitButton"
         ></q-btn
         >
       </q-btn-group>
@@ -49,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, computed, onMounted, type PropType} from 'vue';
+import {ref, computed, onMounted, type PropType, onBeforeMount} from 'vue';
 import {ZodError} from 'zod';
 import type {Field, ObjectGeneric, Button} from './form-builder';
 
@@ -111,13 +115,13 @@ const values: ObjectGeneric = ref({});
 // computed properties
 const submitable = computed(() => {
   const errorCount: number = [...Object.keys(errors.value)].filter(
-    (i) => errors.value[i] != undefined
+      (i) => errors.value[i] != undefined
   ).length;
   return errorCount === 0;
 });
 
 // lifecycle hooks
-onMounted(() => {
+onBeforeMount(() => {
   props.fields.forEach(({name, props, attrs}) => {
     if (props?.value != undefined) {
       values.value[name] = props.value;
@@ -135,8 +139,13 @@ const validateForm = function () {
   } catch (error) {
     if (error instanceof ZodError) {
       for (const issue of error.issues) {
-        if (!errors.value.hasOwnProperty(issue.path[0])) {
-          throwErrors(String(issue.path[0]), false, issue.message);
+        if (!errors.value.hasOwnProperty(issue.path[0]) || !errors.value.hasOwnProperty('custom')) {
+          if (issue.path[0] != undefined) {
+            throwErrors(String(issue.path[0]), false, issue.message);
+          } else {
+            //custom errors
+            throwErrors(issue.code, false, issue.message);
+          }
         }
       }
     }
@@ -151,9 +160,9 @@ const submit = async function () {
 };
 
 const throwErrors = function (
-  fieldName: string,
-  valid: boolean,
-  message: string | undefined
+    fieldName: string,
+    valid: boolean,
+    message: string | undefined,
 ) {
   if (!valid) {
     errors.value = {
@@ -169,7 +178,6 @@ const throwErrors = function (
 };
 
 const onChangeHandler = function (payload: any, fieldName: string) {
-  console.log(fieldName)
   values.value[fieldName] = payload;
   validateForm();
 };
