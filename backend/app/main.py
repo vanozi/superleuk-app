@@ -16,7 +16,8 @@ from app.api import (
     machine_onderhoud,
     tank_transactions,
     ionic,
-    vakanties
+    vakanties,
+jdlink
 )
 from app.db import init_db
 
@@ -67,6 +68,7 @@ def create_application() -> FastAPI:
     )
     application.include_router(ionic.router, prefix="/api/ionic", tags=["ionic-test"])
     application.include_router(vakanties.router, prefix="/api/vakanties", tags=["vakanties"])
+    application.include_router(jdlink.router, prefix="/api/jdlink", tags=["jdlink"])
 
     return application
 

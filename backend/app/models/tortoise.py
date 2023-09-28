@@ -236,3 +236,17 @@ class Vakanties(models.Model):
 
     class Meta:
         table = "vakanties"
+
+
+
+class JDLink(models.Model):
+    id = fields.IntField(pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    last_modified_at = fields.DatetimeField(auto_now=True)
+    access_token = fields.CharField(null=True, max_length=3000)
+    refresh_token = fields.CharField(null=True, max_length=3000)
+    refresh_token_expires_at = fields.DatetimeField(null=True)
+
+    class Meta:
+        table = "jdlink"
+
