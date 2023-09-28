@@ -147,7 +147,7 @@ export const useAccountStore = defineStore('account-store', () => {
 
   async function resetPassword(password: string, token: any, _callback?: any): Promise<void> {
     api
-      .post(`/auth/reset_password`, {token: token, password: password})
+      .post('/auth/reset_password', {token: token, password: password})
       .then((): void => {
         Notify.create({
           type: 'positive',

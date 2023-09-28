@@ -1,6 +1,6 @@
-import {defineStore} from "pinia";
-import {api} from "boot/axios";
-import {Notify} from "quasar";
+import {defineStore} from 'pinia';
+import {api} from 'boot/axios';
+import {Notify} from 'quasar';
 
 export interface IAddress {
     id: number,

@@ -3,7 +3,7 @@ import {Notify} from 'quasar';
 import {api} from 'src/boot/axios';
 import {CallbackNOParam} from 'src/types/typescipt-models';
 import {computed, Ref, ref} from 'vue';
-import {AxiosResponse} from "axios";
+import {AxiosResponse} from 'axios';
 
 export interface IWorkingHours {
     id?: number,
@@ -107,7 +107,7 @@ export const useWorkingHours = defineStore('workinghours-store', () => {
         _callback?: CallbackNOParam
     ) {
         api
-            .put(`/working_hours/`, payload)
+            .put('/working_hours/', payload)
             .then(() => {
                 Notify.create({
                     type: 'positive',
