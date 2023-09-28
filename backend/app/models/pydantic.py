@@ -37,6 +37,29 @@ class CreateUser(pydantic.BaseModel):
     email: EmailStr
     password: pydantic.SecretStr
 
+class UpdateUser(pydantic.BaseModel):
+    first_name: Optional[str]
+    last_name: Optional[str]
+    email: Optional[EmailStr]
+    telephone_number: Optional[str]
+    date_of_birth: Optional[datetime.date]
+
+class CreateAddress(pydantic.BaseModel):
+    street: str
+    number: str
+    postal_code: str
+    city: str
+    country: str
+
+class UpdateAddress(pydantic.BaseModel):
+    street: Optional[str]
+    number: Optional[str]
+    postal_code: Optional[str]
+    city: Optional[str]
+    country: Optional[str]
+
+
+
 
 class LogoutRequest(pydantic.BaseModel):
     device_id: str
@@ -57,8 +80,15 @@ User_Pydantic = pydantic_model_creator(
 
 # Roles
 
-RolesSchema = pydantic_model_creator(Roles, name="Role", exclude=["id", "users"])
+RolesSchema = pydantic_model_creator(Roles, name="Role", exclude=["users"])
 
+class AddUserRole(pydantic.BaseModel):
+    user_id: int
+    role_id: int
+
+class DeleteUserRole(pydantic.BaseModel):
+    user_id: int
+    role_id: int
 
 #  Email
 class EmailSchema(pydantic.BaseModel):

@@ -3,8 +3,6 @@ import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import {LocalStorage} from 'quasar';
 import {useAccountStore} from 'stores/account-store';
 import {router} from 'src/router'
-import {RouteLocationNormalizedLoaded} from 'vue-router';
-import {Ref} from 'vue';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

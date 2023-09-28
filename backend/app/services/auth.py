@@ -117,7 +117,7 @@ async def get_current_user(
     user = await Users.get_or_none(email=email)
     if user is None:
         raise credentials_exception
-    await user.fetch_related("roles")
+    await user.fetch_related("roles","address")
     return user
 
 

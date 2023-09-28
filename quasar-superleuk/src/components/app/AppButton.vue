@@ -10,11 +10,12 @@ const props = defineProps<{
   label?: string;
   to?: string;
   disable?: boolean;
+  align?: "left" | "right" | "center" | "around" | "between" | "evenly" | undefined;
 }>();
 
 const buttonSize = computed(() => {
       return $q.screen.lt.sm
-        ? 'md'
+        ? 'sm'
         : 'md'
     })
 </script>
@@ -27,5 +28,6 @@ const buttonSize = computed(() => {
     :label="props.label"
     :disable="props.disable"
     :size="buttonSize"
+    :align="props.align"
   />
 </template>
