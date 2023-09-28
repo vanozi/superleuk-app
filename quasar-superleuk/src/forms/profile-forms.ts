@@ -1,6 +1,6 @@
-import FormBuilder from "src/forms/form-builder";
-import AppInput from "components/app/AppInput.vue";
-import {IMedewerker} from "stores/admin/medewerkers-store";
+import FormBuilder from 'src/forms/form-builder';
+import AppInput from 'components/app/AppInput.vue';
+import {IMedewerker} from 'stores/admin/medewerkers-store';
 
 export default class ProfileForms {
     builder: FormBuilder;

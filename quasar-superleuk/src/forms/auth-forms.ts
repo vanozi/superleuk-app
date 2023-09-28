@@ -1,7 +1,7 @@
 import CInput from 'components/app/AppInput.vue';
 import type FormBuilder from './form-builder';
 import z from 'zod';
-import AppInput from "components/app/AppInput.vue";
+import AppInput from 'components/app/AppInput.vue';
 
 export default class AuthForms {
   builder: FormBuilder;

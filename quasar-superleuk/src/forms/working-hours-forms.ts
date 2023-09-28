@@ -1,14 +1,14 @@
-import AppButton from "components/app/AppButton.vue";
-import AppInput from "components/app/AppInput.vue";
-import AppDateInput from "components/app/AppDateInput.vue";
-import AppWorkingTimeInput from "components/app/AppWorkingTimeInput.vue";
+import AppButton from 'components/app/AppButton.vue';
+import AppInput from 'components/app/AppInput.vue';
+import AppDateInput from 'components/app/AppDateInput.vue';
+import AppWorkingTimeInput from 'components/app/AppWorkingTimeInput.vue';
 
 import type FormBuilder from './form-builder';
 import {Ref} from 'vue';
-import {IWorkingHours} from "stores/workinghours-store";
-import z from "zod";
-import {useAccountStore} from "stores/account-store";
-import AppSelect from "components/app/AppSelect.vue";
+import {IWorkingHours} from 'stores/workinghours-store';
+import z from 'zod';
+import {useAccountStore} from 'stores/account-store';
+import AppSelect from 'components/app/AppSelect.vue';
 
 
 export default class WorkingHoursForms {

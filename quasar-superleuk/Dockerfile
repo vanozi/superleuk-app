@@ -1,16 +1,13 @@
 FROM node:18.15-alpine as develop-stage
 WORKDIR /app
 COPY package*.json ./
-RUN yarn global add @quasar/cli \
-    && npm i -g eslint
+RUN npm i -g add @quasar/cli
 COPY . .
 
 
 # build stage
 FROM develop-stage as build-stage
-RUN yarn \
-    && yarn lint \
-    && quasar build -m pwa
+RUN npm install && quasar build -m pwa
 
 
 # production stage

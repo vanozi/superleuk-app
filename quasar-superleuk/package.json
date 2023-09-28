@@ -6,7 +6,7 @@
   "author": "vanozi <wouter.vanos86@gmail.com>",
   "private": true,
   "scripts": {
-    "dev" : "quasar dev",
+    "dev": "quasar dev",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
@@ -42,7 +42,7 @@
     "@vitest/ui": "^0.15.0",
     "@vue/test-utils": "^2.0.0",
     "autoprefixer": "^10.4.2",
-    "eslint": "^8.10.0",
+    "eslint": "^8.50.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "prettier": "^2.5.1",

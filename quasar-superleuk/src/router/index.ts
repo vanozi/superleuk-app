@@ -9,7 +9,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import {useAccountStore} from "stores/account-store";
+import {useAccountStore} from 'stores/account-store';
 
 const createHistory = process.env.SERVER
   ? createMemoryHistory
