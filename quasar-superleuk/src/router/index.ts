@@ -9,6 +9,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
+import {useAccountStore} from "stores/account-store";
 
 const createHistory = process.env.SERVER
   ? createMemoryHistory
@@ -36,8 +37,23 @@ router.beforeEach((to) => {
       path: '/auth/login',
     };
   }
+  // When trying to access an admin page and you are not an admin you get redirected to the home page
+  if (to.meta.requiresAdmin && !useAccountStore().hasUserRole('admin')) {
+    return {
+      path: '/',
+    };
+  }
 });
 
+
+// admin rules
+router.beforeEach((to) => {
+  if (to.meta.requiresAdmin && !useAccountStore().hasUserRole('admin')) {
+    return {
+      path: '/',
+    };
+  }
+});
 export default route(function (/* { store, ssrContext } */) {
   return router;
 });
