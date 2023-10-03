@@ -5,8 +5,6 @@ import YearListContainer from "components/uren/container/YearListContainer.vue";
 
 </script>
 <template>
-  <q-page >
        <year-list-container/>
-  </q-page>
 
 </template>
