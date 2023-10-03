@@ -30,6 +30,7 @@ import {EventImpl} from '@fullcalendar/core/internal';
 import {useDatePickerDates} from 'src/composables/use-date-picker-dates';
 import {IWorkingHours, useWorkingHours} from "stores/workinghours-store";
 import {useAccountStore} from "stores/account-store";
+import {getDatesBetweenTwoDatesAsString} from "src/helpers/date-helpers";
 
 const workingHoursCalendar = ref();
 const listWeekView: Ref<boolean> = ref(false);
@@ -120,6 +121,23 @@ async function handleFetchEvents(
     const response_data: IWorkingHours[] = await workinghoursStore.getAllBetweenDates(fetchInfo.startStr.split('T')[0], newDateString);
     datesToExcludeFromDatePicker.value = extractDatesFromResponse(
         response_data)
+    // als het om listweek gaat dan de week aanvullen met de dagen die niet in de database staan
+    if (listWeekView.value == true) {
+      const allDatesInWeek = getDatesBetweenTwoDatesAsString(fetchInfo.start, fetchInfo.end)
+      const datesInResponse = extractDatesFromResponse(response_data)
+      const datesNotInResponse = allDatesInWeek.filter(date => !datesInResponse.includes(date))
+      const workingHoursNotInResponse = datesNotInResponse.map(date => {
+        return {
+          date: date,
+          hours: 0,
+          milkings: 0,
+          description: '',
+          submitted: response_data.length > 0 ? response_data[0].submitted : false,
+          hours_formatted_for_frontend: '00:00'
+        }
+      })
+      response_data.push(...workingHoursNotInResponse)
+    }
     successCallback(response_data)
   } catch (error) {
     failureCallback()
@@ -255,13 +273,13 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
   <div class="row" v-if="listWeekView">
     <q-space/>
     <q-btn-group unelevated class="q-mt-xs">
-      <standard-button
-          outline
-          color="primary"
-          label="Toevoegen"
-          @click="openAddHoursDialog()"
-          :disabled="(workinghoursStore.workingHoursInViewSubmittedComputed!= 0 && workinghoursStore.totalWorkingHoursInViewComputed==workinghoursStore.workingHoursInViewSubmittedComputed) || workinghoursStore.workingHoursBetweenDates.length >= 7"
-      />
+<!--      <standard-button-->
+<!--          outline-->
+<!--          color="primary"-->
+<!--          label="Toevoegen"-->
+<!--          @click="openAddHoursDialog()"-->
+<!--          :disabled="(workinghoursStore.workingHoursInViewSubmittedComputed!= 0 && workinghoursStore.totalWorkingHoursInViewComputed==workinghoursStore.workingHoursInViewSubmittedComputed) || workinghoursStore.workingHoursBetweenDates.length >= 7"-->
+<!--      />-->
       <standard-button
           outline
           color="positive"
@@ -274,7 +292,7 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
   <!--  Rij onder de calendar view voor day grid month -->
   <div class="row">
     <q-space/>
-     <div style="max-width: 350px" v-if="useAccountStore().hasUserRole('melker')">
+    <div style="max-width: 350px" v-if="useAccountStore().hasUserRole('melker')">
       <q-list separator>
         <q-item>
           <q-item-section/>
@@ -366,6 +384,6 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
 }
 
 .fc .fc-button-active {
-  background-color: #F3A712 !important;
+  background-color: #0b212d !important;
 }
 </style>

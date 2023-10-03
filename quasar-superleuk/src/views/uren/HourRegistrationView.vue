@@ -32,13 +32,11 @@ function openAddHoursDialog(){
 </script>
 
 <template>
-  <main>
 
-    <div class="q-mx-sm">
+
       <UrenRegistratieCalendarComponent
       />
-    </div>
-  </main>
+
 </template>
 
 <style>
