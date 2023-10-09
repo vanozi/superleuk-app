@@ -4,9 +4,7 @@
       dense
       :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
   >
-    <q-tab name="index" icon="o_dashboard"/>
     <q-tab name="invoeren" icon="add">
-
     </q-tab>
     <q-tab name="overzicht" icon="o_list"/>
   </q-tabs>
@@ -26,5 +24,5 @@ import {ref} from "vue";
 import HourRegistrationView from "src/views/uren/HourRegistrationView.vue";
 import HoursOverviewView from "src/views/uren/HoursOverviewView.vue";
 
-const tab = ref('index')
+const tab = ref('invoeren')
 </script>
