@@ -40,9 +40,15 @@ const columns = computed(() => {
   let baseColumns = [
     {
       name: 'week',
-      label: 'Weeknummer',
+      label: 'Week',
       align: 'left',
       field: 'week',
+      sortable: true,
+    },
+    {
+      name: 'range',
+      label: 'Van / tot',
+      align: 'left',
       sortable: true,
     },
     {
@@ -101,10 +107,10 @@ const columns = computed(() => {
       :columns="columns"
       :rows-per-page-options="[0]"
     >
-      <template v-slot:body-cell-week="props">
+      <template v-slot:body-cell-range="props">
         <q-td :props="props">
-          {{ props.row.week }} ({{ formatWeekDate(props.row.week_start) }} /
-          {{ formatWeekDate(props.row.week_end) }})
+          {{ formatWeekDate(props.row.week_start) }} /
+          {{ formatWeekDate(props.row.week_end) }}
         </q-td>
       </template>
       <template v-slot:bottom-row>

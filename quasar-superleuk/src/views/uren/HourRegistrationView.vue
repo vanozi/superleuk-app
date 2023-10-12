@@ -1,42 +1,21 @@
 <script setup lang="ts">
 import UrenRegistratieCalendarComponent from 'components/uren/HoursCalendar.vue';
-import { computed, provide, ref, shallowRef } from 'vue';
-import FormBuilder from 'src/forms/form-builder'
-import WorkingHoursForms from 'src/forms/working-hours-forms';
+import { computed, provide, ref } from 'vue';
 const showHourEditDialog = ref(false);
-const options = ref()
-const startDateView = ref('')
-const AddWorkingHoursForm = shallowRef()
-const computedOptions =computed(()=>{
-  if(options.value == undefined){
-    return []
+const options = ref();
+const computedOptions = computed(() => {
+  if (options.value == undefined) {
+    return [];
+  } else {
+    return options.value;
   }
-  else{
-    return options.value
-  }
-})
+});
 provide('showHourEditDialog', showHourEditDialog);
-provide('options', computedOptions)
-
-
-
-function openAddHoursDialog(){
-  showHourEditDialog.value = true
-  AddWorkingHoursForm.value =  new WorkingHoursForms(
-  new FormBuilder('opslaan', 'add-working-hours-custom-quasar')
-).addWorkingHoursForm(options);
-}
-
-
-
+provide('options', computedOptions);
 </script>
 
 <template>
-
-
-      <UrenRegistratieCalendarComponent
-      />
-
+  <UrenRegistratieCalendarComponent />
 </template>
 
 <style>
