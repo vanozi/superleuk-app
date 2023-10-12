@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {PropType} from "vue";
+import {PropType, ref} from "vue";
 import {IMedewerker, IRole} from "stores/admin/medewerkers-store";
 
 const props = defineProps({
@@ -12,6 +12,8 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['navigate-to-user-profile'])
+
+const filter = ref<string>('')
 
 const columns = [{
   name: 'name', label: 'Naam', field: function (row: IMedewerker) {
@@ -35,9 +37,18 @@ function onRowClick(e: PointerEvent, row: IMedewerker) {
   <q-table
       :rows="props.users"
       :columns="columns"
+      :filter="filter"
       row-key="name"
       flat
       :pagination="initialPagination"
       @row-click="onRowClick"
-  />
+  >
+    <template v-slot:top-right>
+      <q-input  dense debounce="300" v-model="filter" placeholder="Zoeken">
+        <template v-slot:append>
+          <q-icon name="search"/>
+        </template>
+      </q-input>
+    </template>
+  </q-table>
 </template>

@@ -4,6 +4,7 @@ import {api} from 'src/boot/axios';
 import {CallbackNOParam} from 'src/types/typescipt-models';
 import {computed, Ref, ref} from 'vue';
 import {AxiosResponse} from 'axios';
+import {IWeekData} from "components/models";
 
 export interface IWorkingHours {
     id?: number,
@@ -25,6 +26,7 @@ export interface IMonthTotals {
 export const useWorkingHours = defineStore('workinghours-store', () => {
     const allWorkingHours: Ref<IWorkingHours | undefined> = ref();
     const workingHoursBetweenDates: Ref<IWorkingHours[]> = ref([]);
+    const myWeekOverView = ref<IWeekData[]>([]);
     const workingHoursInViewSubmittedComputed = computed(() => {
         let totalHours = 0;
         if (workingHoursBetweenDates.value) {
@@ -66,6 +68,7 @@ export const useWorkingHours = defineStore('workinghours-store', () => {
         return totalMilkings;
     });
 
+
     // api calls
     async function getAllBetweenDates(from: string, to: string) {
         try {
@@ -97,6 +100,18 @@ export const useWorkingHours = defineStore('workinghours-store', () => {
                 }
             );
             return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getMyWeekOverview(from_date:string, to_date:string){
+        try {
+            const response = await api.get('/working_hours/my_week_overview/', {
+                    params: {from_date: from_date, to_date: to_date},
+                }
+            );
+            myWeekOverView.value = response.data;
         } catch (error) {
             console.log(error)
         }
@@ -161,7 +176,9 @@ export const useWorkingHours = defineStore('workinghours-store', () => {
         workingHoursInViewSubmittedComputed,
         workingHoursInViewNotSubmittedComputed,
         totalWorkingHoursInViewComputed,
-        totalMilkingsInViewComputed
+        totalMilkingsInViewComputed,
+        getMyWeekOverview,
+        myWeekOverView
 
     };
 });

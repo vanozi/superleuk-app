@@ -8,7 +8,7 @@ from app.models.pydantic import (
     WeeksNotSubmittedAllUsersResponseSchema,
     WorkingHoursResponseSchema,
     WeeksNotSubmittedSingleUsersResponseSchema,
-    WorkingHoursUpdateSchema,
+    WorkingHoursUpdateSchema, WeekData,
 )
 from app.models.tortoise import Users, WorkingHours
 from app.services.auth import RoleChecker, get_current_active_user
@@ -173,7 +173,7 @@ async def get_week_overview(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="De gebruiker waarvoor de uren zijn ingediend is niet bekend",
         )
-    await user.fetch_related("roles", "working_hours")
+    await user.fetch_related("roles", "working_hours", "address")
     # loop over weeks and collect data
     result_list = []
     for item in week_numbers_from_date_range:
@@ -214,6 +214,45 @@ async def get_week_overview(
         )
     return {"werknemer": user, "week_data": result_list}
 
+
+@router.get(
+    "/my_week_overview/",
+    response_model=List[WeekData],
+    dependencies=[Depends(get_current_active_user)],
+)
+async def get_week_overview(
+    from_date: datetime.date, to_date: datetime.date, user=Depends(get_current_active_user)
+):
+    # Create a list of week numbers for the date range
+    week_numbers_from_date_range = set(
+        (x.isocalendar()[0], x.isocalendar()[1]) for x in daterange(from_date, to_date)
+    )
+
+    result_list = []
+    for year, week_number in sorted(week_numbers_from_date_range, reverse=True):
+        week_start = Week(year, week_number).monday()
+        week_end = Week(year, week_number).sunday()
+
+        working_hours = await user.working_hours.filter(date__range=[week_start, week_end])
+        sum_hours = sum([i.hours for i in working_hours])
+        sum_milkings = sum([i.milkings for i in working_hours])
+
+        submitted = all(i.submitted for i in working_hours) if working_hours else False
+
+        result_list.append(
+            {
+                "year": year,
+                "week": week_number,
+                "week_start": week_start.strftime("%Y-%m-%d"),
+                "week_end": week_end.strftime("%Y-%m-%d"),
+                "sum_hours": sum_hours,
+                "sum_milkings": sum_milkings,
+                "submitted": submitted,
+                "working_hours": working_hours,
+            }
+        )
+
+    return result_list
 
 @router.get("/between_dates/", response_model=List[WorkingHoursResponseSchema])
 async def get_working_hours_between_dates(

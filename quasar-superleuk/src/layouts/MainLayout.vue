@@ -27,7 +27,7 @@
         :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
     >
       <q-scroll-area class="fit">
-        <q-list v-if="useAccountStore().hasUserRole('werknemer')" dense>
+        <q-list v-if="accountStore.hasUserRole('werknemer')" dense>
           <q-item>
             <q-item-section>
               <q-item-label overline>Medewerker</q-item-label>

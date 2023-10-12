@@ -66,13 +66,13 @@ const columns = computed(() => {
   <!--  jaar selecteren -->
   <!--  met de pijltjes emit je een event naar de YearListContainer om het jaar te veranderen en nieuwe data op te halen-->
   <div class="row justify-center items-center">
-    <q-btn flat text-color="primary" round size="lg" icon="chevron_left" @click="changeYearBack"/>
-    <div class="text-h6">{{ year }}</div>
-    <q-btn flat text-color="primary" round size="lg" icon="chevron_right" @click="changeYearForward"/>
+    <q-btn flat text-color="primary" round size="md" icon="chevron_left" @click="changeYearBack"/>
+    <div class="text-h7">{{ year }}</div>
+    <q-btn flat text-color="primary" round size="md" icon="chevron_right" @click="changeYearForward"/>
   </div>
   <!--  overzicht uren en melkbeurten -->
   <div class="row justify-center items-center">
-    <q-table class="col-xs-10 col-sm-10 text-uppercase" flat hide-bottom :rows="props.yearTotals" :columns="columns"
+    <q-table class="col-12" dense flat hide-bottom :rows="props.yearTotals" :columns="columns"
              :rows-per-page-options="[0]">
       <template v-slot:bottom-row>
         <q-tr>
@@ -81,7 +81,7 @@ const columns = computed(() => {
               <q-item>
                 <q-item-section/>
                 <q-item-section side>
-                  <q-item-label overline class="text-weight-bolder">TOTALEN</q-item-label>
+                  <q-item-label overline class="text-weight-bolder">TOTAAL</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>

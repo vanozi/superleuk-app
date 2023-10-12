@@ -75,7 +75,6 @@ User_Pydantic = pydantic_model_creator(
         "device_login_statusses",
         "reported_maintenance_issues",
         "vakanties",
-        "address",
     ),
 )
 
