@@ -15,10 +15,11 @@
     "test:unit:ci": "vitest run"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.4",
+    "@fullcalendar/core": "^6.1.9",
     "@fullcalendar/daygrid": "^6.1.5",
-    "@fullcalendar/interaction": "^6.1.5",
-    "@fullcalendar/list": "^6.1.5",
+    "@fullcalendar/interaction": "^6.1.9",
+    "@fullcalendar/list": "^6.1.9",
+    "@fullcalendar/timegrid": "^6.1.9",
     "@fullcalendar/vue3": "^6.1.4",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
