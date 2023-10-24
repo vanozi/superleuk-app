@@ -135,7 +135,7 @@ async def get_vakanties_for_logged_in_user(current_active_user=Depends(get_curre
 
 @router.get("/all", dependencies=[Depends(RoleChecker(["admin"]))], response_model=List[VakantiesAllResponseSchema])
 async def get_all_vakanties():
-    vakanties = await Vakanties.all().prefetch_related("user__roles")
+    vakanties = await Vakanties.all().prefetch_related("user__roles", "user__address")
 
     return vakanties
 
@@ -145,7 +145,7 @@ async def get_all_vakanties():
 async def get_all_vakanties_between_dates(start_date: date, end_date: date):
     vakanties = await Vakanties.filter(
         Q(start_date__lte=end_date) & Q(end_date__gte=start_date)
-    ).prefetch_related("user__roles")
+    ).prefetch_related("user__roles", "user__address")
 
     return vakanties
 
