@@ -74,7 +74,7 @@ async def update_machine_maintenance_issue(
             await maintenance_issue.save()
             await maintenance_issue.fetch_related('machine')
             user = await Users.get_or_none(email=maintenance_issue.created_by)
-            await user.fetch_related("roles")
+            await user.fetch_related("roles", "address")
             maintenance_issue.user = user
             return maintenance_issue
         except Exception as e:
