@@ -5,7 +5,13 @@
       :class="$q.dark.isActive ? 'bg-secondary' : 'bg-primary'"
     >
       <q-toolbar>
-        <q-btn flat @click="drawer = !drawer" round icon="menu" />
+        <q-btn
+          flat
+          @click="drawer = !drawer"
+          round
+          icon="menu"
+          v-if="useAccountStore().isLoggedIn"
+        />
         <img style="height: 27px" src="~assets/cow_logo_2.png" />
         <q-toolbar-title>Superleuk</q-toolbar-title>
         <q-btn

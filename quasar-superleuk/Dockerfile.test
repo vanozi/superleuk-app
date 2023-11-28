@@ -1,16 +1,16 @@
 FROM node:18.15-alpine as develop-stage
 WORKDIR /app
 COPY package*.json ./
-RUN yarn global add @quasar/cli \
-    && npm i -g eslint
+RUN npm i -g add @quasar/cli
 COPY . .
 
 
 # build stage
 FROM develop-stage as build-stage
-RUN yarn \
-    && yarn lint \
-    && API_URL=http://api.localhost/api quasar build -m pwa
+ARG API_URL
+ENV API_URL=http://fastapi.localhost/api
+RUN npm install
+RUN quasar build -m pwa
 
 
 # production stage

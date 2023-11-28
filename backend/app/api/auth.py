@@ -91,7 +91,7 @@ async def activate_account(
     # Check if token expiration date is reached
     try:
         payload = jwt.decode(
-            token, settings.secret_key, algorithms=settings.token_algorithm
+            token, settings.secret_key.get_secret_value(), algorithms=settings.token_algorithm
         )
     except jwt.JWTError:
         raise HTTPException(status_code=400, detail="Deze link is verlopen")
@@ -236,7 +236,7 @@ async def refresh(request: Request, settings: Settings = Depends(get_settings)):
     try:
         payload = jwt.decode(
             request.cookies.get('refresh_token'),
-            settings.secret_key,
+            settings.secret_key.get_secret_value(),
             algorithms=settings.token_algorithm,
         )
     except jwt.JWTError:
@@ -270,7 +270,7 @@ async def refresh(request: Request, settings: Settings = Depends(get_settings)):
     try:
         payload = jwt.decode(
             refresh_token,
-            settings.secret_key,
+            settings.secret_key.get_secret_value(),
             algorithms=settings.token_algorithm,
         )
     except jwt.JWTError:
@@ -349,7 +349,7 @@ async def reset_password(
     # Check if token expiration date is reached
     try:
         payload = jwt.decode(
-            reset_info.token, settings.secret_key, algorithms=settings.token_algorithm
+            reset_info.token, settings.secret_key.get_secret_value(), algorithms=settings.token_algorithm
         )
     except jwt.JWTError:
         raise HTTPException(status_code=403, detail="Deze link is verlopen")

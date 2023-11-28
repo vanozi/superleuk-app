@@ -2,17 +2,14 @@ from datetime import date
 from typing import List
 
 from starlette import status
-from tortoise.query_utils import Q
 
-from app.helpers.excel_functions import excel_to_list_of_dicts
 from app.models.pydantic import VakantieCreateSchema, VakantiesResponseSchema, VakantiesAllResponseSchema, \
     VakantieCreateSchemaForUserAsAdmin
 from app.models.tortoise import Vakanties, Users
 from app.services.auth import RoleChecker
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from fastapi.responses import JSONResponse
-from pydantic import ValidationError, parse_obj_as
 
 from app.services.auth import get_current_active_user
 
@@ -143,8 +140,7 @@ async def get_all_vakanties():
 @router.get("/all_between_dates", dependencies=[Depends(RoleChecker(["admin", "werknemer", "monteur"]))],
             response_model=List[VakantiesAllResponseSchema])
 async def get_all_vakanties_between_dates(start_date: date, end_date: date):
-    vakanties = await Vakanties.filter(
-        Q(start_date__lte=end_date) & Q(end_date__gte=start_date)
+    vakanties = await Vakanties.filter(start_date__lte=end_date, end_date__gte=start_date
     ).prefetch_related("user__roles", "user__address")
 
     return vakanties

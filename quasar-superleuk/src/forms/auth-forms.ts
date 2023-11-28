@@ -16,9 +16,9 @@ export default class AuthForms {
         name: 'email',
         component: AppInput,
         attrs: {
-          'name': 'email',
-          'type': 'email',
-          'label': 'E-mailadres',
+          name: 'email',
+          type: 'email',
+          label: 'E-mailadres',
           'data-testid': 'login-email',
         }
       })
@@ -47,13 +47,14 @@ export default class AuthForms {
   makeForgotPasswordForm() {
     return this.builder
       .addField({
-        component: CInput,
+        component: AppInput,
         name: 'email',
-        props: {
+        attrs: {
           name: 'email',
           value: '',
           type: 'email',
           label: 'E-mailadres',
+          'data-testid' : 'forgot-password'
         },
       })
       .addValidator(

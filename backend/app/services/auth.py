@@ -37,7 +37,7 @@ class Auth:
             }
         )
         return jwt.encode(
-            to_encode, settings.secret_key, algorithm=settings.token_algorithm
+            to_encode, settings.secret_key.get_secret_value(), algorithm=settings.token_algorithm
         )
 
     @staticmethod
@@ -107,7 +107,7 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(
-            token, str(settings.secret_key), algorithms=[settings.token_algorithm]
+            token, str(settings.secret_key.get_secret_value()), algorithms=[settings.token_algorithm]
         )
         email: str = payload.get("sub")
         if email is None:
