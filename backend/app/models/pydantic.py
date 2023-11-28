@@ -244,7 +244,7 @@ class MachineBaseInfo(pydantic.BaseModel):
     type_name: Optional[str]
     licence_number: Optional[str]
     chassis_number: Optional[str]
-    construction_year: Optional[str]
+    construction_year: Optional[int]
     ascription_code: Optional[str]
     insurance_type: Optional[str]
 

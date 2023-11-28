@@ -32,12 +32,14 @@ async def post_machine_maintenance_issue(
         # create new machine maintenance issue
         try:
             maintenace_issue = await MaintenanceMachines.create(
-                **incoming_issue.dict(),
+                issue_description=incoming_issue.issue_description,
+                status=incoming_issue.status,
+                machine=machine,
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
                 user=current_active_user,
-                
             )
+            return maintenace_issue
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -91,7 +93,7 @@ async def update_machine_maintenance_issue(
 async def get_maintenance_issues(
     current_active_user=Depends(get_current_active_user),
 ) -> List[MachineMaintenanceResponseSchema]:
-    maintenance_issues =  await MaintenanceMachines.all().prefetch_related('machine', 'user__roles').order_by('-created_at')
+    maintenance_issues =  await MaintenanceMachines.all().prefetch_related('machine', 'user__roles', 'user__address').order_by('-created_at')
     return maintenance_issues
 
 
