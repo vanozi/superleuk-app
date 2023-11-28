@@ -69,6 +69,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fastapi.rule=Host(`superleuk.gebroedersvroege.nl`) && PathPrefix(`/api`)"
+      - "traefik.http.services.fastap.loadbalancer.server.port=8004"
       - "traefik.http.routers.fastapi.entrypoints=websecure"
       - "traefik.http.routers.fastapi.tls.certresolver=myresolver"
 
