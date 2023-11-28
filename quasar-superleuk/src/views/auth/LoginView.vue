@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+// imports
 import FormBuilder from 'src/forms/form-builder';
 import AuthForms from 'src/forms/auth-forms';
 import { useAccountStore } from 'src/stores/account-store';

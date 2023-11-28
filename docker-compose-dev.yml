@@ -12,34 +12,18 @@ services:
       - 8004:8004
     env_file:
       - .env.dev
-#    environment:
-#      - ENVIRONMENT=dev
-#      - TESTING=0
-#      - DATABASE_URL=${DATABASE_URL}
-#      - DATABASE_TEST_URL=${DATABASE_TEST_URL}
-#      - DATABASE_TEST_BACKEND_URL=${DATABASE_TEST_BACKEND_URL}
-#      - MAIL_USERNAME=${MAIL_USERNAME}
-#      - MAIL_PASSWORD=${MAIL_PASSWORD}
-#      - MAIL_FROM=${MAIL_FROM}
-#      - MAIL_PORT=${MAIL_PORT}
-#      - MAIL_SERVER=${MAIL_SERVER}
-#      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
-#      - MAIL_TLS=${MAIL_TLS}
-#      - MAIL_SSL=${MAIL_SSL}
-#      - BASE_URL_API=${BASE_URL_API}
-#      - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
-#      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
     volumes:
       - ./backend:/app
-#    command: [
-#        "sh",
-#        "-c",
-##        "pip install debugpy && python -m debugpy --wait-for-client --listen
-##        0.0.0.0:5678 -m uvicorn app.main:app --reload --host 0.0.0.0 --port
-##        8004",
-#        "python -m uvicorn app.main:app --reload --host 0.0.0.0 --port
-#        8004",
-#      ]
+    entrypoint: /app/entrypoint_dev.sh
+    # command: [
+    #    "sh",
+    #    "-c",
+    #    "pip install debugpy && python -m debugpy --wait-for-client --listen
+    #    0.0.0.0:5678 -m uvicorn app.main:app --reload --host 0.0.0.0 --port
+    #    8004",
+    #    "python -m uvicorn app.main:app --reload --host 0.0.0.0 --port
+    #    8004",
+    #  ]
     depends_on:
       - database
 

@@ -30,6 +30,7 @@ def create_application() -> FastAPI:
     middleware = [Middleware(
         CORSMiddleware,
         allow_origin_regex=rf"{origin_regex}",
+        # allow_origins=["localhost:9200"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

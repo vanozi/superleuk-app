@@ -4,5 +4,6 @@
     "python.linting.pylintArgs": [
         "--enable=W0614"
     ],
-    "python.pythonPath": "~/Code/gitlab/gebroedersvroege-app/backend/venv/bin/python"
+    "python.pythonPath": "~/Code/gitlab/gebroedersvroege-app/backend/venv/bin/python",
+    "python.analysis.typeCheckingMode": "off"
 }

@@ -125,3 +125,4 @@ async def test_login_success(test_client: TestClient):
     assert response.status_code == 200
     assert response.json()["access_token"] is not None
     assert response.json()["token_type"] == "bearer"
+
