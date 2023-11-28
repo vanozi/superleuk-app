@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   traefik:
-    image: "traefik:v2.5"
+    image: traefik:v2.9.6
     container_name: "traefik"
     command:
       #- "--log.level=DEBUG"
@@ -26,8 +26,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: "frontend"
-    environment:
-      - BASE_URL_API=${BASE_URL_API}
+    env_file:
+      - .env.prod
     depends_on:
       - fastapi
     restart: always
@@ -56,22 +56,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile.prod
     container_name: "fastapi"
-    environment:
-      - ENVIRONMENT=prod
-      - TESTING=0
-      - DATABASE_URL=${DATABASE_URL}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - MAIL_FROM=${MAIL_FROM}
-      - MAIL_PORT=${MAIL_PORT}
-      - MAIL_SERVER=${MAIL_SERVER}
-      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
-      - MAIL_TLS=${MAIL_TLS}
-      - MAIL_SSL=${MAIL_SSL}
-      - BASE_URL_API=${BASE_URL_API}
-      - BASE_URL_FRONTEND=${BASE_URL_FRONTEND}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
-    # command: bash -c "while true; do sleep 1; done"  # Infinite loop to keep container live doing nothing
+    env_file:
+      - .env.prod
     depends_on:
       - database
     restart: always
@@ -93,9 +79,8 @@ services:
     container_name: "database"
     expose:
       - 5432
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env.prod
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data/
@@ -104,9 +89,8 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    env_file:
+      - .env.prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.gebroedersvroege.nl`)"
