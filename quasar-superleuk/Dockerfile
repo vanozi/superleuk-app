@@ -7,6 +7,8 @@ COPY . .
 
 # build stage
 FROM develop-stage as build-stage
+ARG API_URL
+ENV API_URL=https://superleuk.gebroedersvroege.nl/api
 RUN npm install && quasar build -m pwa
 
 
