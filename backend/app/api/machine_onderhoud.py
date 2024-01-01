@@ -5,7 +5,7 @@ from app.models.pydantic import (
     MachineMaintenanceResponseSchema,
     MachineMaintenanceUpdate,
 )
-from app.services.auth import get_current_active_user
+from app.services.v1.auth import get_current_active_user
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
@@ -72,7 +72,7 @@ async def update_machine_maintenance_issue(
             maintenance_issue.update_from_dict(updated_maintenance_issue.dict())
             maintenance_issue.last_modified_by = current_active_user.email
             await maintenance_issue.save()
-            await maintenance_issue.fetch_related('machine')
+            await maintenance_issue.fetch_related("machine")
             user = await Users.get_or_none(email=maintenance_issue.created_by)
             await user.fetch_related("roles", "address")
             maintenance_issue.user = user
@@ -93,9 +93,12 @@ async def update_machine_maintenance_issue(
 async def get_maintenance_issues(
     current_active_user=Depends(get_current_active_user),
 ) -> List[MachineMaintenanceResponseSchema]:
-    maintenance_issues =  await MaintenanceMachines.all().prefetch_related('machine', 'user__roles', 'user__address').order_by('-created_at')
+    maintenance_issues = (
+        await MaintenanceMachines.all()
+        .prefetch_related("machine", "user__roles", "user__address")
+        .order_by("-created_at")
+    )
     return maintenance_issues
-
 
 
 @router.get("/{id}", status_code=200, response_model=MachineMaintenanceResponseSchema)
@@ -105,13 +108,13 @@ async def get_single_maintenance_issues(
     maintenance_issue = await MaintenanceMachines.get_or_none(id=id)
     if maintenance_issue is None:
         raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Onderhouds issue niet gevonden",
-            )
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Onderhouds issue niet gevonden",
+        )
     user_reported = await Users.get_or_none(id=maintenance_issue.user_id)
-    await user_reported.fetch_related('roles')
+    await user_reported.fetch_related("roles")
     maintenance_issue.user = user_reported
-    await maintenance_issue.fetch_related('machine')
+    await maintenance_issue.fetch_related("machine")
     return maintenance_issue
 
 

@@ -1,99 +1,139 @@
 <template>
-  <div class="q-pa-md">
-    <q-layout view="hHh Lpr lff" container style="height: 300px" class="shadow-2 rounded-borders">
-      <q-header elevated :class="$q.dark.isActive ? 'bg-secondary' : 'bg-black'">
-        <q-toolbar>
-          <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-          <q-toolbar-title>Header</q-toolbar-title>
-        </q-toolbar>
-      </q-header>
-
-      <q-drawer
-        v-model="drawer"
-        :width="200"
-        :breakpoint="500"
-        overlay
-        bordered
-        :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
-      >
-        <q-scroll-area class="fit">
-          <q-list>
-
-            <template v-for="(menuItem, index) in menuList" :key="index">
-              <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
-                <q-item-section avatar>
-                  <q-icon :name="menuItem.icon" />
-                </q-item-section>
-                <q-item-section>
-                  {{ menuItem.label }}
-                </q-item-section>
+  <q-layout view="hHh Lpr lff">
+    <q-header elevated :class="$q.dark.isActive ? 'bg-secondary' : 'bg-primary'">
+      <q-toolbar>
+        <q-btn flat @click="drawer = !drawer" round icon="menu" v-if="useAccountStore().isLoggedIn" />
+        <img style="height: 27px" src="~assets/cow_logo_2.png" />
+        <q-toolbar-title>Superleuk</q-toolbar-title>
+        <q-btn round color="primary" icon="o_account_circle" v-if="useAccountStore().isLoggedIn">
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup>
+                <q-item-section @click="logoutUser()">Logout</q-item-section>
               </q-item>
-              <q-separator :key="'sep' + index" v-if="menuItem.separator" />
-            </template>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </q-toolbar>
+    </q-header>
 
-          </q-list>
-        </q-scroll-area>
-      </q-drawer>
+    <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'">
+      <q-scroll-area class="fit">
+        <q-list v-if="accountStore.hasUserRole('werknemer')" dense>
+          <q-item>
+            <q-item-section>
+              <q-item-label overline>Medewerker</q-item-label>
+            </q-item-section>
+          </q-item>
+          <template v-for="(menuItem, index) in menuListWerknemer" :key="index">
+            <q-item clickable v-ripple :to="menuItem.to">
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-list>
 
-      <q-page-container>
-        <q-page padding>
-          <p v-for="n in 15" :key="n">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium molestias a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos numquam rerum delectus commodi perferendis voluptate?
-          </p>
-        </q-page>
-      </q-page-container>
-    </q-layout>
-  </div>
+        <q-list v-if="useAccountStore().hasUserRole('monteur')" dense>
+          <q-item>
+            <q-item-section>
+              <q-item-label overline>Monteur</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <template v-for="(menuItem, index) in menuListMonteur" :key="index">
+            <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-list>
+        <q-list v-if="useAccountStore().hasUserRole('admin')" dense>
+          <q-item>
+            <q-item-section>
+              <q-item-label overline>Admin</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <template v-for="(menuItem, index) in menuListAdmin" :key="index">
+            <q-item clickable v-ripple :to="menuItem.to">
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
+
+    <q-page-container>
+      <q-page>
+        <router-view />
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useAccountStore } from 'stores/account-store';
+import { useRouter } from 'vue-router';
 
-const menuList = [
-  {
-    icon: 'inbox',
-    label: 'Inbox',
-    separator: true
-  },
-  {
-    icon: 'send',
-    label: 'Outbox',
-    separator: false
-  },
-  {
-    icon: 'delete',
-    label: 'Trash',
-    separator: false
-  },
-  {
-    icon: 'error',
-    label: 'Spam',
-    separator: true
-  },
-  {
-    icon: 'settings',
-    label: 'Settings',
-    separator: false
-  },
-  {
-    icon: 'feedback',
-    label: 'Send Feedback',
-    separator: false
-  },
-  {
-    icon: 'help',
-    iconColor: 'primary',
-    label: 'Help',
-    separator: false
-  }
-]
+const accountStore = useAccountStore();
+const router = useRouter();
 
-export default {
-  setup () {
-    return {
-      drawer: ref(true),
-      menuList
-    }
-  }
+const drawer = ref(false);
+const menuListWerknemer = [
+  {
+    icon: 'o_more_time',
+    label: 'Uren',
+    to: '/uren/',
+  },
+  {
+    icon: 'o_list_alt',
+    label: 'Werkbonnen',
+  },
+];
+const menuListMonteur = [
+  {
+    icon: 'o_agriculture',
+    label: 'Werkplaats',
+  },
+];
+const menuListAdmin = [
+  {
+    icon: 'o_group',
+    label: 'Account beheer',
+  },
+  {
+    icon: 'o_bolt',
+    label: 'Energy',
+  },
+  {
+    icon: 'o_savings',
+    label: 'Moneybird',
+  },
+  {
+    icon: 'o_calendar_today',
+    label: 'Boederij kalender',
+    to: '/boerderij-kalender/',
+  },
+];
+
+async function logoutUser() {
+  await accountStore.logoutUser(function () {
+    router.push('/auth/login');
+  });
 }
 </script>

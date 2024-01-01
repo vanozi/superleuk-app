@@ -5,12 +5,11 @@ from app.models.pydantic import EmailSchema
 from fastapi import Depends
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 
-fm : ConnectionConfig = FastMail(get_fastapi_mail_config())
+fm: ConnectionConfig = FastMail(get_fastapi_mail_config())
+
 
 class Mailer:
-    async def send_invitation_message(
-        email: EmailSchema
-    ):
+    async def send_invitation_message(email: EmailSchema):
         message = MessageSchema(
             subject="Uitnoding voor Gebr. Vroege app",
             # List of recipients, as many as you can pass
@@ -19,9 +18,7 @@ class Mailer:
         )
         await fm.send_message(message, template_name="invite_email.html")
 
-    async def send_welcome_message(
-        email: EmailSchema
-    ):
+    async def send_welcome_message(email: EmailSchema):
         message = MessageSchema(
             subject="Welkom!!",
             # List of recipients, as many as you can pass

@@ -7,11 +7,11 @@ from app.models.pydantic import (
     AllowedUsersUpdateschema,
     AllowedUsersResponseSchema,
     EmailSchema,
-    ResponseMessage
+    ResponseMessage,
 )
 from app.models.tortoise import AllowedUsers, Users
-from app.services.auth import RoleChecker
-from app.services.mail import Mailer
+from app.services.v1.auth import RoleChecker
+from app.services.v1.mail import Mailer
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.param_functions import Depends
@@ -22,26 +22,40 @@ router = APIRouter()
 
 # CRUD Implementation for allowed users
 
+
 # Create allowed user (only the admin can do this)
 @router.post(
     "/",
     response_model=AllowedUsersResponseSchema,
     status_code=201,
     dependencies=[Depends(RoleChecker(["admin"]))],
-    responses={400: {"model": ResponseMessage}, 500: {"model": ResponseMessage}} ,
+    responses={400: {"model": ResponseMessage}, 500: {"model": ResponseMessage}},
 )
 async def post_allowed_users(
     added_user: AllowedUsersCreateSchema,
 ) -> AllowedUsersResponseSchema:
     if await AllowedUsers.get_or_none(email=added_user.email.lower()) is not None:
-        return JSONResponse(status_code=400, content={"detail": "Er is al een uitnodiging gestuurd naar dit e-mailadres"})
+        return JSONResponse(
+            status_code=400,
+            content={
+                "detail": "Er is al een uitnodiging gestuurd naar dit e-mailadres"
+            },
+        )
     elif await Users.get_or_none(email=added_user.email) is not None:
-        return JSONResponse(status_code=400, content={"detail": "Dit e-mailadres is al geregistreerd"})
+        return JSONResponse(
+            status_code=400, content={"detail": "Dit e-mailadres is al geregistreerd"}
+        )
     # Add allowed user to database
     try:
         allowed_user = await AllowedUsers.create(email=added_user.email.lower())
     except:
-        return JSONResponse(status_code=500, content={"detail","Er is een onverwachte fout opgetreden bij het opslaan in de database"})
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail",
+                "Er is een onverwachte fout opgetreden bij het opslaan in de database",
+            },
+        )
     # Send email
     try:
         await Mailer.send_invitation_message(
@@ -106,7 +120,7 @@ async def update_allowed_user(
         await allowed_user.save()
         # Send email
         try:
-            await Mailer.send_invitation_message(              
+            await Mailer.send_invitation_message(
                 email=EmailSchema(
                     recipient_addresses=[allowed_user.email],
                     body={

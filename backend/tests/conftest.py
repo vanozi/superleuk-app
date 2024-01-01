@@ -1,29 +1,46 @@
 import os
-from typing import Generator
 
 import pytest
 from httpx import AsyncClient
-from starlette.testclient import TestClient
 from tortoise import Tortoise
-from tortoise.contrib.fastapi import register_tortoise
-from tortoise.exceptions import OperationalError
 
-from app.config import Settings, get_settings
+from app.config import Settings
 from app.main import create_application
 from app.models.pydantic import AllowedUsersCreateSchema, MachineCreateSchema
-from app.models.tortoise import Roles, Users
-from app.services.mail import fm
+from app.models.pydantic_models.auth import RegisterUserRequest
+from app.services.v2.mail import fm
+from app.models.tortoise import Users
+from pathlib import Path
+
+from tests.fixtures.working_hours import *
 
 
-def get_settings_override():
-    return Settings(testing=1, database_url=os.environ.get("DATABASE_URL_TEST_BACKEND"))
+async def execute_sql_file(file_name):
+    # Directory of the script or module
+    script_dir = Path(__file__).parent
+
+    # Construct the full file path relative to the script directory
+    file_path = script_dir / 'data' / file_name
+
+    # Read the SQL file
+    with file_path.open("r") as sql_file:
+        sql_content = sql_file.read()
+
+    # Split the SQL content into individual queries (assuming queries are separated by ';')
+    queries = sql_content.split(";")
+
+    # Execute each query
+    for query in queries:
+        query = query.strip()  # Remove leading/trailing whitespace
+        if query:
+            await Tortoise.get_connection("default").execute_query(query)
 
 
 async def init_db(
-    db_url,
-    create_db: bool = False,
-    create_schemas: bool = False,
-    create_test_data: bool = False,
+        db_url,
+        create_db: bool = False,
+        create_schemas: bool = False,
+        create_test_data: bool = False,
 ) -> None:
     """Initial database connection"""
     await Tortoise.init(
@@ -34,16 +51,10 @@ async def init_db(
     if create_schemas:
         await Tortoise.generate_schemas()
     if create_test_data:
-        # Insert testdata into the database
-        # load testdata script
-        conn = Tortoise.get_connection("default")
-        with open("db/sql_files/setup_testdata.sql") as file:
-            lines = [line.rstrip() for line in file]
-            for line in lines:
-                await conn.execute_query(line)
+        await execute_sql_file("setup_testdata.sql")
 
 
-async def init(db_url: str = os.environ.get("DATABASE_URL_TEST_BACKEND")):
+async def init(db_url: str = os.getenv("DATABASE_TEST_URL")) -> None:
     await init_db(db_url, True, True, True)
 
 
@@ -72,6 +83,7 @@ async def admin_token(test_client):
         data={"username": "admin@admin.com", "password": "admin"},
         files=[],
     )
+    print(response.status_code)
     yield response.json()["access_token"]
 
 
@@ -131,6 +143,17 @@ async def insert_new_machine_fixture(test_client, admin_token: str):
     return _add_new_machine
 
 
+@pytest.fixture(scope="function")
+async def add_user(test_client, admin_token: str):
+    async def _add_user(user: dict):
+        try:
+            added_user = await Users.create(**user)
+            return added_user
+        except Exception as e:
+            print(e)
+
+    return _add_user
+
 # HTML REPORT HOOKS
-def pytest_html_report_title(report):
-    report.title = "Backend Test Report"
+# def pytest_html_report_title(report):
+#     report.title = "Backend Test Report"

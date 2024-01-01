@@ -7,22 +7,17 @@ const tab = ref('week')
 
 </script>
 <template>
-    <q-tabs
-      v-model="tab"
-      dense
-  >
-          <q-tab name="week" label="Week">
+  <q-tabs v-model="tab" dense>
+    <q-tab name="week" label="Week">
     </q-tab>
-    <q-tab name="maand" label="Maand"/>
+    <q-tab name="maand" label="Maand" />
   </q-tabs>
   <q-tab-panels v-model="tab" animated>
     <q-tab-panel name="week">
-<WeekListContainer/>
+      <WeekListContainer />
     </q-tab-panel>
-        <q-tab-panel name="maand">
-     <year-list-container/>
+    <q-tab-panel name="maand">
+      <year-list-container />
     </q-tab-panel>
   </q-tab-panels>
-
-
 </template>

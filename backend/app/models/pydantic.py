@@ -8,7 +8,8 @@ from app.models.tortoise import (
     WorkingHours,
     Machines,
     MaintenanceMachines,
-    TankTransactions, Vakanties,
+    TankTransactions,
+    Vakanties,
 )
 
 from app.models.enums import MaintenanceIssueStatus
@@ -37,12 +38,14 @@ class CreateUser(pydantic.BaseModel):
     email: EmailStr
     password: pydantic.SecretStr
 
+
 class UpdateUser(pydantic.BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[EmailStr]
     telephone_number: Optional[str]
     date_of_birth: Optional[datetime.date]
+
 
 class CreateAddress(pydantic.BaseModel):
     street: str
@@ -51,14 +54,13 @@ class CreateAddress(pydantic.BaseModel):
     city: str
     country: str
 
+
 class UpdateAddress(pydantic.BaseModel):
     street: Optional[str]
     number: Optional[str]
     postal_code: Optional[str]
     city: Optional[str]
     country: Optional[str]
-
-
 
 
 class LogoutRequest(pydantic.BaseModel):
@@ -82,13 +84,16 @@ User_Pydantic = pydantic_model_creator(
 
 RolesSchema = pydantic_model_creator(Roles, name="Role", exclude=["users"])
 
+
 class AddUserRole(pydantic.BaseModel):
     user_id: int
     role_id: int
 
+
 class DeleteUserRole(pydantic.BaseModel):
     user_id: int
     role_id: int
+
 
 #  Email
 class EmailSchema(pydantic.BaseModel):
@@ -345,10 +350,10 @@ class VakantieCreateSchema(pydantic.BaseModel):
     start_date: datetime.date
     end_date: datetime.date
 
-    @validator('end_date')
+    @validator("end_date")
     def end_date_must_be_greater_than_start_date(cls, v, values):
-        if 'start_date' in values and v < values['start_date']:
-            raise ValueError('eind datum moet groter zijn dan start datum')
+        if "start_date" in values and v < values["start_date"]:
+            raise ValueError("eind datum moet groter zijn dan start datum")
         return v
 
 
@@ -357,10 +362,10 @@ class VakantieCreateSchemaForUserAsAdmin(pydantic.BaseModel):
     end_date: datetime.date
     user_id: int
 
-    @validator('end_date')
+    @validator("end_date")
     def end_date_must_be_greater_than_start_date(cls, v, values):
-        if 'start_date' in values and v < values['start_date']:
-            raise ValueError('eind datum moet groter zijn dan start datum')
+        if "start_date" in values and v < values["start_date"]:
+            raise ValueError("eind datum moet groter zijn dan start datum")
         return v
 
 

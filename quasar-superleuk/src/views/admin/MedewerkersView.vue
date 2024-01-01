@@ -1,6 +1,12 @@
 <script setup lang="ts">
-
+import { router } from 'src/router'
 import MedewerkerListContainer from "components/medewerkers/containers/MedewerkerTableContainer.vue";
+
+function routeToUser(id: number) {
+  router.push({ name: 'admin-medewerker-profile', params: { id: id.toString() } })
+}
+
+
 </script>
 <template>
   <div class="row justify-center items-center">
@@ -10,7 +16,7 @@ import MedewerkerListContainer from "components/medewerkers/containers/Medewerke
   </div>
   <div class="row justify-center items-center">
     <div class="col-xs-10 col-sm-10">
-      <MedewerkerListContainer/>
+      <MedewerkerListContainer @navigate-to-user="routeToUser" />
     </div>
   </div>
 </template>

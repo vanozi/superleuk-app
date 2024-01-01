@@ -4,15 +4,15 @@ from typing import List
 from app.helpers.excel_functions import excel_to_list_of_dicts
 from app.models.pydantic import BouwPlanDataModelIn, BouwPlanDataModelOut
 from app.models.tortoise import BouwPlan
-from app.services.auth import RoleChecker
 from fastapi import APIRouter, File, UploadFile
 from fastapi.param_functions import Depends
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError, parse_obj_as
 
-from app.services.auth import get_current_active_user
+from app.services.v1.auth import get_current_active_user, RoleChecker
 
 router = APIRouter()
+
 
 # TODO: Create test
 @router.get(

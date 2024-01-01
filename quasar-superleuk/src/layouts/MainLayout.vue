@@ -1,25 +1,14 @@
 <template>
   <q-layout view="hHh Lpr lff">
-    <q-header
-      elevated
-      :class="$q.dark.isActive ? 'bg-secondary' : 'bg-primary'"
-    >
+    <q-header elevated :class="$q.dark.isActive ? 'bg-secondary' : 'bg-primary'">
       <q-toolbar>
-        <q-btn
-          flat
-          @click="drawer = !drawer"
-          round
-          icon="menu"
-          v-if="useAccountStore().isLoggedIn"
-        />
-        <img style="height: 27px" src="~assets/cow_logo_2.png" />
+        <q-btn flat @click="drawer = !drawer" round icon="menu" v-if="useAccountStore().isLoggedIn" />
+        <router-link to="/">
+          <img style="height: 27px" src="~assets/cow_logo_2.png" />
+        </router-link>
+
         <q-toolbar-title>Superleuk</q-toolbar-title>
-        <q-btn
-          round
-          color="primary"
-          icon="o_account_circle"
-          v-if="useAccountStore().isLoggedIn"
-        >
+        <q-btn round color="primary" icon="o_account_circle" v-if="useAccountStore().isLoggedIn">
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup>
@@ -31,14 +20,8 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="drawer"
-      :width="200"
-      :breakpoint="500"
-      overlay
-      bordered
-      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
-    >
+    <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'">
       <q-scroll-area class="fit">
         <q-list v-if="accountStore.hasUserRole('werknemer')" dense>
           <q-item>
@@ -135,20 +118,26 @@ const menuListAdmin = [
   {
     icon: 'o_group',
     label: 'Account beheer',
+    to: '/admin/medewerkers/',
   },
   {
-    icon: 'o_bolt',
-    label: 'Energy',
+    icon: 'o_more_time',
+    label: 'Uren',
+    to: '/admin/uren/',
   },
-  {
-    icon: 'o_savings',
-    label: 'Moneybird',
-  },
-  {
-    icon: 'o_calendar_today',
-    label: 'Boederij kalender',
-    to: '/boerderij-kalender/',
-  },
+  // {
+  //   icon: 'o_bolt',
+  //   label: 'Energy',
+  // },
+  // {
+  //   icon: 'o_savings',
+  //   label: 'Moneybird',
+  // },
+  // {
+  //   icon: 'o_calendar_today',
+  //   label: 'Boederij kalender',
+  //   to: '/boerderij-kalender/',
+  // },
 ];
 
 async function logoutUser() {

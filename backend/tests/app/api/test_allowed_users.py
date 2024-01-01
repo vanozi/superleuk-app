@@ -1,8 +1,8 @@
 import json, os
 
 import pytest
-from app.models.pydantic import AllowedUsersCreateSchema
-from app.services.mail import fm
+from app.models.pydantic_models.allowed_users import AllowedUserRequest
+from app.services.v2.mail import fm
 from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.anyio
@@ -12,7 +12,7 @@ pytestmark = pytest.mark.anyio
 async def test_add_allowed_users(test_client: TestClient, admin_token: str):
     fm.config.SUPPRESS_SEND = 1
     with fm.record_messages() as outbox:
-        payload = AllowedUsersCreateSchema(email="test_gebruiker1@test.com").json()
+        payload = AllowedUserRequest(email="test_gebruiker1@test.com").model_dump_json()
         # For uploading raw text or binary content we prefer to use a content parameter,
         # in order to better separate this usage from the case of uploading form data.
         headers = {
@@ -54,13 +54,13 @@ async def test_add_allowed_users_invalid_email_address(
         "/allowed_users/", headers=headers, content=payload
     )
     assert response.status_code == 422
-    assert response.json()["detail"][0]["msg"] == "value is not a valid email address"
-    assert response.json()["detail"][0]["type"] == "value_error.email"
+    assert "value is not a valid email address" in response.json()["detail"][0]["msg"]
+    assert response.json()["detail"][0]["type"] == "value_error"
 
 
 @pytest.mark.apitest
 async def test_allowed_user_allready_invited(
-    test_client: TestClient, admin_token: str, invite_new_user_fixture: int
+    test_client: TestClient, admin_token: str, invite_new_user_fixture
 ):
     # Invite user for registration
     await invite_new_user_fixture("test_gebruiker2@test.com")
@@ -68,7 +68,7 @@ async def test_allowed_user_allready_invited(
         "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json",
     }
-    payload = AllowedUsersCreateSchema(email="test_gebruiker2@test.com").json()
+    payload = AllowedUserRequest(email="test_gebruiker2@test.com").model_dump_json()
     response = await test_client.post(
         "/allowed_users/", headers=headers, content=payload
     )
@@ -87,7 +87,7 @@ async def test_allowed_user_allready_registered(
         "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json",
     }
-    payload = AllowedUsersCreateSchema(email="werknemer@werknemer.com").json()
+    payload = AllowedUserRequest(email="werknemer@werknemer.com").model_dump_json()
     response = await test_client.post(
         "/allowed_users/", headers=headers, content=payload
     )
@@ -99,7 +99,7 @@ async def test_allowed_user_allready_registered(
 async def test_add_allowed_users_insufficient_privilege(
     test_client: TestClient, werknemer_token: dict
 ):
-    payload = AllowedUsersCreateSchema(email="test_werknemer@test.com").json()
+    payload = AllowedUserRequest(email="test_werknemer@test.com").model_dump_json()
     response = await test_client.post(
         "/allowed_users/",
         headers={

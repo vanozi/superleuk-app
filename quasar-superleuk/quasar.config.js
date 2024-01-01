@@ -55,10 +55,10 @@ module.exports = configure(function (ctx) {
       },
       env: {
         API: ctx.dev
-          ? 'http://localhost:8004/api'
+          ? 'http://localhost:8004/api/v2'
           : process.env.API_URL
-          ? process.env.API_URL
-          : 'https://superleuk.gebroedersvroege.nl/api',
+            ? process.env.API_URL
+            : 'https://superleuk.gebroedersvroege.nl/api',
       },
       // (credits < 30) ? "freshman" : (credits >= 30 && credits < 60) ?"sophomore" : (credits >= 60 && credits < 90) ? "junior" : "senior"
 

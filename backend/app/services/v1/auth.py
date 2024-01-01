@@ -12,7 +12,7 @@ from passlib.context import CryptContext
 from pydantic import UUID4
 from starlette import status
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 settings = Settings()
 
 
@@ -37,7 +37,9 @@ class Auth:
             }
         )
         return jwt.encode(
-            to_encode, settings.secret_key.get_secret_value(), algorithm=settings.token_algorithm
+            to_encode,
+            settings.secret_key.get_secret_value(),
+            algorithm=settings.token_algorithm,
         )
 
     @staticmethod
@@ -107,7 +109,9 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(
-            token, str(settings.secret_key.get_secret_value()), algorithms=[settings.token_algorithm]
+            token,
+            str(settings.secret_key.get_secret_value()),
+            algorithms=[settings.token_algorithm],
         )
         email: str = payload.get("sub")
         if email is None:
@@ -117,7 +121,7 @@ async def get_current_user(
     user = await Users.get_or_none(email=email)
     if user is None:
         raise credentials_exception
-    await user.fetch_related("roles","address","working_hours")
+    await user.fetch_related("roles", "address", "working_hours")
     return user
 
 

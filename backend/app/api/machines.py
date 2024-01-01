@@ -2,16 +2,19 @@ import os
 from platform import machine
 from typing import List
 
-from app.models.pydantic import MachineCreateSchema, MachineResponseSchema, SingleMachineDataReponse
+from app.models.pydantic import (
+    MachineCreateSchema,
+    MachineResponseSchema,
+    SingleMachineDataReponse,
+)
 from app.models.tortoise import Machines, TankTransactions
-from app.services.auth import RoleChecker, get_current_active_user
+from app.services.v1.auth import RoleChecker, get_current_active_user
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
 from starlette.responses import JSONResponse
 
 from app.models.tortoise import MaintenanceMachines
-
 
 
 router = APIRouter()
@@ -45,9 +48,9 @@ async def post_machine(
         return machine
     else:
         raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail=f"Machine met werknummer {incoming_machine.work_number} bestaat al",
-            )
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Machine met werknummer {incoming_machine.work_number} bestaat al",
+        )
 
 
 @router.put(
@@ -64,9 +67,9 @@ async def update_machine(
     machine = await Machines.get_or_none(work_number=incoming_machine.work_number)
     if machine is None:
         raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Machine met werknummer {incoming_machine.work_number} niet gevonden",
-            )
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Machine met werknummer {incoming_machine.work_number} niet gevonden",
+        )
     else:
         await machine.update_from_dict(incoming_machine.dict()).save()
         machine = await Machines.get(work_number=incoming_machine.work_number)
@@ -87,16 +90,22 @@ async def get_single_machines(
     machine = await Machines.get_or_none(id=id)
     if machine is None:
         raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Machine met ID {id} niet gevonden",
-            )
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Machine met ID {id} niet gevonden",
+        )
     maintenance_issues = await MaintenanceMachines.filter(machine=machine.id)
     tank_transactions = await TankTransactions.filter(vehicle=machine.work_name)
 
-    return {"info" : machine, "maintenance_issues" : maintenance_issues, "tank_transactions": tank_transactions}
+    return {
+        "info": machine,
+        "maintenance_issues": maintenance_issues,
+        "tank_transactions": tank_transactions,
+    }
 
 
-@router.delete("/{id}", status_code=200, dependencies=[Depends(RoleChecker(["admin", "monteur"]))])
+@router.delete(
+    "/{id}", status_code=200, dependencies=[Depends(RoleChecker(["admin", "monteur"]))]
+)
 async def delete_single_machine(id: int):
     machine = await Machines.get_or_none(id=id)
     if machine is not None:
