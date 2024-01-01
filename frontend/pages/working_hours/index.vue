@@ -26,7 +26,7 @@
       <v-card class="d-flex justify-left" flat tile>
         <v-card class="pa-2" flat tile>
           <v-btn-toggle tile v-model="toggle_year">
-            <v-icon v-if="lastYearAllowed" @click="substractYear">mdi-chevron-triple-left</v-icon>
+            <v-icon @click="substractYear">mdi-chevron-triple-left</v-icon>
 
             <b class="mx-2">{{ computedSelectedYear }}</b>
             <v-icon @click="addYear" v-if="nextYearAllowed">mdi-chevron-triple-right</v-icon>
@@ -34,19 +34,19 @@
         </v-card>
         <v-card class="pa-2" flat tile>
           <v-btn-toggle tile v-model="toggle_month">
-            <v-icon v-if="lastMonthAllowed" @click="substractMonth">mdi-chevron-double-left</v-icon>
+            <v-icon @click="substractMonth">mdi-chevron-double-left</v-icon>
 
             <b class="mx-2">{{ computedSelectedMonth }}</b>
 
-            <v-icon @click="addMonth" v-if="nextMonthAllowed">mdi-chevron-double-right</v-icon>
+            <v-icon @click="addMonth">mdi-chevron-double-right</v-icon>
           </v-btn-toggle>
         </v-card>
         <v-card class="pa-2" flat tile>
           <v-btn-toggle tile v-model="toggle_week">
-            <v-icon v-if="lastWeekAllowed" @click="substractWeek">mdi-chevron-left</v-icon>
+            <v-icon @click="substractWeek">mdi-chevron-left</v-icon>
             <b class="mx-2">{{ computedSelectedWeek }}</b>
 
-            <v-icon v-if="nextWeekAllowed" @click="addWeek">mdi-chevron-right</v-icon>
+            <v-icon @click="addWeek">mdi-chevron-right</v-icon>
           </v-btn-toggle>
         </v-card>
       </v-card>
@@ -181,7 +181,7 @@ export default {
       this.date = moment(this.date).add(1, "months").format("YYYY-MM-DD");
     },
     substractYear() {
-      this.date = moment(this.date).subtract(1, "years").format("YYYY-MM-DD");
+      this.date = moment(this.date).subtract(365, "days").format("YYYY-MM-DD");
     },
     addYear() {
       this.date = moment(this.date).add(1, "years").format("YYYY-MM-DD");
