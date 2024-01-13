@@ -28,7 +28,7 @@ export interface IMedewerker {
   roles: IRole[];
 }
 
-export const useMedewerkersStore = defineStore('medewerkers-store', {
+export const useMedewerkersStore = defineStore('admin-medewerkers-store', {
   state: () => ({
     medewerkers: [] as IMedewerker[],
     roles: [] as IRole[],
@@ -51,9 +51,13 @@ export const useMedewerkersStore = defineStore('medewerkers-store', {
   },
   actions: {
     async fetchMedewerkers(): Promise<void> {
-      api.request({ url: '/users/', method: 'get' }).then((response) => {
+      api.request({ url: '/admin/users/', method: 'get' }).then((response) => {
         this.medewerkers = response.data;
-        console.log(this.medewerkers)
+        // Filter medewerkers who have a role with the name "admin"
+        this.medewerkers = this.medewerkers.filter((user) => {
+          // Replace 'roles' with the actual property name that represents user roles
+          return user.roles.some((role) => role.name !== 'admin'); // Adjust this condition as needed
+        });
       }
       ).catch((error) => {
         console.log(error);
@@ -79,7 +83,7 @@ export const useMedewerkersStore = defineStore('medewerkers-store', {
       });
     },
     async updateAddress(address: IAddress, user_id: number) {
-      await api.request({ method: 'put', url: '/users/address/' + user_id, data: address }).then((response) => {
+      await api.request({ method: 'put', url: '/admin/address/' + user_id, data: address }).then((response) => {
         // replace the medewerker in state medewerkers with the updated one
         const index = this.medewerkers.findIndex((m) => m.id === user_id);
         this.medewerkers[index] = response.data;
@@ -106,7 +110,7 @@ export const useMedewerkersStore = defineStore('medewerkers-store', {
       })
     },
     async addUserRole(user_id: number, role_id: number) {
-      await api.request({ method: 'post', url: '/users/add-role/', data: { user_id: user_id, role_id: role_id } }).then((response) => {
+      await api.post('/admin/users/add_role_to_user/', { user_id: user_id, role_id: role_id }).then((response) => {
         // replace the medewerker in state medewerkers with the updated one
         const index = this.medewerkers.findIndex((m) => m.id === user_id);
         this.medewerkers[index] = response.data;
@@ -126,7 +130,7 @@ export const useMedewerkersStore = defineStore('medewerkers-store', {
       });
     },
     async deleteUserRole(user_id: number, role_id: number) {
-      await api.request({ method: 'delete', url: '/users/delete-role/', data: { user_id: user_id, role_id: role_id } }).then((response) => {
+      await api.request({ method: 'delete', url: '/admin/users/remove_role_from_user/', data: { user_id: user_id, role_id: role_id } }).then((response) => {
         // replace the medewerker in state medewerkers with the updated one
         const index = this.medewerkers.findIndex((m) => m.id === user_id);
         this.medewerkers[index] = response.data;

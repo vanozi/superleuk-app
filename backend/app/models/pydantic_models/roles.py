@@ -2,6 +2,11 @@ from pydantic import BaseModel
 import datetime
 
 
+class CreateRoleRequest(BaseModel):
+    name: str
+    description: str
+
+
 class RoleResponse(BaseModel):
     id: int
     created_at: datetime.datetime
@@ -11,5 +16,16 @@ class RoleResponse(BaseModel):
 
 
 class RoleInUserResponse(BaseModel):
+    id: int
     name: str
     description: str
+
+
+class AddRoleToUserRequest(BaseModel):
+    user_id: int
+    role_id: int
+
+
+class RemoveRoleFromUserRequest(BaseModel):
+    user_id: int
+    role_id: int

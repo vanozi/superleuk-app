@@ -1,18 +1,16 @@
 <script setup lang="ts">
-
+import AppPageTitle from 'components/app/AppPageTitle.vue'
+import SingleRow from 'components/app/content-layout/SingleRow.vue'
 import MedewerkerProfileContainer from "components/medewerkers/containers/MedewerkerProfileContainer.vue";
 </script>
 
 <template>
-
-  <div class="row justify-center items-center">
-    <div class="col-xs-10 col-sm-10">
-      <div class="text-h5 q-mt-md">Profiel</div>
-    </div>
-  </div>
-  <div class="row justify-center items-start">
-    <div class="col-xs-10 col-sm-10">
-      <MedewerkerProfileContainer/>
-    </div>
-  </div>
+  <q-page-container>
+    <q-page>
+      <AppPageTitle title="Profiel" />
+      <SingleRow>
+        <MedewerkerProfileContainer />
+      </SingleRow>
+    </q-page>
+  </q-page-container>
 </template>

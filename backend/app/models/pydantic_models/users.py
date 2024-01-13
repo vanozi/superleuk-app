@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, SecretStr
 import datetime
 from app.models.pydantic_models.roles import RoleInUserResponse
+from app.models.pydantic_models.address import AddressResponse
 
 
 class CreateUserRequest(BaseModel):
@@ -20,6 +21,7 @@ class UserResponse(BaseModel):
     date_of_birth: Optional[datetime.date]
     is_active: bool
     roles: list[RoleInUserResponse]
+    address: Optional[AddressResponse]
 
 
 class UpdateUserRequest(BaseModel):

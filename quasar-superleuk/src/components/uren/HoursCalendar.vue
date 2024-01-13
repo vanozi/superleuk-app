@@ -251,12 +251,16 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
   <AanpassenDialogComponent :edit-working-hours-form="editForm" @re-fetch-events="reFetchEvents" />
 
   <!--  Rij onder de calendar view voor het tonen van totalen -->
-  <div class="fit row wrap q-mt-md" v-if="listWeekView">
-    <standard-button outline color="primary" label="Indienen" @click="indienenHours()" :disabled="workinghoursStore.totalWorkingHoursInViewComputed ==
-      workinghoursStore.workingHoursInViewSubmittedComputed
-      " />
+  <div class="row q-mt-md" v-if="listWeekView">
+    <div class="col-grow" style="overflow: auto;">
+      <standard-button outline color="primary" label="Indienen" @click="indienenHours()" :disabled="workinghoursStore.totalWorkingHoursInViewComputed ==
+        workinghoursStore.workingHoursInViewSubmittedComputed
+        " />
+
+    </div>
+
   </div>
-  <div class="fit row wrap q-mt-md">
+  <div class="row wrap q-mt-sm">
     <div class="col-grow" style="overflow: auto;" v-if="useAccountStore().hasUserRole('melker')">
       <q-list>
         <q-item>
@@ -287,7 +291,7 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
         </q-item>
       </q-list>
     </div>
-    <div class="col-grow self-end" style="overflow: auto;">
+    <div class="col-grow" style="overflow: auto;">
       <q-list>
         <q-item>
 

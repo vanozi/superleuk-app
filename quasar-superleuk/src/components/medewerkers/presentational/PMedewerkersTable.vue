@@ -36,7 +36,7 @@ function onRowClick(e: PointerEvent, row: IMedewerker) {
 <template>
   <q-table :rows="props.users" :columns="columns" :filter="filter" row-key="name" flat :pagination="initialPagination"
     @row-click="onRowClick">
-    <template v-slot:top-right>
+    <template v-slot:top-left>
       <q-input dense debounce="300" v-model="filter" placeholder="Zoeken">
         <template v-slot:append>
           <q-icon name="search" />

@@ -75,10 +75,8 @@ const isMilker = medewerkersStore.hasUserRole('melker')
         <q-table flat :rows="weekOverview.working_hours" :columns="isMilker ? columns.concat(columns_milker) : columns"
           row-key="name" hide-bottom :pagination="pagination" />
       </q-card-section>
-      <q-card-actions v-if="weekOverview.submitted">
-        <div class="text-subtitle2 q-ml-md">Uren zijn ingediend, wil je deze vrijgeven?</div>
-        <q-space />
-        <app-button outline label="Vrijgeven" color="primary" @click="showReleaseConfirmDialog = true" />
+      <q-card-actions v-if="weekOverview.submitted" align="around">
+        <app-button outline label="Vrijgeven ?" color="primary" @click="showReleaseConfirmDialog = true" />
       </q-card-actions>
     </q-card>
   </q-dialog>

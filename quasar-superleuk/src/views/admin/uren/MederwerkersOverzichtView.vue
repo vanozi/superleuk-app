@@ -15,7 +15,7 @@ function routeToUser(id: number) {
 <template>
   <q-page-container>
     <q-page>
-      <AppPageTitle title="Medewerkers" />
+      <AppPageTitle title="Uren" />
       <SingleRow>
         <MedewerkerListContainer @navigate-to-user="routeToUser" />
       </SingleRow>

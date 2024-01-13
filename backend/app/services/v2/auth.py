@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 from app.config import Settings
-from app.models.pydantic import User_Pydantic
+from app.models.pydantic_models.auth import UserResponse
 from app.models.tortoise import Users
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -88,7 +88,7 @@ class Auth:
 
     # Authenticate and return user
     @staticmethod
-    async def authenticate_user(email: str, password: str) -> User_Pydantic:
+    async def authenticate_user(email: str, password: str) -> UserResponse:
         user = await Users.get_or_none(email=email.lower())
         if not user:
             return False
@@ -101,7 +101,7 @@ class Auth:
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
-) -> User_Pydantic:
+) -> UserResponse:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -128,7 +128,7 @@ async def get_current_user(
 # get current active use
 async def get_current_active_user(
     current_user=Depends(get_current_user),
-) -> User_Pydantic:
+) -> UserResponse:
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="User is inactive")
     return current_user
@@ -139,7 +139,7 @@ class RoleChecker:
     def __init__(self, allowed_roles: List):
         self.allowed_roles = allowed_roles
 
-    async def __call__(self, user: User_Pydantic = Depends(get_current_active_user)):
+    async def __call__(self, user: UserResponse = Depends(get_current_active_user)):
         await user.fetch_related("roles")
         for role in user.roles:
             if role.name in self.allowed_roles:

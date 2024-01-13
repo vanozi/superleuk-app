@@ -15,8 +15,8 @@ const props = defineProps<{
 
 const buttonSize = computed(() => {
   return $q.screen.lt.sm
-    ? 'md'
-    : props.size
+    ? 'sm'
+    : 'md'
 })
 </script>
 

@@ -84,7 +84,7 @@ const columns = computed(() => {
   <!--  met de pijltjes emit je een event naar de WeekListCotnainer om het jaar te veranderen en nieuwe data op te halen-->
   <div class="row justify-center items-center">
     <q-btn flat text-color="primary" round size="md" icon="chevron_left" @click="changeYearBack" />
-    <div class="text-h6">{{ year }}</div>
+    <div class="text-subtitle1">{{ year }}</div>
     <q-btn flat text-color="primary" round size="md" icon="chevron_right" @click="changeYearForward" />
   </div>
   <!--  overzicht uren en melkbeurten -->

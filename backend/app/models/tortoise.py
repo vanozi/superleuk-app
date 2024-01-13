@@ -23,8 +23,6 @@ class Users(models.Model):
     roles = fields.relational.ManyToManyField(
         model_name="models.Roles", related_name="users", through="user_roles"
     )
-    # Define a related field to link to addresses
-    address = fields.ReverseRelation["Addresses"]
 
     def __str__(self):
         return self.email
@@ -55,8 +53,7 @@ class Addresses(models.Model):
     city = fields.CharField(null=True, max_length=255)
     country = fields.CharField(null=True, max_length=255)
     # Relations
-    user = fields.ForeignKeyField("models.Users", related_name="address")
-
+    user = fields.OneToOneField("models.Users", related_name="address")
 
     def __str__(self):
         return f"{self.street} {self.number}, {self.city}"

@@ -9,6 +9,11 @@ from app.models.pydantic import (
     VakantiesAllResponseSchema,
     VakantieCreateSchemaForUserAsAdmin,
 )
+from app.models.pydantic_models.vakanties import (
+    VakantieRequest,
+    VakantieResponse,
+    ResourceResponse,
+)
 from app.models.tortoise import Vakanties, Users
 from app.services.v2.auth import RoleChecker, get_current_active_user
 from fastapi import APIRouter, HTTPException
@@ -19,25 +24,55 @@ from fastapi.responses import JSONResponse
 router = APIRouter()
 
 
+@router.get("/resources", response_model=List[ResourceResponse])
+async def get_all_resources():
+    users = await Users.all().prefetch_related("roles")
+    # Create a list to store the ResourceResponse instances
+    resource_responses = []
+
+    # Loop over users and check if they have the 'werknemer' role before creating ResourceResponse instances
+    for user in users:
+        has_werknemer_role = False
+        for role in user.roles:
+            if role.name == "werknemer":
+                has_werknemer_role = True
+                break
+
+        if has_werknemer_role:
+            if any(role.name == "vaste medewerker" for role in user.roles):
+                groupId = 1
+            else:
+                groupId = 2
+            resource_response = ResourceResponse(
+                id=user.id,
+                title=user.first_name + " " + user.last_name,
+                groupId=groupId,
+            )
+            resource_responses.append(resource_response)
+    return resource_responses
+
+
 @router.post(
     "/",
     dependencies=[Depends(get_current_active_user)],
-    response_model=VakantiesResponseSchema,
 )
 async def add_vakantie(
-    vakantie: VakantieCreateSchema, current_active_user=Depends(get_current_active_user)
+    vakantie: VakantieRequest, current_active_user=Depends(get_current_active_user)
 ):
     # alle vakanties van de user ophalen
     vakanties = await Vakanties.all().filter(user=current_active_user)
     # als er geen vakanties zijn dan kun je gerust toevoegen
     if vakanties is None:
         try:
-            return await Vakanties.create(
+            await Vakanties.create(
                 **vakantie.dict(exclude_none=True),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
                 user=current_active_user,
             )
+            return {
+                "detail": f"De vakantie van {vakantie.start_date} tot {vakantie.end_date} is toegevoegd"
+            }
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -61,12 +96,15 @@ async def add_vakantie(
                 )
         # als er geen overlap is dan kun je de vakantie toevoegen
         try:
-            return await Vakanties.create(
-                **vakantie.dict(exclude_none=True),
+            await Vakanties.create(
+                **vakantie.model_dump(exclude_none=True),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
                 user=current_active_user,
             )
+            return {
+                "detail": f"De vakantie van {vakantie.start_date} tot {vakantie.end_date} is toegevoegd"
+            }
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -79,11 +117,12 @@ async def add_vakantie(
 @router.post(
     "/admin/add_vakantie_for_user",
     dependencies=[Depends(get_current_active_user), Depends(RoleChecker(["admin"]))],
-    response_model=VakantiesResponseSchema,
+    response_model=VakantieResponse,
 )
 async def add_vakantie_for_other_as_admin(
     vakantie: VakantieCreateSchemaForUserAsAdmin,
     current_active_user=Depends(get_current_active_user),
+    response_code=status.HTTP_201_CREATED,
 ):
     # check if user bestaat
     user = await Users.get_or_none(id=vakantie.user_id)
@@ -97,12 +136,15 @@ async def add_vakantie_for_other_as_admin(
     # als er geen vakanties zijn dan kun je gerust toevoegen
     if vakanties is None:
         try:
-            return await Vakanties.create(
+            await Vakanties.create(
                 **vakantie.dict(exclude_none=True),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
                 user=vakantie.user_id,
             )
+            return {
+                "detail": f"De vakantie van {vakantie.start_date} tot {vakantie.end_date} is toegevoegd"
+            }
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -126,12 +168,15 @@ async def add_vakantie_for_other_as_admin(
                 )
         # als er geen overlap is dan kun je de vakantie toevoegen
         try:
-            return await Vakanties.create(
-                **vakantie.dict(),
+            await Vakanties.create(
+                **vakantie.model_dump(),
                 created_by=current_active_user.email,
                 last_modified_by=current_active_user.email,
                 user=user,
             )
+            return {
+                "detail": f"De vakantie van {vakantie.start_date} tot {vakantie.end_date} is toegevoegd"
+            }
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -142,9 +187,9 @@ async def add_vakantie_for_other_as_admin(
 
 
 @router.get(
-    "/",
+    "/all_for_me",
     dependencies=[Depends(RoleChecker(["werknemer"]))],
-    response_model=List[VakantiesResponseSchema],
+    response_model=List[VakantieResponse],
 )
 async def get_vakanties_for_logged_in_user(
     current_active_user=Depends(get_current_active_user),
@@ -157,26 +202,49 @@ async def get_vakanties_for_logged_in_user(
 
 @router.get(
     "/all",
-    dependencies=[Depends(RoleChecker(["admin"]))],
-    response_model=List[VakantiesAllResponseSchema],
+    dependencies=[Depends(RoleChecker(["admin", "werknemer"]))],
+    response_model=List[VakantieResponse],
 )
 async def get_all_vakanties():
-    vakanties = await Vakanties.all().prefetch_related("user__roles", "user__address")
+    vakanties_in_db = await Vakanties.all().prefetch_related("user__roles")
+    # Create a list to store the VakantieResponse instances
+    vakantie_responses = []
+    # Loop over vakanties_in_db and create VakantieResponse instances
+    for vakantie in vakanties_in_db:
+        vakantie_response = VakantieResponse(
+            id=vakantie.id,
+            start=vakantie.start_date,
+            end=vakantie.end_date,
+            resourceId=vakantie.user.id,
+        )
 
-    return vakanties
+        vakantie_responses.append(vakantie_response)
+
+    return vakantie_responses
 
 
 @router.get(
     "/all_between_dates",
     dependencies=[Depends(RoleChecker(["admin", "werknemer", "monteur"]))],
-    response_model=List[VakantiesAllResponseSchema],
+    response_model=List[VakantieResponse],
 )
 async def get_all_vakanties_between_dates(start_date: date, end_date: date):
-    vakanties = await Vakanties.filter(
+    vakanties_in_db = await Vakanties.filter(
         start_date__lte=end_date, end_date__gte=start_date
-    ).prefetch_related("user__roles", "user__address")
+    )
+    # Create a list to store the VakantieResponse instances
+    vakantie_responses = []
 
-    return vakanties
+    # Loop over vakanties_in_db and create VakantieResponse instances
+    for vakantie in vakanties_in_db:
+        vakantie_response = VakantieResponse(
+            id=vakantie.id,
+            start_date=vakantie.start_date,
+            end_date=vakantie.end_date,
+            resource_id=vakantie.user.id,
+        )
+        vakantie_responses.append(vakantie_response)
+    return vakantie_responses
 
 
 @router.delete("/{vakantie_id}", dependencies=[Depends(RoleChecker(["werknemer"]))])

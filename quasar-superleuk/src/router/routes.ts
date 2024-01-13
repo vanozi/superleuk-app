@@ -62,6 +62,17 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  //  Vakanties
+  {
+    path: '/vakanties',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/views/vakanties/IndexView.vue'),
+      },
+    ],
+  },
   // boerderij kalender routes
   {
     path: '/boerderij-kalender',

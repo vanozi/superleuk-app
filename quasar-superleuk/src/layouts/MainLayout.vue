@@ -23,14 +23,22 @@
     <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered
       :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'">
       <q-scroll-area class="fit">
-        <q-list v-if="accountStore.hasUserRole('werknemer')" dense>
+        <!-- Uren -->
+        <q-list dense class="q-mt-sm">
           <q-item>
             <q-item-section>
-              <q-item-label overline>Medewerker</q-item-label>
+              <q-item-label overline>NAVIGATIE</q-item-label>
             </q-item-section>
           </q-item>
-          <template v-for="(menuItem, index) in menuListWerknemer" :key="index">
-            <q-item clickable v-ripple :to="menuItem.to">
+
+          <q-separator spaced />
+          <q-item v-if="shouldRenderUren">
+            <q-item-section>
+              <q-item-label overline>Uren</q-item-label>
+            </q-item-section>
+          </q-item>
+          <template v-for="(menuItem, index) in menuListUren" :key="index">
+            <q-item clickable v-ripple :to="menuItem.to" v-if="useAccountStore().hasUserRole(menuItem.role)">
               <q-item-section avatar>
                 <q-icon :name="menuItem.icon" />
               </q-item-section>
@@ -89,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAccountStore } from 'stores/account-store';
 import { useRouter } from 'vue-router';
 
@@ -97,17 +105,33 @@ const accountStore = useAccountStore();
 const router = useRouter();
 
 const drawer = ref(false);
-const menuListWerknemer = [
+
+const menuListUren = [
   {
     icon: 'o_more_time',
     label: 'Uren',
     to: '/uren/',
+    role: 'werknemer'
   },
   {
-    icon: 'o_list_alt',
-    label: 'Werkbonnen',
+    icon: 'o_luggage',
+    label: 'Vakanties',
+    to: '/vakanties/',
+    role: 'werknemer'
   },
+
 ];
+
+const shouldRenderUren = computed(() => {
+  // Check if any items in menuListUren should be rendered
+  for (const menuItem of menuListUren) {
+    if (useAccountStore().hasUserRole(menuItem.role)) {
+      return true; // At least one item should be rendered
+    }
+  }
+  return false; // No items should be rendered
+});
+
 const menuListMonteur = [
   {
     icon: 'o_agriculture',
@@ -139,6 +163,7 @@ const menuListAdmin = [
   //   to: '/boerderij-kalender/',
   // },
 ];
+
 
 async function logoutUser() {
   await accountStore.logoutUser(function () {

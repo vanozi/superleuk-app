@@ -12,8 +12,8 @@ const props = defineProps<{
 </script>
 <template>
   <div class="row justify-center">
-    <div :class="[$q.screen.lt.md ? 'col-11' : 'col-10']">
-      <div class="text-h5">{{ props.title }}</div>
+    <div :class="[$q.screen.lt.md ? 'col-11' : 'col-8']">
+      <div class="text-subtitle1">{{ props.title }}</div>
     </div>
   </div>
 </template>

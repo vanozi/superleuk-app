@@ -19,8 +19,19 @@ from app.api import (
     ionic,
     vakanties,
 )
-from app.api.v2 import allowed_users, auth, working_hours, users
-from app.api.v2.admin import working_hours as admin_working_hours
+from app.api.v2 import (
+    allowed_users as v2_allowed_users,
+    auth as v2_auth,
+    working_hours as v2_working_hours,
+    users as v2_users,
+    vakanties as v2_vakanties,
+)
+from app.api.v2.admin import (
+    working_hours as admin_working_hours,
+    roles as admin_roles,
+    users as admin_users,
+    address as admin_address,
+)
 from app.db import init_db
 
 log = logging.getLogger("uvicorn")
@@ -74,21 +85,31 @@ def create_application() -> FastAPI:
     # Api voor de quasar frontend
     app_v2 = FastAPI()
 
-    app_v2.include_router(auth.router, prefix="/auth", tags=["auth"])
+    app_v2.include_router(v2_auth.router, prefix="/auth", tags=["auth"])
     app_v2.include_router(
-        allowed_users.router, prefix="/allowed_users", tags=["allowed_users"]
+        v2_allowed_users.router, prefix="/allowed_users", tags=["allowed_users"]
     )
-    app_v2.include_router(users.router, prefix="/users", tags=["users"])
+    app_v2.include_router(v2_users.router, prefix="/users", tags=["users"])
 
     app_v2.include_router(
-        working_hours.router, prefix="/working_hours", tags=["working_hours"]
+        v2_working_hours.router, prefix="/working_hours", tags=["working_hours"]
     )
+    app_v2.include_router(v2_vakanties.router, prefix="/vakanties", tags=["vakanties"])
 
     # Admin routes
     app_v2.include_router(
         admin_working_hours.router,
         prefix="/admin/working_hours",
         tags=["admin_working_hours"],
+    )
+    app_v2.include_router(
+        admin_roles.router, prefix="/admin/roles", tags=["admin_roles"]
+    )
+    app_v2.include_router(
+        admin_users.router, prefix="/admin/users", tags=["admin_users"]
+    )
+    app_v2.include_router(
+        admin_address.router, prefix="/admin/address", tags=["admin_address"]
     )
 
     application.mount("/api/v2", app_v2)

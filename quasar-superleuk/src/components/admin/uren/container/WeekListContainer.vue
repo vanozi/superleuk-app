@@ -49,6 +49,7 @@ async function showWeekInDialog(row) {
 </script>
 
 <template>
+  <div>{{ medewerker?.first_name }} {{ medewerker?.last_name }}</div>
   <PWeekList :week-totals="workingHoursAdminStore.weekOverview" :year="today.getFullYear()" :is-milker="isMilker"
     @change-year-back="changeYearBack" @change-year-forward="changeYearForward" @showWeekInDialog="showWeekInDialog" />
   <PWeekOverviewDialog :open="showDialog" :week-overview="weekOverview" @closeDialog="showDialog = false" />

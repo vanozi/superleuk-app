@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {IMonthTotals} from 'stores/workinghours-store';
-import {computed} from "vue";
+import { IMonthTotals } from 'stores/workinghours-store';
+import { computed } from "vue";
 
 const props = defineProps<{
   year: number;
@@ -66,33 +66,33 @@ const columns = computed(() => {
   <!--  jaar selecteren -->
   <!--  met de pijltjes emit je een event naar de YearListContainer om het jaar te veranderen en nieuwe data op te halen-->
   <div class="row justify-center items-center">
-    <q-btn flat text-color="primary" round size="md" icon="chevron_left" @click="changeYearBack"/>
-    <div class="text-h7">{{ year }}</div>
-    <q-btn flat text-color="primary" round size="md" icon="chevron_right" @click="changeYearForward"/>
+    <q-btn flat text-color="primary" round size="md" icon="chevron_left" @click="changeYearBack" />
+    <div class="text-subtitle1">{{ year }}</div>
+    <q-btn flat text-color="primary" round size="md" icon="chevron_right" @click="changeYearForward" />
   </div>
   <!--  overzicht uren en melkbeurten -->
   <div class="row justify-center items-center">
     <q-table class="col-12" dense flat hide-bottom :rows="props.yearTotals" :columns="columns"
-             :rows-per-page-options="[0]">
+      :rows-per-page-options="[0]">
       <template v-slot:bottom-row>
         <q-tr>
           <q-td colspan="100%">
             <q-list>
               <q-item>
-                <q-item-section/>
+                <q-item-section />
                 <q-item-section side>
                   <q-item-label overline class="text-weight-bolder">TOTAAL</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>
-                <q-item-section/>
+                <q-item-section />
                 <q-item-section side>
                   <q-item-label overline>Uren</q-item-label>
                   <q-item-label>{{ totalHours }}</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item v-if="isMilker">
-                <q-item-section/>
+                <q-item-section />
                 <q-item-section side>
                   <q-item-label overline>Melkbeurten</q-item-label>
                   <q-item-label>{{ totalMilkings }}</q-item-label>

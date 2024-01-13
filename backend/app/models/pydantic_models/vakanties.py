@@ -1,10 +1,10 @@
-from pydantic import BaseeModel, validator
+from pydantic import BaseModel, validator
 import datetime
 from typing import Optional
 from app.models.pydantic_models.users import UserResponse
 
 
-class VakantieRequest(pydantic.BaseModel):
+class VakantieRequest(BaseModel):
     start_date: datetime.date
     end_date: datetime.date
 
@@ -15,13 +15,14 @@ class VakantieRequest(pydantic.BaseModel):
         return v
 
 
-class VakantieResponse(pydantic.BaseModel):
+class VakantieResponse(BaseModel):
     id: int
-    created_at: Optional[datetime.datetime]
-    last_modified_at: Optional[datetime.datetime]
-    start_date: Optional[datetime.date]
-    end_date: Optional[datetime.date]
-    user: UserResponse
+    start: Optional[datetime.date]
+    end: Optional[datetime.date]
+    resourceId: Optional[int]
 
-    class Config:
-        orm_mode = True
+
+class ResourceResponse(BaseModel):
+    id: int
+    groupId: int
+    title: str
