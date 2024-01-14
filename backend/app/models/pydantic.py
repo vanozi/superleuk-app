@@ -8,7 +8,8 @@ from app.models.tortoise import (
     WorkingHours,
     Machines,
     MaintenanceMachines,
-    TankTransactions, Vakanties,
+    TankTransactions,
+    Vakanties,
 )
 
 from app.models.enums import MaintenanceIssueStatus
@@ -37,12 +38,14 @@ class CreateUser(pydantic.BaseModel):
     email: EmailStr
     password: pydantic.SecretStr
 
+
 class UpdateUser(pydantic.BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[EmailStr]
     telephone_number: Optional[str]
     date_of_birth: Optional[datetime.date]
+
 
 class CreateAddress(pydantic.BaseModel):
     street: str
@@ -51,14 +54,13 @@ class CreateAddress(pydantic.BaseModel):
     city: str
     country: str
 
+
 class UpdateAddress(pydantic.BaseModel):
     street: Optional[str]
     number: Optional[str]
     postal_code: Optional[str]
     city: Optional[str]
     country: Optional[str]
-
-
 
 
 class LogoutRequest(pydantic.BaseModel):
@@ -82,13 +84,16 @@ User_Pydantic = pydantic_model_creator(
 
 RolesSchema = pydantic_model_creator(Roles, name="Role", exclude=["users"])
 
+
 class AddUserRole(pydantic.BaseModel):
     user_id: int
     role_id: int
 
+
 class DeleteUserRole(pydantic.BaseModel):
     user_id: int
     role_id: int
+
 
 #  Email
 class EmailSchema(pydantic.BaseModel):
@@ -221,16 +226,16 @@ class BouwPlanDataModelOut(pydantic.BaseModel):
 # Machines
 #  Add a machine
 class MachineCreateSchema(pydantic.BaseModel):
-    work_number: Optional[str]
-    work_name: Optional[str]
-    category: Optional[str]
-    group: Optional[str]
-    brand_name: Optional[str]
-    type_name: Optional[str]
-    licence_number: Optional[str]
-    chassis_number: Optional[str]
-    construction_year: Optional[str]
-    ascription_code: Optional[str]
+    work_number: str
+    work_name: str
+    category: Optional[str] = None
+    group: str
+    brand_name: Optional[str] = None
+    type_name: Optional[str] = None
+    licence_number: Optional[str] = None
+    chassis_number: Optional[str] = None
+    construction_year: Optional[int] = None
+    ascription_code: Optional[str] = None
     insurance_type: Optional[str] = "Niet verzekerd"
 
 
@@ -270,7 +275,7 @@ class TankTransactionInfo(pydantic.BaseModel):
     product: Optional[str]
     quantity: Optional[float]
     transaction_duration: Optional[str]
-    meter: Optional[str]
+    meter: Optional[int]
     meter_type: Optional[str]
 
 
@@ -345,10 +350,10 @@ class VakantieCreateSchema(pydantic.BaseModel):
     start_date: datetime.date
     end_date: datetime.date
 
-    @validator('end_date')
+    @validator("end_date")
     def end_date_must_be_greater_than_start_date(cls, v, values):
-        if 'start_date' in values and v < values['start_date']:
-            raise ValueError('eind datum moet groter zijn dan start datum')
+        if "start_date" in values and v < values["start_date"]:
+            raise ValueError("eind datum moet groter zijn dan start datum")
         return v
 
 
@@ -357,10 +362,10 @@ class VakantieCreateSchemaForUserAsAdmin(pydantic.BaseModel):
     end_date: datetime.date
     user_id: int
 
-    @validator('end_date')
+    @validator("end_date")
     def end_date_must_be_greater_than_start_date(cls, v, values):
-        if 'start_date' in values and v < values['start_date']:
-            raise ValueError('eind datum moet groter zijn dan start datum')
+        if "start_date" in values and v < values["start_date"]:
+            raise ValueError("eind datum moet groter zijn dan start datum")
         return v
 
 

@@ -27,11 +27,13 @@
 
                 <v-card-text>
                   <v-container>
-                    <v-form>
+                    <v-form ref="form">
                       <v-text-field :readonly="machine_edited ? true : false" v-model="machine.work_number"
-                        label="Werknummer"></v-text-field>
-                      <v-text-field v-model="machine.work_name" label="Werknaam"></v-text-field>
-                      <v-select v-model="machine.group" :items="groups" label="Groep"></v-select>
+                        label="Werknummer" :rules="[(v) => !!v || 'Veld is verplicht']"></v-text-field>
+                      <v-text-field v-model="machine.work_name" label="Werknaam"
+                        :rules="[(v) => !!v || 'Veld is verplicht']"></v-text-field>
+                      <v-select v-model="machine.group" :items="groups" label="Groep"
+                        :rules="[(v) => !!v || 'Veld is verplicht']"></v-select>
                       <v-select v-model="machine.category" v-bind:items="getCategories(machine.group)"
                         label="Soort"></v-select>
                       <v-text-field v-model="machine.brand_name" label="Merk"></v-text-field>
@@ -40,7 +42,8 @@
                       <v-text-field v-model="machine.chassis_number" label="Chassis nr."></v-text-field>
                       <v-text-field v-model="machine.construction_year" label="Bouwjaar"></v-text-field>
                       <v-text-field v-model="machine.ascription_code" label="Tenaamstellingscode"></v-text-field>
-                      <v-select v-model="machine.insurance_type" :items="insurance_types" label="Type verzerkering"></v-select>
+                      <v-select v-model="machine.insurance_type" :items="insurance_types"
+                        label="Type verzerkering"></v-select>
                     </v-form>
                   </v-container>
                 </v-card-text>
@@ -259,11 +262,36 @@ export default {
     },
     save() {
       if (this.machine_edited) {
-        this.updateMachine(this.machine)
+        const valid = this.$refs.form.validate()
+        if (!valid) {
+          this.$notifier.showMessage({
+            content: "Een van de verplichte velden is niet ingevuld",
+            color: "error",
+          })
+        }
+        else {
+          this.updateMachine(this.machine)
+          this.machine_edited = false
+          this.$refs.form.resetValidation()
+          this.close();
+        }
       }
-      this.addMachine(this.machine)
-      this.machine_edited = false
-      this.close();
+      else {
+        const valid = this.$refs.form.validate()
+        if (!valid) {
+          this.$notifier.showMessage({
+            content: "Een van de verplichte velden is niet ingevuld",
+            color: "error",
+          });
+        }
+        else {
+          this.addMachine(this.machine)
+          this.$refs.form.resetValidation()
+          this.close();
+        }
+      }
+
+
     },
     editItem(item) {
       this.machine = Object.assign({}, item)
