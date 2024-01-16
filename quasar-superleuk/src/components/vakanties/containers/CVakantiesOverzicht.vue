@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import nlLocale from '@fullcalendar/core/locales/nl';
 import SingleRow from 'components/app/content-layout/SingleRow.vue'
 import { useVakantiesStore } from 'src/stores/vakanties-store';
-import { storeToRefs } from 'pinia';
-import { onBeforeMount, ref } from 'vue';
 import {
   CalendarOptions
 } from '@fullcalendar/core';

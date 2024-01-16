@@ -8,7 +8,7 @@ const tab = ref('week')
 
 </script>
 <template>
-  <SingleRow>
+  <div>
     <q-tabs v-model="tab" dense>
       <q-tab name="week" label="Week">
       </q-tab>
@@ -16,11 +16,15 @@ const tab = ref('week')
     </q-tabs>
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="week">
-        <WeekListContainer />
+        <SingleRow>
+          <WeekListContainer />
+        </SingleRow>
       </q-tab-panel>
       <q-tab-panel name="maand">
-        <year-list-container />
+        <SingleRow>
+          <year-list-container />
+        </SingleRow>
       </q-tab-panel>
     </q-tab-panels>
-  </SingleRow>
+  </div>
 </template>

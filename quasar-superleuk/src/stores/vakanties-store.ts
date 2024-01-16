@@ -9,6 +9,7 @@ import { IResource, IVakantie } from "components/models";
 export const useVakantiesStore = defineStore('vakanties-store', () => {
   const resources: Ref<IResource[]> = ref([]);
   const vakanties: Ref<IVakantie[]> = ref([]);
+  const vakantiesLoggedInUser: Ref<IVakantie[]> = ref([]);
 
 
   // api calls
@@ -46,9 +47,33 @@ export const useVakantiesStore = defineStore('vakanties-store', () => {
       // Example: throw new Error("Failed to fetch resources");
     }
   }
+  async function fetchVakantiesForLoggedInUser() {
+    try {
+      const response = await api.get('/vakanties/all_for_me/');
+      vakantiesLoggedInUser.value = response.data;
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        Notify.create({
+          type: 'negative',
+          message: error.response.data.detail,
+          icon: 'error',
+        });
+      }
+      // You should handle the error and possibly return an appropriate value or throw an error here.
+      // Example: throw new Error("Failed to fetch resources");
+    }
+  }
   async function addVakantie(start_date: string, end_date: string) {
     try {
       const response = await api.post('/vakanties/', { start_date, end_date });
+      {
+        Notify.create({
+          type: 'positive',
+          message: 'Vakantie toegevoegd',
+          icon: 'done',
+        });
+      }
       return response.data;
     } catch (error: any) {
       if (error.response) {
@@ -79,8 +104,10 @@ export const useVakantiesStore = defineStore('vakanties-store', () => {
   return {
     resources,
     vakanties,
+    vakantiesLoggedInUser,
     fetchResources,
     fetchVakanties,
+    fetchVakantiesForLoggedInUser,
     addVakantie,
     deleteVakantie
   };

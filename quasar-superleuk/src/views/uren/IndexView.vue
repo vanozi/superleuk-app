@@ -15,7 +15,7 @@ const tab = ref('invoeren')
     <q-tab name="overzicht" icon="o_list" />
   </q-tabs>
   <q-separator />
-  <q-tab-panels v-model="tab" animated>
+  <q-tab-panels v-model="tab" animated dense>
     <q-tab-panel name="invoeren">
       <HourRegistrationView />
     </q-tab-panel>

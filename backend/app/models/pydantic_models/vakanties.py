@@ -17,9 +17,15 @@ class VakantieRequest(BaseModel):
 
 class VakantieResponse(BaseModel):
     id: int
-    start: Optional[datetime.date]
-    end: Optional[datetime.date]
-    resourceId: Optional[int]
+    start_date: datetime.date
+    end_date: datetime.date
+
+
+class VakantiesForCalendarResponse(BaseModel):
+    id: int
+    start: datetime.date
+    end: datetime.date
+    resourceId: int
 
 
 class ResourceResponse(BaseModel):

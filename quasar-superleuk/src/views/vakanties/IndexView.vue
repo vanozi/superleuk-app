@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import CVakantiesOverzicht from 'src/components/vakanties/containers/CVakantiesOverzicht.vue';
+import CVakanieTabel from "src/components/vakanties/containers/CVakanieTabel.vue";
 
 const tab = ref('invoeren')
 </script>
@@ -14,7 +15,7 @@ const tab = ref('invoeren')
   <q-separator />
   <q-tab-panels v-model="tab" animated>
     <q-tab-panel name="invoeren">
-      "henk"
+      <CVakanieTabel />
     </q-tab-panel>
     <q-tab-panel name="overzicht">
       <CVakantiesOverzicht />

@@ -13,6 +13,7 @@ from app.models.pydantic_models.vakanties import (
     VakantieRequest,
     VakantieResponse,
     ResourceResponse,
+    VakantiesForCalendarResponse,
 )
 from app.models.tortoise import Vakanties, Users
 from app.services.v2.auth import RoleChecker, get_current_active_user
@@ -203,7 +204,7 @@ async def get_vakanties_for_logged_in_user(
 @router.get(
     "/all",
     dependencies=[Depends(RoleChecker(["admin", "werknemer"]))],
-    response_model=List[VakantieResponse],
+    response_model=List[VakantiesForCalendarResponse],
 )
 async def get_all_vakanties():
     vakanties_in_db = await Vakanties.all().prefetch_related("user__roles")
@@ -211,7 +212,7 @@ async def get_all_vakanties():
     vakantie_responses = []
     # Loop over vakanties_in_db and create VakantieResponse instances
     for vakantie in vakanties_in_db:
-        vakantie_response = VakantieResponse(
+        vakantie_response = VakantiesForCalendarResponse(
             id=vakantie.id,
             start=vakantie.start_date,
             end=vakantie.end_date,
