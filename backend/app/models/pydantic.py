@@ -226,16 +226,16 @@ class BouwPlanDataModelOut(pydantic.BaseModel):
 # Machines
 #  Add a machine
 class MachineCreateSchema(pydantic.BaseModel):
-    work_number: Optional[str]
-    work_name: Optional[str]
-    category: Optional[str]
-    group: Optional[str]
-    brand_name: Optional[str]
-    type_name: Optional[str]
-    licence_number: Optional[str]
-    chassis_number: Optional[str]
-    construction_year: Optional[str]
-    ascription_code: Optional[str]
+    work_number: str
+    work_name: str
+    category: Optional[str] = None
+    group: str
+    brand_name: Optional[str] = None
+    type_name: Optional[str] = None
+    licence_number: Optional[str] = None
+    chassis_number: Optional[str] = None
+    construction_year: Optional[int] = None
+    ascription_code: Optional[str] = None
     insurance_type: Optional[str] = "Niet verzekerd"
 
 
@@ -275,7 +275,7 @@ class TankTransactionInfo(pydantic.BaseModel):
     product: Optional[str]
     quantity: Optional[float]
     transaction_duration: Optional[str]
-    meter: Optional[str]
+    meter: Optional[int]
     meter_type: Optional[str]
 
 

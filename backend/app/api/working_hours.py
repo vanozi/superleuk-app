@@ -193,7 +193,7 @@ async def get_week_overview(
             # check if after the user was created he did not register hours for a particular week
             submitted = (
                 False
-                if working_hours == [] and user.created_at.date() < week_end
+                if working_hours == [] and user.created_at.date() <= week_end
                 else None
             )
             # if any of the working items

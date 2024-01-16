@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    {{ today }}
     <SubmittedWeekDlg ref="week_overview" />
     <v-tabs centered>
       <v-tab href="#week_overview">Week overzicht</v-tab>
@@ -7,11 +8,11 @@
         <v-row class="mt-3 ml-1">
           <v-col>
             <!-- jaar aanpassen -->
-            <v-btn icon @click="substractYear" v-if="previousYearAllowed">
+            <v-btn icon @click="substractYear">
               <v-icon>mdi-chevron-triple-left</v-icon>
             </v-btn>
             <b>{{ computedSelectedYear }}</b>
-            <v-btn icon @click="addYear" v-if="nextYearAllowed">
+            <v-btn icon @click="addYear">
               <v-icon>mdi-chevron-triple-right</v-icon>
             </v-btn>
           </v-col>
@@ -52,11 +53,11 @@
         <v-row class="mt-3 ml-1">
           <v-col>
             <!-- jaar aanpassen -->
-            <v-btn icon @click="substractYear" v-if="previousYearAllowed">
+            <v-btn icon @click="substractYear">
               <v-icon>mdi-chevron-triple-left</v-icon>
             </v-btn>
             <b>{{ computedSelectedYear }}</b>
-            <v-btn icon @click="addYear" v-if="nextYearAllowed">
+            <v-btn icon @click="addYear">
               <v-icon>mdi-chevron-triple-right</v-icon>
             </v-btn>
           </v-col>
@@ -251,7 +252,7 @@ export default {
       return moment(this.today).endOf("month").format("YYYY-MM-DD");
     },
     computedSelectedYear() {
-      return this.today ? moment(this.today).isoWeekYear() : "";
+      return this.today ? moment(this.today).year() : "";
     },
     computedSelectedMonth() {
       return this.today ? moment(this.today).locale("nl").format("MMM") : "";
