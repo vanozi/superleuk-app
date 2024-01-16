@@ -53,34 +53,30 @@ def create_application() -> FastAPI:
 
     # Api voor de nuxt frontend
     app_v1 = FastAPI()
-    app_v1.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
-    app_v1.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+    app_v1.include_router(auth.router, prefix="/auth", tags=["auth"])
+    app_v1.include_router(users.router, prefix="/users", tags=["users"])
     app_v1.include_router(
-        allowed_users.router, prefix="/api/v1/allowed_users", tags=["allowed_users"]
+        allowed_users.router, prefix="/allowed_users", tags=["allowed_users"]
     )
-    app_v1.include_router(roles.router, prefix="/api/v1/roles", tags=["roles"])
+    app_v1.include_router(roles.router, prefix="/roles", tags=["roles"])
+    app_v1.include_router(user_roles.router, prefix="/user_roles", tags=["user_roles"])
     app_v1.include_router(
-        user_roles.router, prefix="/api/v1/user_roles", tags=["user_roles"]
+        working_hours.router, prefix="/working_hours", tags=["working_hours"]
     )
-    app_v1.include_router(
-        working_hours.router, prefix="/api/v1/working_hours", tags=["working_hours"]
-    )
-    app_v1.include_router(bouwplan.router, prefix="/api/v1/bouwplan", tags=["bouwplan"])
-    app_v1.include_router(machines.router, prefix="/api/v1/machines", tags=["machines"])
+    app_v1.include_router(bouwplan.router, prefix="/bouwplan", tags=["bouwplan"])
+    app_v1.include_router(machines.router, prefix="/machines", tags=["machines"])
     app_v1.include_router(
         machine_onderhoud.router,
-        prefix="/api/v1/machine_maintenance_issues",
+        prefix="/machine_maintenance_issues",
         tags=["machine_maintenance_issues"],
     )
     app_v1.include_router(
         tank_transactions.router,
-        prefix="/api/tank_transactions",
+        prefix="/tank_transactions",
         tags=["tank_transactions"],
     )
-    app_v1.include_router(
-        vakanties.router, prefix="/api/v1/vakanties", tags=["vakanties"]
-    )
-    application.mount("/api/v1", app_v1)
+    app_v1.include_router(vakanties.router, prefix="/vakanties", tags=["vakanties"])
+    application.mount("/api", app_v1)
 
     # Api voor de quasar frontend
     app_v2 = FastAPI()
