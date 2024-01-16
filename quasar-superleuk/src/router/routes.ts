@@ -62,6 +62,17 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  //  Vakanties
+  {
+    path: '/vakanties',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/views/vakanties/IndexView.vue'),
+      },
+    ],
+  },
   // boerderij kalender routes
   {
     path: '/boerderij-kalender',
@@ -88,6 +99,16 @@ const routes: RouteRecordRaw[] = [
         path: 'medewerkers/:id',
         name: 'admin-medewerker-profile',
         component: () => import('src/views/admin/MedewerkerProfileView.vue'),
+      },
+      {
+        path: 'uren',
+        name: 'uren-medewerkers-overzicht',
+        component: () => import('/src/views/admin/uren/MederwerkersOverzichtView.vue'),
+      },
+      {
+        path: 'uren/medewerkers/:id',
+        name: 'uren-medewerker-overzicht',
+        component: () => import('/src/views/admin/uren/MederwerkerOverzichtView.vue'),
       },
     ],
   },

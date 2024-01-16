@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    {{ today }}
     <SubmittedWeekDlg ref="week_overview" />
     <v-tabs centered>
       <v-tab href="#week_overview">Week overzicht</v-tab>

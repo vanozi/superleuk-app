@@ -1,21 +1,3 @@
-<template>
-  <q-page padding>
-    <div class="fit row wrap justify-center items-start content-start">
-      <LoginForm
-        @submit-form="submitLogin"
-        :class="[$q.screen.gt.md ? 'col-4' : 'col-11']"
-      />
-    </div>
-    <div class="fit row wrap justify-center items-start content-start">
-      <router-link
-        :class="[$q.screen.gt.md ? 'col-4' : 'col-11']"
-        to="/auth/forgot-password"
-        >Wachtwoord vergeten?
-      </router-link>
-    </div>
-  </q-page>
-</template>
-
 <script lang="ts" setup>
 // imports
 import FormBuilder from 'src/forms/form-builder';
@@ -37,3 +19,16 @@ const submitLogin = (formValues: any) => {
   });
 };
 </script>
+
+
+<template>
+  <q-page padding>
+    <div class="fit column items-start content-center">
+      <LoginForm @submit-form="submitLogin" :class="[$q.screen.gt.md ? '' : 'full-width']"
+        :style="[$q.screen.gt.md ? 'width:400px' : '']" />
+      <router-link to="/auth/forgot-password">Wachtwoord
+        vergeten?
+      </router-link>
+    </div>
+  </q-page>
+</template>

@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { QInputProps, QDateProps, QDate } from 'quasar';
-import { ref, toRefs, unref, computed, onMounted } from 'vue';
+import { QInputProps, QDate } from 'quasar';
+import { ref, unref } from 'vue';
 
 const props = defineProps<{
   name: string;
@@ -36,7 +36,7 @@ const props = defineProps<{
 const formattedDates = unref(props.options).slice().map(date => {
   // Split the date string into an array of year, month, and day
   const [year, month, day] = date.split('-');
-  
+
   // Join the year, month, and day with forward slashes
   return `${year}/${month}/${day}`;
 });

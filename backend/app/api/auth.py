@@ -9,8 +9,8 @@ from app.models.pydantic import (
     User_Pydantic,
 )
 from app.models.tortoise import AllowedUsers, Roles, Users
-from app.services.auth import Auth
-from app.services.mail import Mailer
+from app.services.v1.auth import Auth
+from app.services.v1.mail import Mailer
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_mail import ConnectionConfig
@@ -23,7 +23,8 @@ router = APIRouter()
 
 @router.post("/register", response_model=User_Pydantic, status_code=201)
 async def register(
-        register_info: CreateUser, config: ConnectionConfig = Depends(get_fastapi_mail_config),
+    register_info: CreateUser,
+    config: ConnectionConfig = Depends(get_fastapi_mail_config),
 ) -> User_Pydantic:
     # Check if user allready exists
     if await Users.get_or_none(email=register_info.email.lower()) is not None:
@@ -84,14 +85,16 @@ async def register(
 
 @router.post("/activate_account", status_code=200)
 async def activate_account(
-        token: TokenSchema, settings: Settings = Depends(get_settings)
+    token: TokenSchema, settings: Settings = Depends(get_settings)
 ):
     token = token.token
     invalid_token_error = HTTPException(status_code=400, detail="Deze link is ongeldig")
     # Check if token expiration date is reached
     try:
         payload = jwt.decode(
-            token, settings.secret_key.get_secret_value(), algorithms=settings.token_algorithm
+            token,
+            settings.secret_key.get_secret_value(),
+            algorithms=settings.token_algorithm,
         )
     except jwt.JWTError:
         raise HTTPException(status_code=400, detail="Deze link is verlopen")
@@ -121,7 +124,7 @@ async def activate_account(
 
 @router.get("/resent_activation_token/{email}", status_code=200)
 async def resent_activation_code(
-        email: str, config: ConnectionConfig = Depends(get_fastapi_mail_config)
+    email: str, config: ConnectionConfig = Depends(get_fastapi_mail_config)
 ):
     # Check if user allready exists
     if await Users.get_or_none(email=email.lower()) is None:
@@ -164,7 +167,7 @@ async def resent_activation_code(
 
 @router.post("/login")
 async def get_login_token(
-        form_data: OAuth2PasswordRequestForm = Depends(),
+    form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     user = await Auth.authenticate_user(
         email=form_data.username.lower(), password=form_data.password
@@ -195,7 +198,7 @@ async def get_login_token(
 
 @router.post("/new-login")
 async def get_new_login_token(
-        form_data: OAuth2PasswordRequestForm = Depends(),
+    form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     user = await Auth.authenticate_user(
         email=form_data.username.lower(), password=form_data.password
@@ -235,7 +238,7 @@ async def refresh(request: Request, settings: Settings = Depends(get_settings)):
     # Check if token expiration date is reached
     try:
         payload = jwt.decode(
-            request.cookies.get('refresh_token'),
+            request.cookies.get("refresh_token"),
             settings.secret_key.get_secret_value(),
             algorithms=settings.token_algorithm,
         )
@@ -263,7 +266,7 @@ async def refresh(request: Request, settings: Settings = Depends(get_settings)):
 @router.get("/new-refresh")
 async def refresh(request: Request, settings: Settings = Depends(get_settings)):
     # get refresh token from cookie header
-    refresh_token = request.cookies.get('refresh_token')
+    refresh_token = request.cookies.get("refresh_token")
     if refresh_token is None:
         return Response(status_code=403)
     # Check if token expiration date is reached
@@ -296,8 +299,8 @@ async def refresh(request: Request, settings: Settings = Depends(get_settings)):
 
 @router.get("/forgot_password/{email}")
 async def forgot_password(
-        email: str,
-        config: ConnectionConfig = Depends(get_fastapi_mail_config),
+    email: str,
+    config: ConnectionConfig = Depends(get_fastapi_mail_config),
 ):
     # check if email address exists
     user = await Users.get_or_none(email=email.lower())
@@ -343,13 +346,15 @@ async def forgot_password(
 
 @router.post("/reset_password")
 async def reset_password(
-        reset_info: ResetPassword, settings: Settings = Depends(get_settings)
+    reset_info: ResetPassword, settings: Settings = Depends(get_settings)
 ):
     invalid_token_error = HTTPException(status_code=400, detail="Deze link is ongeldig")
     # Check if token expiration date is reached
     try:
         payload = jwt.decode(
-            reset_info.token, settings.secret_key.get_secret_value(), algorithms=settings.token_algorithm
+            reset_info.token,
+            settings.secret_key.get_secret_value(),
+            algorithms=settings.token_algorithm,
         )
     except jwt.JWTError:
         raise HTTPException(status_code=403, detail="Deze link is verlopen")

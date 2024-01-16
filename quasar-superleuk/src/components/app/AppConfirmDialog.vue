@@ -1,17 +1,17 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" >
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <slot/>
+      <slot />
       <q-card-actions align="right">
-        <AppButton outline color="positive" label="OK" @click="onOKClick"/>
-        <AppButton outline color="negative" label="Cancel" @click="onDialogCancel"/>
+        <AppButton outline color="positive" label="OK" @click="onOKClick" />
+        <AppButton outline color="negative" label="Annuleer" @click="onDialogCancel" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
-import {useDialogPluginComponent} from 'quasar'
+import { useDialogPluginComponent } from 'quasar'
 import AppButton from "components/app/AppButton.vue";
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const emits = defineEmits(['confirm',
   ...useDialogPluginComponent.emits
 ])
 
-const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 // dialogRef      - Vue ref to be applied to QDialog
 // onDialogHide   - Function to be used as handler for @hide on QDialog
 // onDialogOK     - Function to call to settle dialog with "ok" outcome
@@ -39,6 +39,6 @@ function onOKClick() {
   onDialogOK()
   // or with payload: onDialogOK({ ... })
   // ...and it will also hide the dialog automatically
-    emits('confirm')
+  emits('confirm')
 }
 </script>

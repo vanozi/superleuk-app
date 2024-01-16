@@ -14,20 +14,13 @@ const props = defineProps<{
 }>();
 
 const buttonSize = computed(() => {
-      return $q.screen.lt.sm
-        ? 'sm'
-        : 'md'
-    })
+  return $q.screen.lt.sm
+    ? 'sm'
+    : 'md'
+})
 </script>
 
 <template>
-  <q-btn
-    unelevated
-    :color="props.color"
-    :icon="props.icon"
-    :label="props.label"
-    :disable="props.disable"
-    :size="buttonSize"
-    :align="props.align"
-  />
+  <q-btn unelevated :color="props.color" :icon="props.icon" :label="props.label" :disable="props.disable"
+    :size="buttonSize" :align="props.align" />
 </template>

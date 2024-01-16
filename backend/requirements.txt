@@ -13,3 +13,4 @@ fastapi-mail
 isoweek
 pandas
 openpyxl
+babel

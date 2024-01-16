@@ -1,8 +1,0 @@
-version: "3.8"
-services:
-  fastapi:
-    container_name: old_vroege_fastapi
-  database:
-    container_name: old_vroege_database
-  pgadmin:
-    container_name: old_vroege_pgadmin

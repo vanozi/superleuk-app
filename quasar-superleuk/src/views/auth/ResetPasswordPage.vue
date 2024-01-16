@@ -27,11 +27,9 @@ const submitResetPassword = (formValues: any) => {
 
 <template>
   <q-page padding>
-    <div class="fit row wrap justify-center items-start content-start">
-      <ResetPasswordForm
-        @submit-form="submitResetPassword"
-        :class="[$q.screen.gt.md ? 'col-4' : 'col-11']"
-      />
+    <div class="fit column items-start content-center">
+      <ResetPasswordForm @submit-form="submitResetPassword" :class="[$q.screen.gt.md ? '' : 'full-width']"
+        :style="[$q.screen.gt.md ? 'width:400px' : '']" />
     </div>
   </q-page>
 </template>

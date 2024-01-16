@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {onMounted, Ref, ref} from "vue";
-import {IMonthTotals, useWorkingHours} from "stores/workinghours-store";
+import { onMounted, Ref, ref } from "vue";
+import { IMonthTotals, useWorkingHours } from "stores/workinghours-store";
 import VYearList from "components/uren/presentational/PYearList.vue";
-import {useAccountStore} from "stores/account-store";
+import { useAccountStore } from "stores/account-store";
 
 const year = ref(new Date().getFullYear());
 const workingHoursStore = useWorkingHours();
@@ -27,11 +27,6 @@ async function changeYearForward() {
 </script>
 
 <template>
-  <VYearList
-    :year-totals="data"
-    :year="year"
-    :is-milker="isMilker"
-    @change-year-back="changeYearBack"
-    @change-year-forward="changeYearForward"
-  />
+  <VYearList :year-totals="data" :year="year" :is-milker="isMilker" @change-year-back="changeYearBack"
+    @change-year-forward="changeYearForward" />
 </template>

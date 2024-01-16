@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import UrenRegistratieCalendarComponent from 'components/uren/HoursCalendar.vue';
 import { computed, provide, ref } from 'vue';
+import SingleRow from 'components/app/content-layout/SingleRow.vue';
 const showHourEditDialog = ref(false);
 const options = ref();
 const computedOptions = computed(() => {
@@ -15,7 +16,9 @@ provide('options', computedOptions);
 </script>
 
 <template>
-  <UrenRegistratieCalendarComponent />
+  <SingleRow>
+    <UrenRegistratieCalendarComponent />
+  </SingleRow>
 </template>
 
 <style>
@@ -23,6 +26,7 @@ provide('options', computedOptions);
   font-size: 18px;
   font-weight: 400;
 }
+
 .fc .fc-list-event-graphic {
   display: none;
 }
@@ -34,6 +38,7 @@ provide('options', computedOptions);
   background-color: white;
   color: black;
 }
+
 .fc .fc-submitHours-button {
   background-color: #4caf50;
   color: white;

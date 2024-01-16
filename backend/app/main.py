@@ -1,4 +1,5 @@
-import logging, os, json
+import logging
+import os
 
 from fastapi import FastAPI
 from starlette.middleware import Middleware
@@ -16,7 +17,20 @@ from app.api import (
     machine_onderhoud,
     tank_transactions,
     ionic,
-    vakanties
+    vakanties,
+)
+from app.api.v2 import (
+    allowed_users as v2_allowed_users,
+    auth as v2_auth,
+    working_hours as v2_working_hours,
+    users as v2_users,
+    vakanties as v2_vakanties,
+)
+from app.api.v2.admin import (
+    working_hours as admin_working_hours,
+    roles as admin_roles,
+    users as admin_users,
+    address as admin_address,
 )
 from app.db import init_db
 
@@ -24,50 +38,77 @@ log = logging.getLogger("uvicorn")
 
 
 def create_application() -> FastAPI:
-    # Toevoegen van middleware voor CORS op basis van een regular expression
-    # deze wordt gehaald uit de .env file en als die daar niet in staat mag alles
     origin_regex = os.getenv("ORIGIN_REGEX", ".*")
-    middleware = [Middleware(
-        CORSMiddleware,
-        allow_origin_regex=rf"{origin_regex}",
-        # allow_origins=["localhost:9200"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )]
+    middleware = [
+        Middleware(
+            CORSMiddleware,
+            allow_origin_regex=rf"{origin_regex}",
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+    ]
 
     application = FastAPI(middleware=middleware)
-    # load router into application
-    application.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-    application.include_router(users.router, prefix="/api/users", tags=["users"])
-    application.include_router(
-        allowed_users.router, prefix="/api/allowed_users", tags=["allowed_users"]
+
+    # Api voor de nuxt frontend
+    app_v1 = FastAPI()
+    app_v1.include_router(auth.router, prefix="/auth", tags=["auth"])
+    app_v1.include_router(users.router, prefix="/users", tags=["users"])
+    app_v1.include_router(
+        allowed_users.router, prefix="/allowed_users", tags=["allowed_users"]
     )
-    application.include_router(roles.router, prefix="/api/roles", tags=["roles"])
-    application.include_router(
-        user_roles.router, prefix="/api/user_roles", tags=["user_roles"]
+    app_v1.include_router(roles.router, prefix="/roles", tags=["roles"])
+    app_v1.include_router(user_roles.router, prefix="/user_roles", tags=["user_roles"])
+    app_v1.include_router(
+        working_hours.router, prefix="/working_hours", tags=["working_hours"]
     )
-    application.include_router(
-        bouwplan.router, prefix="/api/bouwplan", tags=["bouwplan"]
-    )
-    application.include_router(
-        machines.router, prefix="/api/machines", tags=["machines"]
-    )
-    application.include_router(
+    app_v1.include_router(bouwplan.router, prefix="/bouwplan", tags=["bouwplan"])
+    app_v1.include_router(machines.router, prefix="/machines", tags=["machines"])
+    app_v1.include_router(
         machine_onderhoud.router,
-        prefix="/api/machine_maintenance_issues",
+        prefix="/machine_maintenance_issues",
         tags=["machine_maintenance_issues"],
     )
-    application.include_router(
+    app_v1.include_router(
         tank_transactions.router,
-        prefix="/api/tank_transactions",
+        prefix="/tank_transactions",
         tags=["tank_transactions"],
     )
-    application.include_router(
-        working_hours.router, prefix="/api/working_hours", tags=["working_hours"]
+    app_v1.include_router(vakanties.router, prefix="/vakanties", tags=["vakanties"])
+    application.mount("/api", app_v1)
+
+    # Api voor de quasar frontend
+    app_v2 = FastAPI()
+
+    app_v2.include_router(v2_auth.router, prefix="/auth", tags=["auth"])
+    app_v2.include_router(
+        v2_allowed_users.router, prefix="/allowed_users", tags=["allowed_users"]
     )
-    application.include_router(ionic.router, prefix="/api/ionic", tags=["ionic-test"])
-    application.include_router(vakanties.router, prefix="/api/vakanties", tags=["vakanties"])
+    app_v2.include_router(v2_users.router, prefix="/users", tags=["users"])
+
+    app_v2.include_router(
+        v2_working_hours.router, prefix="/working_hours", tags=["working_hours"]
+    )
+    app_v2.include_router(v2_vakanties.router, prefix="/vakanties", tags=["vakanties"])
+
+    # Admin routes
+    app_v2.include_router(
+        admin_working_hours.router,
+        prefix="/admin/working_hours",
+        tags=["admin_working_hours"],
+    )
+    app_v2.include_router(
+        admin_roles.router, prefix="/admin/roles", tags=["admin_roles"]
+    )
+    app_v2.include_router(
+        admin_users.router, prefix="/admin/users", tags=["admin_users"]
+    )
+    app_v2.include_router(
+        admin_address.router, prefix="/admin/address", tags=["admin_address"]
+    )
+
+    application.mount("/api/v2", app_v2)
 
     return application
 
@@ -84,4 +125,3 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     log.info("Shutting down...")
-

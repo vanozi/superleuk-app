@@ -247,56 +247,43 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
 
 <template>
   <FullCalendar ref="workingHoursCalendar" :options="calendarOptions" />
-  <InvoerenDialogComponent
-    :add-working-hours-form="addForm"
-    @re-fetch-events="reFetchEvents"
-  />
-  <AanpassenDialogComponent
-    :edit-working-hours-form="editForm"
-    @re-fetch-events="reFetchEvents"
-  />
-  <!--  Rij onder de calendar view voor de list week -->
-  <div class="row" v-if="listWeekView">
-    <q-space />
-    <q-btn-group unelevated class="q-mt-xs">
-      <!--      <standard-button-->
-      <!--          outline-->
-      <!--          color="primary"-->
-      <!--          label="Toevoegen"-->
-      <!--          @click="openAddHoursDialog()"-->
-      <!--          :disabled="(workinghoursStore.workingHoursInViewSubmittedComputed!= 0 && workinghoursStore.totalWorkingHoursInViewComputed==workinghoursStore.workingHoursInViewSubmittedComputed) || workinghoursStore.workingHoursBetweenDates.length >= 7"-->
-      <!--      />-->
-      <standard-button
-        outline
-        color="positive"
-        label="Indienen"
-        @click="indienenHours()"
-        :disabled="
-          workinghoursStore.totalWorkingHoursInViewComputed ==
-          workinghoursStore.workingHoursInViewSubmittedComputed
-        "
-      />
-    </q-btn-group>
+  <InvoerenDialogComponent :add-working-hours-form="addForm" @re-fetch-events="reFetchEvents" />
+  <AanpassenDialogComponent :edit-working-hours-form="editForm" @re-fetch-events="reFetchEvents" />
+
+  <!--  Rij onder de calendar view voor het tonen van totalen -->
+  <div class="row q-mt-md" v-if="listWeekView">
+    <div class="col-grow" style="overflow: auto;">
+      <standard-button outline color="primary" label="Indienen" @click="indienenHours()" :disabled="workinghoursStore.totalWorkingHoursInViewComputed ==
+        workinghoursStore.workingHoursInViewSubmittedComputed
+        " />
+
+    </div>
+
   </div>
-  <!--  Rij onder de calendar view voor day grid month -->
-  <div class="row">
-    <q-space />
-    <div
-      style="max-width: 350px"
-      v-if="useAccountStore().hasUserRole('melker')"
-    >
-      <q-list separator>
+  <div class="row wrap q-mt-sm">
+    <div class="col-grow" style="overflow: auto;" v-if="useAccountStore().hasUserRole('melker')">
+      <q-list>
         <q-item>
-          <q-item-section />
+
           <q-item-section side>
-            <q-item-label overline class="text-weight-bolder"
-              >MELKBEURTEN</q-item-label
-            >
+            <q-item-label overline class="text-weight-bolder">MELBEURTEN</q-item-label>
+            <q-item-label overline>Open</q-item-label>
+            <q-item-label>{{
+              workinghoursStore.milkingsInViewNotSubmittedComputed
+            }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item>
-          <q-item-section />
           <q-item-section side>
+            <q-item-label overline>Ingediend</q-item-label>
+            <q-item-label>{{
+              workinghoursStore.milkingsInViewSubmittedComputed
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section side>
+            <q-item-label overline>Totaal</q-item-label>
             <q-item-label>{{
               workinghoursStore.totalMilkingsInViewComputed
             }}</q-item-label>
@@ -304,19 +291,12 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
         </q-item>
       </q-list>
     </div>
-    <div style="max-width: 350px">
-      <q-list separator>
+    <div class="col-grow" style="overflow: auto;">
+      <q-list>
         <q-item>
-          <q-item-section />
+
           <q-item-section side>
-            <q-item-label overline class="text-weight-bolder"
-              >UREN</q-item-label
-            >
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section />
-          <q-item-section side>
+            <q-item-label overline class="text-weight-bolder">UREN</q-item-label>
             <q-item-label overline>Open</q-item-label>
             <q-item-label>{{
               workinghoursStore.workingHoursInViewNotSubmittedComputed
@@ -324,7 +304,6 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
           </q-item-section>
         </q-item>
         <q-item>
-          <q-item-section />
           <q-item-section side>
             <q-item-label overline>Ingediend</q-item-label>
             <q-item-label>{{
@@ -333,7 +312,6 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
           </q-item-section>
         </q-item>
         <q-item>
-          <q-item-section />
           <q-item-section side>
             <q-item-label overline>Totaal</q-item-label>
             <q-item-label>{{
@@ -367,16 +345,19 @@ function extractDatesFromResponse(workingHoursArray: IWorkingHours[]) {
 
 /* Mobile Styles */
 @media only screen and (max-width: 480px) {
+
   /* FullCalendar Styles for Mobile Here */
   .fc .fc-toolbar-title {
-    font-size: 14px !important; /* Smaller font size */
+    font-size: 14px !important;
+    /* Smaller font size */
     font-weight: 400;
   }
 
   .fc .fc-customprev-button,
   .fc .fc-customnext-button {
     background-color: white;
-    font-size: 12px !important; /* Smaller button size */
+    font-size: 12px !important;
+    /* Smaller button size */
   }
 
   .fc .fc-listWeek-button,

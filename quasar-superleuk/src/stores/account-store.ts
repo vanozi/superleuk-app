@@ -26,7 +26,7 @@ export const useAccountStore = defineStore('account-store', () => {
 
   /**
    * Checks if the logged in user has a specific role.
-   * 
+   *
    * @param roleName - The name of the role to check.
    * @returns True if the logged in user has the specified role, false otherwise.
    */
@@ -83,7 +83,7 @@ export const useAccountStore = defineStore('account-store', () => {
     form.append('username', payload.email);
     form.append('password', payload.password);
     await api
-      .post('/auth/new-login', form, {
+      .post('/auth/login', form, {
         headers: {
           'Content-Type': 'multipart/custom-quasar-data',
         },
@@ -125,7 +125,7 @@ export const useAccountStore = defineStore('account-store', () => {
 
   async function refreshTokens(_callback?: any, _errorcallback?: any): Promise<void> {
     api
-      .get('/auth/new-refresh', {
+      .get('/auth/refresh', {
         withCredentials: true,
       })
       .then((response: AxiosResponse<any>): void => {

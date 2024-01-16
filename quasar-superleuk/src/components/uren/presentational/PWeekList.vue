@@ -8,7 +8,12 @@ const props = defineProps<{
   weekTotals: IWeekData[];
 }>();
 
-const emit = defineEmits(['changeYearBack', 'changeYearForward']);
+const emit = defineEmits(['changeYearBack', 'changeYearForward', 'showWeekInDialog']);
+
+function showWeekInDialog(evt, row) {
+  // console.log(row);
+  emit('showWeekInDialog', row);
+}
 
 function changeYearBack() {
   emit('changeYearBack');
@@ -76,41 +81,29 @@ const columns = computed(() => {
 
 <template>
   <!--  jaar selecteren -->
-  <!--  met de pijltjes emit je een event naar de YearListContainer om het jaar te veranderen en nieuwe data op te halen-->
+  <!--  met de pijltjes emit je een event naar de WeekListCotnainer om het jaar te veranderen en nieuwe data op te halen-->
   <div class="row justify-center items-center">
-    <q-btn
-      flat
-      text-color="primary"
-      round
-      size="md"
-      icon="chevron_left"
-      @click="changeYearBack"
-    />
-    <div class="text-h7">{{ year }}</div>
-    <q-btn
-      flat
-      text-color="primary"
-      round
-      size="md"
-      icon="chevron_right"
-      @click="changeYearForward"
-    />
+    <q-btn flat text-color="primary" round size="md" icon="chevron_left" @click="changeYearBack" />
+    <div class="text-subtitle1">{{ year }}</div>
+    <q-btn flat text-color="primary" round size="md" icon="chevron_right" @click="changeYearForward" />
   </div>
   <!--  overzicht uren en melkbeurten -->
-  <div class="row justify-center items-center">
-    <q-table
-      class="col-12"
-      dense
-      flat
-      hide-bottom
-      :rows="props.weekTotals"
-      :columns="columns"
-      :rows-per-page-options="[0]"
-    >
+  <div>
+    <q-table dense flat hide-bottom @row-click="showWeekInDialog" :rows="props.weekTotals" :columns="columns"
+      :rows-per-page-options="[0]">
+      <!-- Slot for the range column -->
       <template v-slot:body-cell-range="props">
-        <q-td :props="props">
+        <q-td :props="props"
+          :style="(props.row.submitted) ? 'background-color: rgba(229, 255, 204, 0.99) !important' : ''">
           {{ formatWeekDate(props.row.week_start) }} /
           {{ formatWeekDate(props.row.week_end) }}
+        </q-td>
+      </template>
+      <!-- slot to change the background color when a week is submitted -->
+      <template v-slot:body-cell="props">
+        <q-td :props="props"
+          :style="(props.row.submitted) ? 'background-color: rgba(229, 255, 204, 0.99) !important' : ''">
+          {{ props.value }}
         </q-td>
       </template>
       <template v-slot:bottom-row>
@@ -120,9 +113,7 @@ const columns = computed(() => {
               <q-item>
                 <q-item-section />
                 <q-item-section side>
-                  <q-item-label overline class="text-weight-bolder"
-                    >TOTAAL</q-item-label
-                  >
+                  <q-item-label overline class="text-weight-bolder">TOTAAL</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>

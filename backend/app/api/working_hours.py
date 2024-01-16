@@ -12,7 +12,7 @@ from app.models.pydantic import (
     WeekData,
 )
 from app.models.tortoise import Users, WorkingHours
-from app.services.auth import RoleChecker, get_current_active_user
+from app.services.v1.auth import RoleChecker, get_current_active_user
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from starlette import status
