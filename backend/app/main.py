@@ -49,7 +49,7 @@ def create_application() -> FastAPI:
         )
     ]
 
-    application = FastAPI(middleware=middleware)
+    application = FastAPI(middleware=middleware, root_path="/api")
 
     # Api voor de nuxt frontend
     app_v1 = FastAPI()
@@ -76,7 +76,7 @@ def create_application() -> FastAPI:
         tags=["tank_transactions"],
     )
     app_v1.include_router(vakanties.router, prefix="/vakanties", tags=["vakanties"])
-    application.mount("/api", app_v1)
+    application.mount("/v1", app_v1)
 
     # Api voor de quasar frontend
     app_v2 = FastAPI()
@@ -108,8 +108,7 @@ def create_application() -> FastAPI:
         admin_address.router, prefix="/admin/address", tags=["admin_address"]
     )
 
-    application.mount("/api/v2", app_v2)
-
+    application.mount("/v2", app_v2)
     return application
 
 

@@ -89,6 +89,11 @@ export const useVakantiesStore = defineStore('vakanties-store', () => {
   async function deleteVakantie(id: number) {
     try {
       const response = await api.delete(`/vakanties/${id}/`);
+      Notify.create({
+        type: 'positive',
+        message: 'Vakantie verwijderd',
+        icon: 'done',
+      });
       return response.data;
     } catch (error: any) {
       if (error.response) {

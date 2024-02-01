@@ -40,10 +40,10 @@ async def get_all_resources():
                 break
 
         if has_werknemer_role:
-            if any(role.name == "vaste medewerker" for role in user.roles):
-                groupId = 1
-            else:
+            if any(role.name == "part-time" for role in user.roles):
                 groupId = 2
+            else:
+                groupId = 1
             resource_response = ResourceResponse(
                 id=user.id,
                 title=user.first_name + " " + user.last_name,
