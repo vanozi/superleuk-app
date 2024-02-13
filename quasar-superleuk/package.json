@@ -30,7 +30,7 @@
     "quasar": "^2.6.0",
     "vee-validate": "^4.7.4",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0",
+    "vue-router": "^4.2.5",
     "wait-for-expect": "^3.0.2",
     "yup": "^1.0.0",
     "zod": "^3.21.4"
