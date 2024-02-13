@@ -33,7 +33,7 @@
     "vue-router": "^4.0.0",
     "wait-for-expect": "^3.0.2",
     "yup": "^1.0.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@pinia/testing": "^0.0.15",
