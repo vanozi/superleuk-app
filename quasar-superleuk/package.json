@@ -24,7 +24,7 @@
     "@fullcalendar/timegrid": "^6.1.9",
     "@fullcalendar/vue3": "^6.1.4",
     "@quasar/extras": "^1.0.0",
-    "axios": "^0.21.1",
+    "axios": "^1.6.0",
     "flush-promises": "^1.0.2",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
