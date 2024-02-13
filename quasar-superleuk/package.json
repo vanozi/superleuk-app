@@ -22,7 +22,7 @@
     "@fullcalendar/resource": "^6.1.10",
     "@fullcalendar/resource-timeline": "^6.1.10",
     "@fullcalendar/timegrid": "^6.1.9",
-    "@fullcalendar/vue3": "^6.1.4",
+    "@fullcalendar/vue3": "^6.1.10",
     "@quasar/extras": "^1.0.0",
     "axios": "^1.6.7",
     "flush-promises": "^1.0.2",
