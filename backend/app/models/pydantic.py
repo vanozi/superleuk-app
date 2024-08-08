@@ -103,8 +103,8 @@ class EmailSchema(pydantic.BaseModel):
 
 # Activate Account
 class TokenSchema(pydantic.BaseModel):
-    token: Optional[str]
-    refresh_token: Optional[str]
+    token: Optional[str] = None
+    refresh_token: Optional[str] = None
 
 
 # Reset password

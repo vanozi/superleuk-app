@@ -136,15 +136,15 @@ export default {
           title: "Uren",
           roles: ["admin", "werknemer"]
         },
-        {
-          title: "Bouwplan",
-          action: "mdi-sprout-outline",
-          items: [{ title: "2022", route: "/bouwplan/2022", roles: ["werknemer", "monteur", "admin"] }, { title: "2023", route: "/bouwplan/2023", roles: ["werknemer", "monteur", "admin"] }],
-          roles: ["werknemer", "monteur", "admin"]
-        },
+        // {
+        //   title: "Bouwplan",
+        //   action: "mdi-sprout-outline",
+        //   items: [{ title: "2022", route: "/bouwplan/2022", roles: ["werknemer", "monteur", "admin"] }, { title: "2023", route: "/bouwplan/2023", roles: ["werknemer", "monteur", "admin"] }],
+        //   roles: ["werknemer", "monteur", "admin"]
+        // },
 
         {
-          title: "Machines (Test)",
+          title: "Machines",
           action: "mdi-tractor-variant",
           items: [{ title: "Machinepark", route: "/machines", roles: ["werknemer", "monteur", "admin"] }, { title: "Onderhoud / Storingen", route: "/machines/onderhoud", roles: ["werknemer", "monteur", "admin"] }, { title: "Tankbeurten", route: "/machines/tank_transactions", roles: ["werknemer", "monteur", "admin"] },],
           roles: ["werknemer", "monteur", "admin"]

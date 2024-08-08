@@ -21,11 +21,11 @@ from starlette.responses import JSONResponse
 router = APIRouter()
 
 
-@router.post("/register", response_model=User_Pydantic, status_code=201)
+@router.post("/register", status_code=201)
 async def register(
     register_info: CreateUser,
     config: ConnectionConfig = Depends(get_fastapi_mail_config),
-) -> User_Pydantic:
+):
     # Check if user allready exists
     if await Users.get_or_none(email=register_info.email.lower()) is not None:
         raise HTTPException(
@@ -50,12 +50,13 @@ async def register(
         # create confirmation token and add the jti to the database user
         confirmation_token = Auth.get_confirmation_token(user.email)
         user.confirmation = confirmation_token["jti"]
-        await user.save()
+
         # add user roles
         role, _ = await Roles.get_or_create(
             name="werknemer", description="User met algemene werknemers rechten"
         )
         await user.roles.add(role)
+        await user.save()
         await Mailer.send_welcome_message(
             email=EmailSchema(
                 recipient_addresses=[user.email],
@@ -69,7 +70,8 @@ async def register(
         # remove user from allowed users table
         allowed_user = await AllowedUsers.get_or_none(email=register_info.email.lower())
         await allowed_user.delete()
-    except Exception:
+        return JSONResponse({"detail": "Geregistreerd"}, status_code=201)
+    except Exception as e:
         if user:
             await user.delete()
         raise HTTPException(
@@ -78,9 +80,6 @@ async def register(
                 "Er is een onverwachte fout opgetreden, neem contact op met de beheerder"
             ),
         )
-
-    await user.fetch_related("roles")
-    return user
 
 
 @router.post("/activate_account", status_code=200)
