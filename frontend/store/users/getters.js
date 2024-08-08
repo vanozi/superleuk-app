@@ -12,7 +12,12 @@ export default {
                 werknemers.push(x)
             }
         }
-        return werknemers
+        werknemers.sort((a, b) => {
+          if (a.first_name < b.first_name) return -1;
+          if (a.first_name > b.first_name) return 1;
+          return 0;
+      });
+      return werknemers;
     }
 
 }
