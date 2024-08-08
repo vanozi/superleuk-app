@@ -29,19 +29,6 @@ services:
     env_file:
       - .env.test
 
-
-  quasar:
-    container_name: "quasar-test"
-    build:
-      context: ./quasar-superleuk
-      dockerfile: Dockerfile.test
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.quasar.rule=Host(`quasar.localhost`)"
-      - "traefik.http.routers.quasar.entrypoints=web"
-
- 
   traefik-test:
     image: traefik:v2.9.6
     ports:
