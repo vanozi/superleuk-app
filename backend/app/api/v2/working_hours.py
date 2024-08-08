@@ -6,6 +6,7 @@ from app.models.pydantic_models.working_hours import (
     WorkingHoursResponse,
     WorkingHoursRequest,
     WorkingHoursWeekOverviewResponse,
+    WeekTotals,
 )
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
@@ -47,7 +48,11 @@ async def get_working_hours_between_dates(
     ]
 
 
-@router.get("/year_overview/", dependencies=[Depends(get_current_active_user)])
+@router.get(
+    "/year_overview/",
+    response_model=List[WeekTotals],
+    dependencies=[Depends(get_current_active_user)],
+)
 async def get_year_overview(
     year: int, current_active_user=Depends(get_current_active_user)
 ):
@@ -58,7 +63,7 @@ async def get_year_overview(
 
     # Iterate through records and aggregate by month
     for item in current_active_user.working_hours:
-        if item.date.year == year:
+        if item.date.year == year and item.submitted:
             maand = format_date(item.date, "MMMM", locale="nl")
             if maand not in aggregated_data:
                 aggregated_data[maand] = {
@@ -71,13 +76,13 @@ async def get_year_overview(
 
     # Fill in missing months with dictionaries containing 0 hours and 0 milkings
     all_months = get_month_names("nl")
-    for month in all_months:  # Translate to Dutch
-        if month not in aggregated_data:
-            aggregated_data[month] = {
-                "month": month,
-                "hours": 0,
-                "milkings": 0,
-            }
+    # for month in all_months:  # Translate to Dutch
+    #     if month not in aggregated_data:
+    #         aggregated_data[month] = {
+    #             "month": month,
+    #             "hours": 0,
+    #             "milkings": 0,
+    #         }
 
     return sorted(
         list(aggregated_data.values()),
@@ -120,19 +125,19 @@ async def get_week_overview(
         )
 
         week_start, week_end = get_week_start_end_dates(year, week_number)
-
-        result_list.append(
-            {
-                "year": year,
-                "week": week_number,
-                "week_start": week_start.strftime("%Y-%m-%d"),
-                "week_end": week_end.strftime("%Y-%m-%d"),
-                "sum_hours": sum_hours,
-                "sum_milkings": sum_milkings,
-                "submitted": submitted,
-                "working_hours": week_hours_list,  # Ensure this is serializable or transformed to match the response model
-            }
-        )
+        if submitted:
+            result_list.append(
+                {
+                    "year": year,
+                    "week": week_number,
+                    "week_start": week_start.strftime("%Y-%m-%d"),
+                    "week_end": week_end.strftime("%Y-%m-%d"),
+                    "sum_hours": sum_hours,
+                    "sum_milkings": sum_milkings,
+                    "submitted": submitted,
+                    "working_hours": week_hours_list,  # Ensure this is serializable or transformed to match the response model
+                }
+            )
 
     return result_list
 

@@ -6,9 +6,12 @@ from app.models.pydantic import (
     EmailSchema,
     ResetPassword,
     TokenSchema,
-    User_Pydantic,
 )
-from app.models.pydantic_models.auth import RegisterUserRequest, UserResponse
+from app.models.pydantic_models.auth import (
+    RegisterUserRequest,
+    TokenResponse,
+    SettingsWithSecret,
+)
 from app.models.pydantic_models.general_responses import HTTPError, SuccessResponse
 
 from app.models.tortoise import AllowedUsers, Roles, Users
@@ -32,10 +35,18 @@ from datetime import datetime, timezone
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserResponse, status_code=201)
+@router.post(
+    "/register",
+    response_model=SuccessResponse,
+    status_code=201,
+    responses={
+        400: {"description": "Gebruiker bestaat al of email niet bevoegd"},
+        500: {"description": "Interne serverfout bij het aanmaken van gebruiker"},
+    },
+)
 async def register(
     register_info: RegisterUserRequest, background_tasks: BackgroundTasks
-) -> User_Pydantic:
+):
     email = register_info.email.lower()
     user = await Users.get_or_none(email=email)
     if user is not None:
@@ -48,17 +59,17 @@ async def register(
     if allowed_user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dit email adres is niet bevoegd om zich te registeren",
+            detail="Dit emailadres is niet bevoegd om zich te registreren",
         )
 
     hashed_password = Auth.get_password_hash(register_info.password.get_secret_value())
 
     try:
-        # Create User
+        # Gebruiker aanmaken
         user = await Users.create(
             first_name=register_info.first_name,
             last_name=register_info.last_name,
-            email=register_info.email.lower(),
+            email=email,
             hashed_password=hashed_password,
         )
 
@@ -66,11 +77,11 @@ async def register(
         user.confirmation = confirmation_token["jti"]
         await user.save()
 
-        # Add user roles
+        # Gebruikersrollen toevoegen
         role = await Roles.get(name="werknemer")
         await user.roles.add(role)
 
-        # Send welcome message to the user
+        # Welkomstbericht versturen
         email_schema = EmailSchema(
             recipient_addresses=[user.email],
             body={
@@ -80,17 +91,18 @@ async def register(
             },
         )
         background_tasks.add_task(Mailer.send_welcome_message, email=email_schema)
-        # Remove user from allowed users table
+
+        # Gebruiker verwijderen uit de toegestane gebruikerslijst
         await allowed_user.delete()
         await user.fetch_related("roles")
-        return user
+        return SuccessResponse(detail="Gebruiker succesvol aangemaakt")
 
     except Exception as e:
         if user:
             await user.delete()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
+            detail=str(e),
         )
 
 
@@ -190,6 +202,7 @@ async def resent_activation_code(
     "/login",
     status_code=200,
     responses={401: {"model": HTTPError, "description": "Niet geautoriseerd"}},
+    response_model=TokenResponse,
 )
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -223,37 +236,42 @@ async def login(
     return response
 
 
-@router.get("/efresh")
+@router.get(
+    "/refresh",
+    response_model=TokenResponse,
+    responses={
+        400: {"description": "Ongeldige token scope of gebruiker niet gevonden"},
+        403: {"description": "Refresh token ontbreekt of is verlopen"},
+    },
+)
 async def refresh(request: Request, settings: Settings = Depends(get_settings)):
-    # get refresh token from cookie header
     refresh_token = request.cookies.get("refresh_token")
-    if refresh_token is None:
-        return Response(status_code=403)
-    # Check if token expiration date is reached
+    if not refresh_token:
+        raise HTTPException(status_code=403, detail="Refresh token ontbreekt")
+
     try:
         payload = jwt.decode(
             refresh_token,
             settings.secret_key.get_secret_value(),
-            algorithms=settings.token_algorithm,
+            algorithms=[settings.token_algorithm],
         )
     except jwt.JWTError:
         raise HTTPException(status_code=403, detail="Refresh token is verlopen")
-    # Check if scope of the token is valid
-    if payload["scope"] != "refresh":
-        raise Response(status_code=400)
+
+    if payload.get("scope") != "refresh":
+        raise HTTPException(status_code=400, detail="Ongeldig token scope")
+
     user = await Users.get_or_none(email=payload["sub"])
-    # Check if token belongs to user and not already been used
     if not user:
-        raise Response(status_code=400)
+        raise HTTPException(
+            status_code=400, detail="Gebruiker niet gevonden voor dit token"
+        )
+
     access_token = Auth.get_access_token(email=user.email)
     refresh_token = Auth.get_refresh_token(email=user.email)
-    return JSONResponse(
-        {
-            "access_token": access_token["token"],
-            "refresh_token": refresh_token["token"],
-            "token_type": "bearer",
-        },
-        status_code=200,
+
+    return TokenResponse(
+        access_token=access_token["token"], refresh_token=refresh_token["token"]
     )
 
 

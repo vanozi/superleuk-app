@@ -29,3 +29,14 @@ class UserResponse(BaseModel):
     is_active: bool
     confirmation: Union[uuid.UUID, None]
     roles: Union[List[RoleResponse], None]
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
+class SettingsWithSecret(BaseModel):
+    secret_key: SecretStr
+    token_algorithm: str

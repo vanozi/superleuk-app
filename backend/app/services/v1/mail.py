@@ -3,7 +3,7 @@ from smtplib import SMTP
 from app.config import get_fastapi_mail_config
 from app.models.pydantic import EmailSchema
 from fastapi import Depends
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 
 fm: ConnectionConfig = FastMail(get_fastapi_mail_config())
 
@@ -15,6 +15,7 @@ class Mailer:
             # List of recipients, as many as you can pass
             recipients=email.dict().get("recipient_addresses"),
             template_body=email.dict().get("body"),
+            subtype=MessageType.html,
         )
         await fm.send_message(message, template_name="invite_email.html")
 
@@ -24,6 +25,7 @@ class Mailer:
             # List of recipients, as many as you can pass
             recipients=email.dict().get("recipient_addresses"),
             template_body=email.dict().get("body"),
+            subtype=MessageType.html,
         )
         await fm.send_message(message, template_name="account_activation_email.html")
 
@@ -33,5 +35,6 @@ class Mailer:
             # List of recipients, as many as you can pass
             recipients=email.dict().get("recipient_addresses"),
             template_body=email.dict().get("body"),
+            subtype=MessageType.html,
         )
         await fm.send_message(message, template_name="reset_password_email.html")

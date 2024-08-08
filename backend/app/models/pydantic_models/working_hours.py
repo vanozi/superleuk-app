@@ -32,6 +32,12 @@ class WorkingHoursWeekOverviewResponse(BaseModel):
     submitted: bool
 
 
+class WeekTotals(BaseModel):
+    month: str
+    hours: float
+    milkings: int
+
+
 class ReleaseRequest(BaseModel):
     from_date: datetime.date
     to_date: datetime.date

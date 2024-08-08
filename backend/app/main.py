@@ -5,6 +5,9 @@ from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
+from app.helpers.typescript_client import custom_generate_unique_id
+
+
 from app.api import (
     allowed_users,
     auth,
@@ -42,7 +45,7 @@ def create_application() -> FastAPI:
     middleware = [
         Middleware(
             CORSMiddleware,
-            allow_origin_regex=rf"{origin_regex}",
+            allow_origin_regex=".*",
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
@@ -52,7 +55,7 @@ def create_application() -> FastAPI:
     application = FastAPI(middleware=middleware, root_path="/api")
 
     # Api voor de nuxt frontend
-    app_v1 = FastAPI()
+    app_v1 = FastAPI(middleware=middleware)
     app_v1.include_router(auth.router, prefix="/auth", tags=["auth"])
     app_v1.include_router(users.router, prefix="/users", tags=["users"])
     app_v1.include_router(
@@ -79,7 +82,9 @@ def create_application() -> FastAPI:
     application.mount("/v1", app_v1)
 
     # Api voor de quasar frontend
-    app_v2 = FastAPI()
+    app_v2 = FastAPI(
+        middleware=middleware, generate_unique_id_function=custom_generate_unique_id
+    )
 
     app_v2.include_router(v2_auth.router, prefix="/auth", tags=["auth"])
     app_v2.include_router(
