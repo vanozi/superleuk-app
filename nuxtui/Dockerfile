@@ -2,6 +2,8 @@ ARG NODE_VERSION=lts
 
 FROM node:${NODE_VERSION}-slim
 
+ARG PORT=9000
+
 # Set the working directory to /app
 WORKDIR /app
 
@@ -18,7 +20,7 @@ COPY . /app
 RUN npm run build
 
 # Expose the port the application runs on
-EXPOSE 3000
+ENV PORT=$PORT
 
 # Start the application. This is the default command for Nuxt 3
 CMD ["node", ".output/server/index.mjs"]
