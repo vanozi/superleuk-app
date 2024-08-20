@@ -29,12 +29,11 @@ router = APIRouter()
     "/",
     response_model=AllowedUserResponse,
     status_code=201,
-    dependencies=[Depends(RoleChecker(["admin"]))]
+    dependencies=[Depends(RoleChecker(["admin"]))],
 )
 async def add_allowed_user(
     added_user: AllowedUserRequest,
     background_tasks: BackgroundTasks,
-    current_active_user=Depends(get_current_active_user)
 ) -> AllowedUserResponse:
     email = added_user.email.lower()
     if await AllowedUsers.get_or_none(email=email) is not None:
@@ -53,10 +52,15 @@ async def add_allowed_user(
             body={
                 "base_url": os.getenv("BASE_URL_FRONTEND"),
                 "sender": "Gebroeders Vroege",
-            }
+            },
         )
         background_tasks.add_task(Mailer.send_invitation_message, email=email_schema)
-        return AllowedUserResponse(id=allowed_user.id, created_at=allowed_user.created_at, last_modified_at=allowed_user.last_modified_at, email=allowed_user.email )
+        return AllowedUserResponse(
+            id=allowed_user.id,
+            created_at=allowed_user.created_at,
+            last_modified_at=allowed_user.last_modified_at,
+            email=allowed_user.email,
+        )
     except Exception as e:
         if allowed_user is not None:
             await allowed_user.delete()

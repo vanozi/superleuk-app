@@ -34,6 +34,7 @@ from app.api.v2.admin import (
     roles as admin_roles,
     users as admin_users,
     address as admin_address,
+    klauwscore as admin_klauwscore,
 )
 from app.db import init_db
 
@@ -111,6 +112,9 @@ def create_application() -> FastAPI:
     )
     app_v2.include_router(
         admin_address.router, prefix="/admin/address", tags=["admin_address"]
+    )
+    app_v2.include_router(
+        admin_klauwscore.router, prefix="/admin/klauwscore", tags=["admin_klauwscore"]
     )
 
     application.mount("/v2", app_v2)

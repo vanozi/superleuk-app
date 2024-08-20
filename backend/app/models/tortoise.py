@@ -233,3 +233,15 @@ class Vakanties(models.Model):
 
     class Meta:
         table = "vakanties"
+
+
+class KlauwScore(models.Model):
+    id = fields.IntField(pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    last_modified_at = fields.DatetimeField(auto_now=True)
+    koenummer = fields.CharField(null=True, max_length=255)
+    behandeldatum = fields.DateField(null=True)
+    notatie = fields.CharField(null=True, max_length=10000)
+
+    class Meta:
+        table = "klauw_scores"

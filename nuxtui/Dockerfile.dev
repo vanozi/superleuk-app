@@ -1,0 +1,33 @@
+# Syntax directive for Dockerfile linter
+# syntax=docker/dockerfile:1
+
+# Define the Node version to use
+ARG NODE_VERSION=lts
+
+
+# Base image for building (development environment)
+FROM node:${NODE_VERSION}-slim as base
+
+WORKDIR /src
+
+# Set environment to development
+ENV NODE_ENV=development
+
+# Build stage
+FROM base as build
+
+# Copy the package and lock files
+COPY package.json package-lock.json /
+
+# Install the dependencies
+RUN npm install
+
+# Final stage: Create the actual runtime image
+FROM base
+
+
+# Copy the installed node_modules from the build stage
+COPY --from=build /node_modules /node_modules
+
+# Copy the rest of the application files (assuming everything else is needed)
+COPY . .

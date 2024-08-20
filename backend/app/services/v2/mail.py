@@ -15,7 +15,7 @@ class Mailer:
             # List of recipients, as many as you can pass
             recipients=email.model_dump().get("recipient_addresses"),
             template_body=email.model_dump().get("body"),
-            subtype=MessageType.html
+            subtype=MessageType.html,
         )
         await fm.send_message(message, template_name="invite_email.html")
 
@@ -25,7 +25,7 @@ class Mailer:
             # List of recipients, as many as you can pass
             recipients=email.model_dump().get("recipient_addresses"),
             template_body=email.model_dump().get("body"),
-            subtype=MessageType.html
+            subtype=MessageType.html,
         )
         await fm.send_message(message, template_name="account_activation_email.html")
 
@@ -35,6 +35,6 @@ class Mailer:
             # List of recipients, as many as you can pass
             recipients=email.model_dump().get("recipient_addresses"),
             template_body=email.model_dump().get("body"),
-            subtype=MessageType.html
+            subtype=MessageType.html,
         )
-        await fm.send_message(message, template_name="reset_password_email.html")
+        await fm.send_message(message, template_name="v2/reset_password_email.html")

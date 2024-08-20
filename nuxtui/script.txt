@@ -1,0 +1,30 @@
+<template>
+  <!-- TEMPLATE SECTION -->
+  <!-- This section contains the HTML markup with directives and bindings -->
+</template>
+
+<script lang="ts">
+// Import statements for dependencies
+// Import other components if necessary
+// Define the props the component accepts
+// Define the emits
+// Reactive state variables
+// Computed properties
+// Methods
+// Lifecycle hooks
+</script>
+
+<style scoped>
+  /* STYLE SECTION */
+  /* Scoped CSS styles for this component only */
+
+  /* Basic element styling */
+  .my-element {
+    /* styles */
+  }
+
+  /* Modifier class */
+  .my-element--modifier {
+    /* styles */
+  }
+</style>

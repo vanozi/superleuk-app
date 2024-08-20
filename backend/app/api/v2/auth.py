@@ -71,26 +71,12 @@ async def register(
             last_name=register_info.last_name,
             email=email,
             hashed_password=hashed_password,
+            is_active=True,
         )
-
-        confirmation_token = Auth.get_confirmation_token(user.email)
-        user.confirmation = confirmation_token["jti"]
-        await user.save()
 
         # Gebruikersrollen toevoegen
         role = await Roles.get(name="werknemer")
         await user.roles.add(role)
-
-        # Welkomstbericht versturen
-        email_schema = EmailSchema(
-            recipient_addresses=[user.email],
-            body={
-                "first_name": user.first_name,
-                "base_url": os.getenv("BASE_URL_FRONTEND"),
-                "confirmation_token": confirmation_token["token"],
-            },
-        )
-        background_tasks.add_task(Mailer.send_welcome_message, email=email_schema)
 
         # Gebruiker verwijderen uit de toegestane gebruikerslijst
         await allowed_user.delete()
