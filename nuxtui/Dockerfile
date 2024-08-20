@@ -18,7 +18,7 @@ COPY . /app
 RUN npm run build
 
 # Expose the port the application runs on
-EXPOSE 9000
+EXPOSE 3000
 
 # Start the application. This is the default command for Nuxt 3
 CMD ["node", ".output/server/index.mjs"]
