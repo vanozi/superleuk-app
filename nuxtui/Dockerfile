@@ -12,8 +12,6 @@ COPY package.json package-lock.json /
 
 RUN npm install
 
-COPY /node_modules /node_modules
-
 COPY . .
 
 EXPOSE 9000
