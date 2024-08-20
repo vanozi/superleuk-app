@@ -50,10 +50,10 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.frontend.loadbalancer.server.port=9000"
-      - "traefik.http.routers.frontend.rule=Host(`app.gebroedersvroege.nl`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.http.services.nuxtui.loadbalancer.server.port=9000"
+      - "traefik.http.routers.nuxtui.rule=Host(`app.gebroedersvroege.nl`)"
+      - "traefik.http.routers.nuxtui.entrypoints=websecure"
+      - "traefik.http.routers.nuxtui.tls.certresolver=myresolver"
 
 
   fastapi:
