@@ -18,6 +18,8 @@ RUN npm install --production=false
 
 COPY . .
 
+ENV NODE_OPTIONS=--max-old-space-size=16384
+
 RUN npm run build
 RUN npm prune
 
