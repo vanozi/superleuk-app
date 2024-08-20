@@ -38,22 +38,22 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
-  # nuxtui:
-  #   build:
-  #     context: ./nuxtui
-  #     dockerfile: Dockerfile
-  #   container_name: "nuxtui"
-  #   env_file:
-  #     - .env.prod
-  #   depends_on:
-  #     - fastapi
-  #   restart: always
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.services.frontend.loadbalancer.server.port=9000"
-  #     - "traefik.http.routers.frontend.rule=Host(`app.gebroedersvroege.nl`)"
-  #     - "traefik.http.routers.frontend.entrypoints=websecure"
-  #     - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+  nuxtui:
+    build:
+      context: ./nuxtui
+      dockerfile: Dockerfile
+    container_name: "nuxtui"
+    env_file:
+      - .env.prod
+    depends_on:
+      - fastapi
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.frontend.loadbalancer.server.port=9000"
+      - "traefik.http.routers.frontend.rule=Host(`app.gebroedersvroege.nl`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
 
   fastapi:
