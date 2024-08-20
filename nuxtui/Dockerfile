@@ -8,9 +8,11 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json /
 
 RUN npm install
+
+COPY /node_modules /node_modules
 
 COPY . .
 
