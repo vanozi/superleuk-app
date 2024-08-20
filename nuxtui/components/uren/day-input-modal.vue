@@ -13,13 +13,13 @@ function closeModal() {
 
 async function submitHours(event: FormSubmitEvent<any>) {
   const dataVoorRequest = convertToUrenVoorDag(event.data)
-  await workingHoursStore.addOrUpdateWorkingHours({ requestBody: dataVoorRequest }, async function () { toast.add({ icon: 'i-heroicons-check-badge', title: 'Succes', description: 'Uren zijn aangepast' }), closeModal() }, function (errorMessage: string) { toast.add({ icon: 'i-heroicons-shield-exclamation', color: 'red', title: 'Fout', description: errorMessage }), closeModal() })
+  await workingHoursStore.addOrUpdateWorkingHours({ requestBody: dataVoorRequest }, function () { toast.add({ icon: 'i-heroicons-check-badge', title: 'Succes', description: 'Uren zijn aangepast' }), closeModal() }, function (errorMessage: string) { toast.add({ icon: 'i-heroicons-shield-exclamation', color: 'red', title: 'Fout', description: errorMessage }), closeModal() })
 }
 </script>
 
 <template>
   <UDashboardModal
-    v-model="isVisible as boolean"
+    v-model="isVisible"
     title="Uren aanpassen"
     description="Pas de uren voor deze dag aan."
     :ui="{ width: 'sm:max-w-md' }"
