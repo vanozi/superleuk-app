@@ -20,7 +20,7 @@ COPY . .
 
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
-RUN npm run build --verbose
+RUN npm run build
 RUN npm prune
 
 # Run
