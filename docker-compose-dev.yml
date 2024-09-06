@@ -57,6 +57,18 @@ services:
     env_file:
       - .env.dev
     command: ["npm", "run", "dev"]
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+     - '3001:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+
 volumes:
   db-data: null
   pgadmin-data: null
+  grafana-storage: {}

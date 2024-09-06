@@ -35,6 +35,8 @@ from app.api.v2.admin import (
     users as admin_users,
     address as admin_address,
     klauwscore as admin_klauwscore,
+    uniform as admin_uniform,
+    scrape as admin_scrape,
 )
 from app.db import init_db
 
@@ -115,6 +117,12 @@ def create_application() -> FastAPI:
     )
     app_v2.include_router(
         admin_klauwscore.router, prefix="/admin/klauwscore", tags=["admin_klauwscore"]
+    )
+    app_v2.include_router(
+        admin_uniform.router, prefix="/admin/uniform", tags=["admin_uniform"]
+    )
+    app_v2.include_router(
+        admin_scrape.router, prefix="/admin/scrape", tags=["admin_scrape"]
     )
 
     application.mount("/v2", app_v2)
