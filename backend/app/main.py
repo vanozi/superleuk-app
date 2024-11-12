@@ -7,6 +7,8 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.helpers.typescript_client import custom_generate_unique_id
 
+from app.services.v2.celery_utils import celery_app
+
 
 from app.api import (
     allowed_users,
@@ -36,6 +38,7 @@ from app.api.v2.admin import (
     address as admin_address,
     klauwscore as admin_klauwscore,
 )
+from app.api.v2.tasks import example as example_tasks
 from app.db import init_db
 
 log = logging.getLogger("uvicorn")
@@ -54,6 +57,8 @@ def create_application() -> FastAPI:
     ]
 
     application = FastAPI(middleware=middleware, root_path="/api")
+
+    application.celery_app = celery_app
 
     # Api voor de nuxt frontend
     app_v1 = FastAPI(middleware=middleware)
@@ -116,6 +121,9 @@ def create_application() -> FastAPI:
     app_v2.include_router(
         admin_klauwscore.router, prefix="/admin/klauwscore", tags=["admin_klauwscore"]
     )
+
+    # tasks routes
+    app_v2.include_router(example_tasks.router, prefix="/example_tasks", tags=["tasks"])
 
     application.mount("/v2", app_v2)
     return application

@@ -21,6 +21,7 @@ async def upload_latest_scrape():
     # Convert DataFrame to list of dictionaries
     df_reset = df.reset_index()  # This will convert the index to a column
     data = df_reset.to_dict("records")
+    print(data)
     try:
         for klauwscore in data:
             await KlauwScore.get_or_create(
