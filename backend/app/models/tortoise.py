@@ -245,3 +245,13 @@ class KlauwScore(models.Model):
 
     class Meta:
         table = "klauw_scores"
+
+
+class UniformStallijst(models.Model):
+    id = fields.IntField(pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    last_modified_at = fields.DatetimeField(auto_now=True)
+    stallijst = fields.TextField(null=True)
+
+    class Meta:
+        table = "uniform_stallijst"
