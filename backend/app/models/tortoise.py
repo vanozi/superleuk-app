@@ -251,7 +251,13 @@ class UniformStallijst(models.Model):
     id = fields.IntField(pk=True)
     created_at = fields.DatetimeField(auto_now_add=True)
     last_modified_at = fields.DatetimeField(auto_now=True)
-    stallijst = fields.TextField(null=True)
+    birth_date= fields.DateField(null=True)
+    oornummer= fields.CharField(null=True, max_length=255)
+    oornummer_kort= fields.CharField(null=True, max_length=255)
+    haarkleur= fields.CharField(null=True, max_length=255)
+    naam= fields.CharField(null=True, max_length=255)
+    halsband_nummer = fields.IntField(null=True)
+    geslacht= fields.CharField(null=True, max_length=255)
 
     class Meta:
         table = "uniform_stallijst"

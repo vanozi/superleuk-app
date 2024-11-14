@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List
 from playwright.async_api import async_playwright
 from pprint import pprint
+from app.models.tortoise import UniformStallijst
 
 from pydantic import BaseModel
 
@@ -47,7 +48,8 @@ async def verwerk_stallijst_gegevens(response):
             geconverteerde_stallijst = map_list_of_responses_to_koe_base(
                 stallijst["itemList"]
             )
-            pprint(geconverteerde_stallijst)
+            for koe in geconverteerde_stallijst:
+                await UniformStallijst.get_or_create(**koe.model_dump())
         except Exception as e:
             # If the response is not JSON, fallback to text
             print(e)
@@ -55,7 +57,7 @@ async def verwerk_stallijst_gegevens(response):
 
 async def scrape_stallijst() -> None:
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch(headless=True)
         context = await browser.new_context()
         page = await context.new_page()
 
@@ -85,7 +87,7 @@ async def scrape_stallijst() -> None:
             .click()
         )
 
-        await page.wait_for_load_state("networkidle")
+        await page.wait_for_load_state("networkidle", timeout=10000)
         await context.close()
         await browser.close()
 

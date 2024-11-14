@@ -21,7 +21,6 @@ from app.api import (
     machines,
     machine_onderhoud,
     tank_transactions,
-    ionic,
     vakanties,
 )
 from app.api.v2 import (
