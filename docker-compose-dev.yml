@@ -82,14 +82,17 @@ services:
       - db-data:/var/lib/postgresql/data/
 
   superset:
-      build:
-        context: ./superset
-        dockerfile: dockerfile
-      container_name: superset
-      env_file:
-        - .env.dev
-      ports:
-        - '8088:8088'
+    init: true
+    build:
+      context: ./superset
+      dockerfile: Dockerfile
+    container_name: superset
+    volumes:
+      - ./superset:/app/superset_home
+    env_file:
+      - .env.dev
+    ports:
+      - 8088:8088
 
   pgadmin:
     container_name: pgadmin
