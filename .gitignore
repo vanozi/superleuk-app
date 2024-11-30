@@ -208,3 +208,4 @@ backend/app/aerich.ini
 /playwright-report/
 /playwright/.cache/
 
+backend/db/prod_backup
