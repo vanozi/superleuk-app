@@ -6,10 +6,10 @@
 version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/quasar-superleuk" # Location of package manifests
+    directory: "/nuxtui" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/backend" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
