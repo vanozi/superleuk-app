@@ -35,17 +35,10 @@ const totalMilkings = computed(() => {
 </script>
 
 <template>
-  <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
+  <UCard >
     <!-- Table -->
     <UTable :rows="uren" :columns="columns">
       <template #expand="{ row }">
-        <!-- Display week_start and week_end -->
-        <div class="p-2 bg-white rounded-md mb-2">
-          <div class="text-sm font-medium">
-            <span>{{ row.week_start }}</span> |
-            <span>{{ row.week_end }}</span>
-          </div>
-        </div>
         <UrenWeekTable :uren="row.working_hours" />
       </template>
     </UTable>

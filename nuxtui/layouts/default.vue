@@ -1,10 +1,10 @@
 <script setup lang="ts">
-
+const route = useRoute()
 const links = [
 {
   id: 'hours',
   label: 'Uren',
-  to: '/uren/beheren',
+  to: '/uren',
   icon: 'i-heroicons-clock',
 }]
 </script>

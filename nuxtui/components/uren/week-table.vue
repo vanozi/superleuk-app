@@ -13,7 +13,7 @@ const props = defineProps({
     type: Array as PropType<WorkingHoursResponseWithOptionalId[]>,
     required: true,
     default: () => []
-  }
+  },
 })
 // Define the emits
 const emit = defineEmits(['showDagInvoerModal'])
@@ -44,14 +44,13 @@ function selectRow(row: any) {
 }
 
 function formatDateToWeekday(date: string): string {
-  return useDateFormat(new Date(date), 'dddd', { locales: 'nl-NL' }).value
+  return useDateFormat(new Date(date), 'dddd, DD/MM', { locales: 'nl-NL' }).value
 }
 // Lifecycle hooks
 </script>
 
 <template>
-  <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
-    <!-- Table -->
+  <UCard >
     <UTable :rows="uren" :columns="columns" @select="selectRow">
       <template #date-data="{ row }">
         <p>
