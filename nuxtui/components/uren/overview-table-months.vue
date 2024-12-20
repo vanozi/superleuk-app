@@ -47,7 +47,7 @@ const totalMilkings = computed(() => {
 </script>
 
 <template>
-  <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
+  <UCard >
     <!-- Table -->
     <UTable :rows="uren" :columns="columns" />
     <!-- Totale aantal uren en eventueel melkbeurten -->
