@@ -1,6 +1,0 @@
-VUE_APP_BASE_URL_API=http://localhost:8004/api
-
-UPDATE machine_maintenance AS t1 
-SET user_id = t2.id
-FROM users AS t2
-WHERE t1.created_by = t2.email;
