@@ -3,10 +3,12 @@
 import { useDateFormat } from '@vueuse/core'
 import type { WorkingHoursResponseWithOptionalId } from '~/my-types/uren'
 import { useWorkingHoursStore } from '~/stores/working-hours-store'
+import { useAuthStore } from '~/stores/auth-store'
 
 // Import other components if necessary
 
 const workingHoursStore = useWorkingHoursStore()
+const authStore = useAuthStore()
 // Define the props the component accepts
 const props = defineProps({
   uren: {
@@ -19,16 +21,22 @@ const props = defineProps({
 const emit = defineEmits(['showDagInvoerModal'])
 
 
-const columns = [{
-  key: 'date',
-  label: 'Datum'
-}, {
-  key: 'hours',
-  label: 'Uren',
-}, {
-  key: 'milkings',
-  label: 'Melkbeurten',
-}]
+const columns = computed(() => {
+  const baseColumns = [{
+    key: 'date',
+    label: 'Datum'
+  }, {
+    key: 'hours',
+    label: 'Uren',
+  }]
+  if (authStore.loggedInUserHasRole('melker')) {
+    baseColumns.push({
+      key: 'milkings',
+      label: 'Melkbeurten',
+    })
+  }
+  return baseColumns
+})
 // Computed properties
 const totalHours = computed(() => {
   return (props.uren ?? []).reduce((total, { hours }) => total + hours, 0)

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Import statements for dependencies
 import type { WeekTotals, WorkingHoursWeekOverviewResponse } from '~/utils/client'
+import { useAuthStore } from '~/stores/auth-store'
 
 // Import other components if necessary
 
@@ -13,14 +14,25 @@ const props = defineProps({
   }
 })
 
-const columns = [{
-  key: 'month',
-  label: 'Maand'
-},
-{
-  key: 'hours',
-  label: 'Uren',
-}]
+const authStore = useAuthStore()
+
+const columns = computed(() => {
+  const baseColumns = [{
+    key: 'month',
+    label: 'Maand'
+  }, {
+    key: 'hours',
+    label: 'Uren',
+  }]
+  if (authStore.loggedInUserHasRole('melker')) {
+    baseColumns.push({
+      key: 'milkings',
+      label: 'Melkbeurten',
+    })
+  }
+  return baseColumns
+})
+
 // Computed properties
 const totalHours = computed(() => {
   return (props.uren ?? []).reduce((total, { hours }) => total + hours, 0)

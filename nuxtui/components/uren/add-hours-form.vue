@@ -3,6 +3,7 @@
 // Import other components if necessary
 import type { FormSubmitEvent } from '#ui/types'
 import type { UrenVoorDag, DagInvoerFormState } from '~/my-types/uren'
+import { useAuthStore } from '~/stores/auth-store'
 // Define the props the component accepts
 // Define the emits
 const emit = defineEmits(['close', 'submit-hours'])
@@ -11,6 +12,7 @@ const options24Hours = Array.from({ length: 24 }, (_, i) => i)
 const quarters = Array.from({ length: 4 }, (_, i) => i * 15)
 const numberOfMilkings = Array.from({ length: 4 }, (_, i) => i)
 const data: Ref<UrenVoorDag> = inject('dagInvoerData') as Ref<UrenVoorDag>
+const authStore = useAuthStore()
 // Computed properties
 const formState = computed<DagInvoerFormState>(() => {
   if (data) {
@@ -56,7 +58,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
       </div>
     </UFormGroup>
 
-    <UFormGroup label="Melkbeurten" name="milkings">
+    <UFormGroup v-if="authStore.loggedInUserHasRole('melker')" label="Melkbeurten" name="milkings">
       <div class="flex justify-start">
         <USelect v-model="formState.milkings" :options="numberOfMilkings" />
       </div>
