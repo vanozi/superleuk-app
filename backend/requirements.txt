@@ -1,6 +1,6 @@
 aerich==0.7.2
 asyncpg==0.29.0
-Babel==2.14.0
+Babel==2.16.0
 bcrypt==4.1.2
 cryptography==42.0.2
 fastapi==0.109.2
