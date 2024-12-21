@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Import statements for dependencies
 import type { WeekTotals, WorkingHoursWeekOverviewResponse } from '~/utils/client'
+import { useAuthStore } from '~/stores/auth-store'
 
 // Import other components if necessary
 
@@ -13,14 +14,25 @@ const props = defineProps({
   }
 })
 
-const columns = [{
-  key: 'month',
-  label: 'Maand'
-},
-{
-  key: 'hours',
-  label: 'Uren',
-}]
+const authStore = useAuthStore()
+
+const columns = computed(() => {
+  const baseColumns = [{
+    key: 'month',
+    label: 'Maand'
+  }, {
+    key: 'hours',
+    label: 'Uren',
+  }]
+  if (authStore.loggedInUserHasRole('melker')) {
+    baseColumns.push({
+      key: 'milkings',
+      label: 'Melkbeurten',
+    })
+  }
+  return baseColumns
+})
+
 // Computed properties
 const totalHours = computed(() => {
   return (props.uren ?? []).reduce((total, { hours }) => total + hours, 0)
@@ -35,7 +47,7 @@ const totalMilkings = computed(() => {
 </script>
 
 <template>
-  <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
+  <UCard >
     <!-- Table -->
     <UTable :rows="uren" :columns="columns" />
     <!-- Totale aantal uren en eventueel melkbeurten -->

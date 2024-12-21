@@ -113,8 +113,11 @@ async def get_week_overview(
     # Process the data
     result_list = []
     for year, week_number in get_week_numbers(from_date, to_date):
-        week_hours = filter(
-            lambda x: x.date.isocalendar()[:2] == (year, week_number), working_hours
+        week_hours = sorted(
+            filter(
+                lambda x: x.date.isocalendar()[:2] == (year, week_number), working_hours
+            ),
+            key=lambda x: x.date
         )
         week_hours_list = list(week_hours)
 

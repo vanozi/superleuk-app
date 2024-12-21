@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Import statements for dependencies
 import type { WorkingHoursWeekOverviewResponse } from '~/utils/client'
+import { useAuthStore } from '~/stores/auth-store'
 
 // Import other components if necessary
 
@@ -13,14 +14,25 @@ const props = defineProps({
   }
 })
 
-const columns = [{
-  key: 'week',
-  label: 'Week'
-},
-{
-  key: 'sum_hours',
-  label: 'Uren',
-}]
+const authStore = useAuthStore()
+
+const columns = computed(() => {
+  const baseColumns = [{
+    key: 'week',
+    label: 'Week'
+  }, {
+    key: 'sum_hours',
+    label: 'Uren',
+  }]
+  if (authStore.loggedInUserHasRole('melker')) {
+    baseColumns.push({
+      key: 'sum_milkings',
+      label: 'Melkbeurten',
+    })
+  }
+  return baseColumns
+})
+
 // Computed properties
 const totalHours = computed(() => {
   return (props.uren ?? []).reduce((total, { sum_hours }) => total + sum_hours, 0)
@@ -35,19 +47,13 @@ const totalMilkings = computed(() => {
 </script>
 
 <template>
-  <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
+  <UCard >
     <!-- Table -->
     <UTable :rows="uren" :columns="columns">
       <template #expand="{ row }">
-        <!-- Display week_start and week_end -->
-        <div class="p-2 bg-white rounded-md mb-2">
-          <div class="text-sm font-medium">
-            <span>{{ row.week_start }}</span> |
-            <span>{{ row.week_end }}</span>
-          </div>
-        </div>
         <UrenWeekTable :uren="row.working_hours" />
       </template>
+      
     </UTable>
     <!-- Totale aantal uren en eventueel melkbeurten -->
     <template #footer>
