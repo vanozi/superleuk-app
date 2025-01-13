@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.42.1",
-    "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/eslint-config": "^0.7.5",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "eslint": "^8.57.0",
