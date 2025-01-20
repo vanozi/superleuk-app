@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const route = useRoute()
 const links = [
   {
     id: 'hours',
@@ -30,8 +29,13 @@ const isDark = computed({
         </template>
         <template #right>
           <ClientOnly>
-            <UButton :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'" color="gray"
-              variant="ghost" aria-label="Theme" @click="isDark = !isDark" />
+            <UButton
+              :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
+              color="gray"
+              variant="ghost"
+              aria-label="Theme"
+              @click="isDark = !isDark"
+            />
             <template #fallback>
               <div class="w-8 h-8" />
             </template>

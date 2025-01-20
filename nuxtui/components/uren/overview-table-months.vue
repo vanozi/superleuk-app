@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Import statements for dependencies
-import type { WeekTotals, WorkingHoursWeekOverviewResponse } from '~/utils/client'
+import type { WeekTotals } from '~/utils/client'
 import { useAuthStore } from '~/stores/auth-store'
 
 // Import other components if necessary
@@ -47,7 +47,7 @@ const totalMilkings = computed(() => {
 </script>
 
 <template>
-  <UCard >
+  <UCard>
     <!-- Table -->
     <UTable :rows="uren" :columns="columns" />
     <!-- Totale aantal uren en eventueel melkbeurten -->

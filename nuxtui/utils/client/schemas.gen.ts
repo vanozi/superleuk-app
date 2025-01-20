@@ -14,7 +14,7 @@ export const $AddRoleToUserRequest = {
     type: 'object',
     required: ['user_id', 'role_id'],
     title: 'AddRoleToUserRequest'
-} as const;
+} as const
 
 export const $AddressResponse = {
     properties: {
@@ -41,7 +41,7 @@ export const $AddressResponse = {
     },
     type: 'object',
     title: 'AddressResponse'
-} as const;
+} as const
 
 export const $AllowedUserRequest = {
     properties: {
@@ -54,7 +54,7 @@ export const $AllowedUserRequest = {
     type: 'object',
     required: ['email'],
     title: 'AllowedUserRequest'
-} as const;
+} as const
 
 export const $AllowedUserResponse = {
     properties: {
@@ -81,7 +81,7 @@ export const $AllowedUserResponse = {
     type: 'object',
     required: ['id', 'created_at', 'last_modified_at', 'email'],
     title: 'AllowedUserResponse'
-} as const;
+} as const
 
 export const $Body_auth_login = {
     properties: {
@@ -136,7 +136,7 @@ export const $Body_auth_login = {
     type: 'object',
     required: ['username', 'password'],
     title: 'Body_auth-login'
-} as const;
+} as const
 
 export const $CreateRoleRequest = {
     properties: {
@@ -152,7 +152,7 @@ export const $CreateRoleRequest = {
     type: 'object',
     required: ['name', 'description'],
     title: 'CreateRoleRequest'
-} as const;
+} as const
 
 export const $HTTPError = {
     properties: {
@@ -165,13 +165,13 @@ export const $HTTPError = {
     required: ['detail'],
     title: 'HTTPError',
     description: 'HTTP error schema to be used when an `HTTPException` is thrown.'
-} as const;
+} as const
 
 export const $HTTPValidationError = {
     properties: {
         detail: {
             items: {
-                '$ref': '#/components/schemas/ValidationError'
+                $ref: '#/components/schemas/ValidationError'
             },
             type: 'array',
             title: 'Detail'
@@ -179,7 +179,7 @@ export const $HTTPValidationError = {
     },
     type: 'object',
     title: 'HTTPValidationError'
-} as const;
+} as const
 
 export const $KlauwScoreBase = {
     properties: {
@@ -200,7 +200,7 @@ export const $KlauwScoreBase = {
     type: 'object',
     required: ['koenummer', 'behandeldatum', 'notatie'],
     title: 'KlauwScoreBase'
-} as const;
+} as const
 
 export const $RegisterUserRequest = {
     properties: {
@@ -227,7 +227,7 @@ export const $RegisterUserRequest = {
     type: 'object',
     required: ['first_name', 'last_name', 'email', 'password'],
     title: 'RegisterUserRequest'
-} as const;
+} as const
 
 export const $ReleaseRequest = {
     properties: {
@@ -249,7 +249,7 @@ export const $ReleaseRequest = {
     type: 'object',
     required: ['from_date', 'to_date', 'user_id'],
     title: 'ReleaseRequest'
-} as const;
+} as const
 
 export const $RemoveRoleFromUserRequest = {
     properties: {
@@ -265,7 +265,7 @@ export const $RemoveRoleFromUserRequest = {
     type: 'object',
     required: ['user_id', 'role_id'],
     title: 'RemoveRoleFromUserRequest'
-} as const;
+} as const
 
 export const $ResetPassword = {
     properties: {
@@ -283,7 +283,7 @@ export const $ResetPassword = {
     type: 'object',
     required: ['token', 'password'],
     title: 'ResetPassword'
-} as const;
+} as const
 
 export const $ResourceResponse = {
     properties: {
@@ -303,7 +303,7 @@ export const $ResourceResponse = {
     type: 'object',
     required: ['id', 'groupId', 'title'],
     title: 'ResourceResponse'
-} as const;
+} as const
 
 export const $RoleInUserResponse = {
     properties: {
@@ -323,7 +323,7 @@ export const $RoleInUserResponse = {
     type: 'object',
     required: ['id', 'name', 'description'],
     title: 'RoleInUserResponse'
-} as const;
+} as const
 
 export const $RoleResponse = {
     properties: {
@@ -353,7 +353,7 @@ export const $RoleResponse = {
     type: 'object',
     required: ['id', 'created_at', 'last_modified_at', 'name', 'description'],
     title: 'RoleResponse'
-} as const;
+} as const
 
 export const $SuccessResponse = {
     properties: {
@@ -374,7 +374,7 @@ export const $SuccessResponse = {
     type: 'object',
     required: ['detail'],
     title: 'SuccessResponse'
-} as const;
+} as const
 
 export const $TokenResponse = {
     properties: {
@@ -395,7 +395,7 @@ export const $TokenResponse = {
     type: 'object',
     required: ['access_token', 'refresh_token'],
     title: 'TokenResponse'
-} as const;
+} as const
 
 export const $TokenSchema = {
     properties: {
@@ -424,7 +424,7 @@ export const $TokenSchema = {
     },
     type: 'object',
     title: 'TokenSchema'
-} as const;
+} as const
 
 export const $UpdateAddressRequest = {
     properties: {
@@ -486,7 +486,7 @@ export const $UpdateAddressRequest = {
     },
     type: 'object',
     title: 'UpdateAddressRequest'
-} as const;
+} as const
 
 export const $UpdateUserRequest = {
     properties: {
@@ -551,7 +551,7 @@ export const $UpdateUserRequest = {
     type: 'object',
     required: ['first_name', 'last_name', 'email', 'telephone_number', 'date_of_birth'],
     title: 'UpdateUserRequest'
-} as const;
+} as const
 
 export const $VakantieCreateSchemaForUserAsAdmin = {
     properties: {
@@ -573,7 +573,7 @@ export const $VakantieCreateSchemaForUserAsAdmin = {
     type: 'object',
     required: ['start_date', 'end_date', 'user_id'],
     title: 'VakantieCreateSchemaForUserAsAdmin'
-} as const;
+} as const
 
 export const $VakantieRequest = {
     properties: {
@@ -591,7 +591,7 @@ export const $VakantieRequest = {
     type: 'object',
     required: ['start_date', 'end_date'],
     title: 'VakantieRequest'
-} as const;
+} as const
 
 export const $VakantieResponse = {
     properties: {
@@ -613,7 +613,7 @@ export const $VakantieResponse = {
     type: 'object',
     required: ['id', 'start_date', 'end_date'],
     title: 'VakantieResponse'
-} as const;
+} as const
 
 export const $VakantiesForCalendarResponse = {
     properties: {
@@ -639,7 +639,7 @@ export const $VakantiesForCalendarResponse = {
     type: 'object',
     required: ['id', 'start', 'end', 'resourceId'],
     title: 'VakantiesForCalendarResponse'
-} as const;
+} as const
 
 export const $ValidationError = {
     properties: {
@@ -669,7 +669,7 @@ export const $ValidationError = {
     type: 'object',
     required: ['loc', 'msg', 'type'],
     title: 'ValidationError'
-} as const;
+} as const
 
 export const $WeekTotals = {
     properties: {
@@ -689,7 +689,7 @@ export const $WeekTotals = {
     type: 'object',
     required: ['month', 'hours', 'milkings'],
     title: 'WeekTotals'
-} as const;
+} as const
 
 export const $WorkingHoursRequest = {
     properties: {
@@ -745,7 +745,7 @@ export const $WorkingHoursRequest = {
     type: 'object',
     required: ['date', 'hours', 'description'],
     title: 'WorkingHoursRequest'
-} as const;
+} as const
 
 export const $WorkingHoursResponse = {
     properties: {
@@ -778,7 +778,7 @@ export const $WorkingHoursResponse = {
     type: 'object',
     required: ['id', 'date', 'hours', 'milkings', 'description', 'submitted'],
     title: 'WorkingHoursResponse'
-} as const;
+} as const
 
 export const $WorkingHoursWeekOverviewResponse = {
     properties: {
@@ -802,7 +802,7 @@ export const $WorkingHoursWeekOverviewResponse = {
         },
         working_hours: {
             items: {
-                '$ref': '#/components/schemas/WorkingHoursResponse'
+                $ref: '#/components/schemas/WorkingHoursResponse'
             },
             type: 'array',
             title: 'Working Hours'
@@ -823,7 +823,7 @@ export const $WorkingHoursWeekOverviewResponse = {
     type: 'object',
     required: ['year', 'week', 'week_start', 'week_end', 'working_hours', 'sum_hours', 'sum_milkings', 'submitted'],
     title: 'WorkingHoursWeekOverviewResponse'
-} as const;
+} as const
 
 export const $app__models__pydantic_models__auth__UserResponse = {
     properties: {
@@ -897,7 +897,7 @@ export const $app__models__pydantic_models__auth__UserResponse = {
             anyOf: [
                 {
                     items: {
-                        '$ref': '#/components/schemas/RoleResponse'
+                        $ref: '#/components/schemas/RoleResponse'
                     },
                     type: 'array'
                 },
@@ -911,7 +911,7 @@ export const $app__models__pydantic_models__auth__UserResponse = {
     type: 'object',
     required: ['id', 'created_at', 'last_modified_at', 'first_name', 'last_name', 'date_of_birth', 'email', 'telephone_number', 'is_active', 'confirmation', 'roles'],
     title: 'UserResponse'
-} as const;
+} as const
 
 export const $app__models__pydantic_models__users__UserResponse = {
     properties: {
@@ -975,7 +975,7 @@ export const $app__models__pydantic_models__users__UserResponse = {
         },
         roles: {
             items: {
-                '$ref': '#/components/schemas/RoleInUserResponse'
+                $ref: '#/components/schemas/RoleInUserResponse'
             },
             type: 'array',
             title: 'Roles'
@@ -983,7 +983,7 @@ export const $app__models__pydantic_models__users__UserResponse = {
         address: {
             anyOf: [
                 {
-                    '$ref': '#/components/schemas/AddressResponse'
+                    $ref: '#/components/schemas/AddressResponse'
                 },
                 {
                     type: 'null'
@@ -994,4 +994,4 @@ export const $app__models__pydantic_models__users__UserResponse = {
     type: 'object',
     required: ['id', 'first_name', 'last_name', 'email', 'telephone_number', 'date_of_birth', 'is_active', 'roles', 'address'],
     title: 'UserResponse'
-} as const;
+} as const

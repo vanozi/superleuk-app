@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from typing import List
+from typing import List, Optional
 from starlette.exceptions import HTTPException
 from app.models.pydantic_models.users import UserResponse, UpdateUserRequest
 from app.models.pydantic_models.roles import (

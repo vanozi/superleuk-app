@@ -17,13 +17,6 @@ const teams = [{
   }
 }]
 
-const actions = [{
-  label: 'Create team',
-  icon: 'i-heroicons-plus-circle'
-}, {
-  label: 'Manage teams',
-  icon: 'i-heroicons-cog-8-tooth'
-}]
 
 const team = ref(teams[0])
 </script>

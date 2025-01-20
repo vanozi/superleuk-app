@@ -1,27 +1,30 @@
 import path from 'path'
 // Load environment variables
 import dotenv from 'dotenv'
-console.log(process.cwd())
+
 dotenv.config({ path: '.env' })
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
+
   modules: [
     '@nuxt/ui',
     '@nuxt/fonts',
     '@vueuse/nuxt',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt',
+    '@nuxt/eslint'
   ],
-  ui: {
 
+  ui: {
     icons: ['heroicons', 'simple-icons'],
     safelistColors: ['primary', 'red', 'orange', 'green']
   },
+
   devtools: {
     enabled: true
   },
+
   vite: {
     resolve: {
       alias: {
@@ -36,9 +39,12 @@ export default defineNuxtConfig({
       }
     }
   },
+
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.VITE_API_BASE_URL
     }
   },
+
+  compatibilityDate: '2025-01-20',
 })

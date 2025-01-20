@@ -48,8 +48,13 @@ defineProps({
 
     <form @submit.prevent>
       <UTextarea color="gray" required size="xl" :rows="5" :placeholder="`Reply to ${mail.from.name}`">
-        <UButton type="submit" color="black" label="Send" icon="i-heroicons-paper-airplane"
-          class="absolute bottom-2.5 right-3.5" />
+        <UButton
+          type="submit"
+          color="black"
+          label="Send"
+          icon="i-heroicons-paper-airplane"
+          class="absolute bottom-2.5 right-3.5"
+        />
       </UTextarea>
     </form>
   </UDashboardPanelContent>

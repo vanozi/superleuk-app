@@ -1,5 +1,3 @@
-
-import { getMonth } from 'date-fns'
 import { defineStore } from 'pinia'
 import type { CallbackNOParam, CallbackOneParam } from '~/types/generic'
 import { WorkingHoursService, type WeekTotals, type WorkingHoursRequest, type WorkingHoursResponse, type WorkingHoursWeekOverviewResponse } from '~/utils/client'
