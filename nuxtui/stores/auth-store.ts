@@ -98,6 +98,6 @@ export const useAuthStore = defineStore('auth-store', {
         }
       })
     },
+    persist: true,
   },
-  persist: true
 })

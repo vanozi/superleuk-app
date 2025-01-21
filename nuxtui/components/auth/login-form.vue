@@ -26,7 +26,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     password: event.data.password
   }
   const data = { formData: formData }
-  await authStore.login(data, async function () { toast.add({ icon:'i-heroicons-check-badge',  title: 'Succes', description: 'Je bent ingelogd' }), await navigateTo('/') }, function (errorMessage:string) { toast.add({ icon:'i-heroicons-shield-exclamation', color:'red',  title: 'Fout', description: errorMessage }) })
+  await authStore.login(data, async function () { 
+    toast.add({ icon:'i-heroicons-check-badge',  title: 'Succes', description: 'Je bent ingelogd' }); 
+    await navigateTo('/'); 
+  }, function (errorMessage:string) { 
+    toast.add({ icon:'i-heroicons-shield-exclamation', color:'red',  title: 'Fout', description: errorMessage }); 
+  })
 }
 </script>
 
