@@ -1,6 +1,6 @@
 import { useAuthStore } from '~/stores/auth-store'
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(() => {
   const authStore = useAuthStore()
   console.log('redirect-admin.ts middleware')
 

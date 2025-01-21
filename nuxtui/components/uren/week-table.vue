@@ -50,14 +50,13 @@ function formatDateToWeekday(date: string): string {
 </script>
 
 <template>
-  <UCard >
+  <UCard>
     <UTable :rows="uren" :columns="columns" @select="selectRow">
       <template #date-data="{ row }">
         <p>
           {{ formatDateToWeekday(row.date) }}
         </p>
       </template>
-      
     </UTable>
     <!-- Totale aantal uren en eventueel melkbeurten -->
     <template #footer>

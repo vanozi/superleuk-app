@@ -1,76 +1,56 @@
 <script lang="ts" setup>
-import type { User } from '~/types'
 import { useAdminUsersStore } from '~/stores/admin/users-store'
-import type { app__models__pydantic_models__users__UserResponse } from '~/utils/client/types.gen'
+import { AdminUsersService } from '~/utils/client/services.gen'
+
 definePageMeta({
   middleware: 'admin',
   layout: 'admin'
 })
 
-const defaultColumns = [{
-  key: 'name',
-  label: 'Naam',
-  sortable: true
-}, {
-  key: 'email',
-  label: 'Email',
-  sortable: true
-}, {
-  key: 'status',
-  label: 'Status'
-}]
+const defaultColumns = [
+  { key: 'name', label: 'Naam',},
+  { key: 'email', label: 'Email', },
+  { key: 'status', label: 'Status' }
+]
 
-const q = ref('')
-const selected = ref<User[]>([])
+const filterMedewerkers = ref('')
 const selectedColumns = ref(defaultColumns)
-const selectedStatuses = ref([])
-const selectedLocations = ref([])
-const sort = ref({ column: 'id', direction: 'asc' as const })
 const input = ref<{ input: HTMLInputElement }>()
-const isNewUserModalOpen = ref(false)
 const adminUsersStore = useAdminUsersStore()
+const pending = ref(false)
 
-// Computed property to count active users
-const activeUsersCount = computed(() => {
-  return adminUsersStore.users.filter(user => user.is_active).length
-})
+const activeUsersCount = computed(() => adminUsersStore.users.filter(user => user.is_active).length)
+const inactiveUsersCount = computed(() => adminUsersStore.users.filter(user => !user.is_active).length)
 
-const inactiveUsersCount = computed(() => {
-  return adminUsersStore.users.filter(user => !user.is_active).length
-})
-
-onBeforeMount(async() => {
- await adminUsersStore.getAllUsers()
+onBeforeMount(async () => {
+  pending.value = true
+  try {
+    const response = await AdminUsersService.adminUsersGetAllUsers()
+    adminUsersStore.users = response
+  } finally {
+    pending.value = false
+  }
 })
 
 const columns = computed(() => defaultColumns.filter(column => selectedColumns.value.includes(column)))
 
-const query = computed(() => ({ q: q.value, statuses: selectedStatuses.value, locations: selectedLocations.value, sort: sort.value.column, order: sort.value.direction }))
+const filteredUsers = computed(() => {
+  const query = filterMedewerkers.value.toLowerCase()
+  return adminUsersStore.users.filter(user => {
+    return (
+      user.first_name?.toLowerCase().includes(query) ||
+      user.last_name?.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query)
+    )
+  })
+})
 
-const { data: users, pending } = await useFetch<User[]>('/api/users', { query, default: () => [] })
+const page = ref(1)
+const pageCount = 20
 
-const defaultLocations = users.value.reduce((acc, user) => {
-  if (!acc.includes(user.location)) {
-    acc.push(user.location)
-  }
-  return acc
-}, [] as string[])
-
-const defaultStatuses = users.value.reduce((acc, user) => {
-  if (!acc.includes(user.status)) {
-    acc.push(user.status)
-  }
-  return acc
-}, [] as string[])
-
-function onSelect(row: User) {
-  const index = selected.value.findIndex(item => item.id === row.id)
-  if (index === -1) {
-    selected.value.push(row)
-  } else {
-    selected.value.splice(index, 1)
-  }
-}
+const paginatedFilteredUsers = computed(() => {
+  return filteredUsers.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+})
 
 defineShortcuts({
   '/': () => {
@@ -82,94 +62,37 @@ defineShortcuts({
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar
-        title="Mederwerkers"
-      >
+      <UDashboardNavbar title="Medewerkers">
         <template #badge>
-          <UBadge
-            :label="`${activeUsersCount} actief`"
-            color="green"
-            variant="subtle"
-            class="mr-2"
-          />
-          <UBadge
-            :label="`${inactiveUsersCount} inactief`"
-            color="red"
-            variant="subtle"
-          />
-        </template>
-        <template #right>
-          <UInput
-            ref="input"
-            v-model="q"
-            icon="i-heroicons-funnel"
-            autocomplete="off"
-            placeholder="Filter gebruikers..."
-            class="hidden lg:block"
-            @keydown.esc="$event.target.blur()"
-          />
-
-          <!-- <UButton
-            label="New user"
-            trailing-icon="i-heroicons-plus"
-            color="gray"
-            @click="isNewUserModalOpen = true"
-          /> -->
+          <UBadge :label="`${activeUsersCount} actief`" color="green" variant="subtle" class="mr-2" />
+          <UBadge :label="`${inactiveUsersCount} inactief`" color="red" variant="subtle" />
         </template>
       </UDashboardNavbar>
 
       <UDashboardToolbar>
-        <!-- <template #left>
-          <USelectMenu
-            v-model="selectedStatuses"
-            icon="i-heroicons-check-circle"
-            placeholder="Status"
-            multiple
-            :options="defaultStatuses"
-            :ui-menu="{ option: { base: 'capitalize' } }"
+        <template #left>
+          <UInput
+            ref="input"
+            v-model="filterMedewerkers"
+            icon="i-heroicons-funnel"
+            autocomplete="off"
+            placeholder="Filter medewerkers..."
+            @keydown.esc="$event.target.blur()"
           />
-          <USelectMenu
-            v-model="selectedLocations"
-            icon="i-heroicons-map-pin"
-            placeholder="Location"
-            :options="defaultLocations"
-            multiple
-          />
-        </template> -->
-
-        <template #right>
           <USelectMenu
             v-model="selectedColumns"
             icon="i-heroicons-adjustments-horizontal-solid"
             :options="defaultColumns"
             multiple
-            class="hidden lg:block"
           >
-            <template #label>
-              Kolommen
-            </template>
+            <template #label>Kolommen</template>
           </USelectMenu>
         </template>
       </UDashboardToolbar>
 
-      <!-- <UDashboardModal
-        v-model="isNewUserModalOpen"
-        title="New user"
-        description="Add a new user to your database"
-        :ui="{ width: 'sm:max-w-md' }"
-      > -->
-      <!-- ~/components/users/UsersForm.vue -->
-      <!-- <UsersForm @close="isNewUserModalOpen = false" />
-      </UDashboardModal> -->
-
       <UTable
-        v-model:sort="sort"
-        :rows="adminUsersStore.users"
+        :rows="paginatedFilteredUsers"
         :columns="columns"
-        :loading="pending"
-        sort-mode="auto"
-        class="w-full"
-        :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
       >
         <template #name-data="{ row }">
           <div class="flex items-center gap-3">
@@ -186,6 +109,9 @@ defineShortcuts({
           />
         </template>
       </UTable>
+      <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+        <UPagination v-model="page" :page-count="pageCount" :total="adminUsersStore.users.length" />
+      </div>
     </UDashboardPanel>
   </UDashboardPage>
 </template>

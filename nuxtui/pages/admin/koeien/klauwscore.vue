@@ -3,7 +3,7 @@ import { useAdminKlauwscoreStore } from '~/stores/admin/klauwscore-store'
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import type { Range } from '~/types'
-import { sub, format, isSameDay, type Duration } from 'date-fns'
+import { sub} from 'date-fns'
 
 definePageMeta({
   middleware: 'admin',

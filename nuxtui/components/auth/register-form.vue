@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { z } from '~/utils/nl-zod'
 import type { FormSubmitEvent } from '#ui/types'
-import type { Body_auth_login } from '~/utils/client/types.gen'
 import { useAuthStore } from '~/stores/auth-store'
 
 const toast = useToast()

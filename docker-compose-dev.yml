@@ -47,16 +47,16 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
-  nuxt-ui:
-    build:
-      context: ./nuxtui
-      dockerfile: Dockerfile.dev
-    container_name: nuxt-ui
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env.dev
-    command: ["npm", "run", "dev"]
+  # nuxt-ui:
+  #   build:
+  #     context: ./nuxtui
+  #     dockerfile: Dockerfile.dev
+  #   container_name: nuxt-ui
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - .env.dev
+  #   command: ["npm", "run", "dev"]
 
 
 volumes:
