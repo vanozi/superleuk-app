@@ -41,7 +41,7 @@
     "@hey-api/openapi-ts": "^0.42.1",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@vueuse/core": "^10.9.0",
-    "@vueuse/nuxt": "^10.9.0",
+    "@vueuse/nuxt": "^12.4.0",
     "typescript": "^5.7.2",
     "vitest": "^3.0.2",
     "vue-tsc": "^2.0.7"
